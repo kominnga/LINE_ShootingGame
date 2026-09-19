@@ -27,6 +27,7 @@
             <p>敵を撃ち落とせ！</p>
             <button id="start-button">START</button>
             <button id="ranking-button">🏆 RANKING</button>
+            <button id="garage-button">🚀 GARAGE</button>
         </div>
 
         <div id="game-over-screen">
@@ -74,6 +75,58 @@
 
         <button id="ranking-close-button">
             CLOSE
+        </button>
+
+    </div>
+
+</div>
+<!-- GARAGE -->
+<div id="garage-screen">
+
+    <div id="garage-panel">
+
+        <h1>🚀 NEXUS GARAGE</h1>
+
+        <div id="garage-preview">
+
+            <button id="skin-prev" class="skin-arrow">
+                ◀
+            </button>
+
+            <div id="skin-display">
+
+                <canvas
+                    id="skin-preview-canvas"
+                    width="180"
+                    height="220">
+                </canvas>
+
+                <div id="skin-name">
+                    NEXUS-01
+                </div>
+
+                <div id="skin-number">
+                    1 / 5
+                </div>
+
+            </div>
+
+            <button id="skin-next" class="skin-arrow">
+                ▶
+            </button>
+
+        </div>
+
+        <button id="skin-equip-button">
+            装備する
+        </button>
+
+        <div id="skin-status">
+            装備中：NEXUS-01
+        </div>
+
+        <button id="garage-close-button">
+            戻る
         </button>
 
     </div>

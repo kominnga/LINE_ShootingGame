@@ -708,3 +708,283 @@ button {
 #beamButton:active {
     transform: scale(0.94);
 }
+
+/* ========================================
+   GARAGE
+======================================== */
+
+#garage-screen {
+    position: absolute;
+    inset: 0;
+
+    display: none;
+
+    justify-content: center;
+    align-items: center;
+
+    z-index: 100;
+
+    background:
+        radial-gradient(
+            circle at 50% 35%,
+            rgba(25, 45, 100, 0.96),
+            rgba(3, 6, 20, 0.98) 70%
+        );
+}
+
+#garage-panel {
+    width: min(90%, 420px);
+    min-height: 600px;
+
+    padding: 30px 20px;
+
+    box-sizing: border-box;
+
+    border: 1px solid rgba(120, 180, 255, 0.35);
+    border-radius: 20px;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(20, 30, 60, 0.96),
+            rgba(7, 12, 30, 0.98)
+        );
+
+    box-shadow:
+        0 0 40px rgba(40, 120, 255, 0.18),
+        inset 0 0 30px rgba(60, 100, 180, 0.05);
+
+    text-align: center;
+
+    color: white;
+}
+
+#garage-panel h1 {
+    margin: 0 0 25px;
+
+    font-size: 28px;
+    letter-spacing: 2px;
+
+    text-shadow:
+        0 0 12px rgba(80, 180, 255, 0.7);
+}
+
+
+/* スキンプレビュー */
+
+#garage-preview {
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 10px;
+
+    margin: 10px 0 20px;
+}
+
+#skin-display {
+    width: 200px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#skin-preview-canvas {
+    width: 180px;
+    height: 220px;
+
+    display: block;
+
+    border-radius: 15px;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(30, 60, 110, 0.35),
+            rgba(0, 0, 0, 0.15)
+        );
+
+    box-shadow:
+        inset 0 0 30px rgba(80, 150, 255, 0.08);
+}
+
+#skin-name {
+    margin-top: 8px;
+
+    font-size: 20px;
+    font-weight: bold;
+
+    letter-spacing: 1px;
+}
+
+#skin-number {
+    margin-top: 4px;
+
+    font-size: 13px;
+
+    color: rgba(255, 255, 255, 0.55);
+}
+
+
+/* 左右ボタン */
+
+.skin-arrow {
+    width: 48px;
+    height: 48px;
+
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+
+    background: rgba(20, 30, 60, 0.9);
+
+    color: white;
+
+    font-size: 20px;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.15s,
+        background 0.2s;
+}
+
+.skin-arrow:hover {
+    background: rgba(50, 80, 130, 0.95);
+
+    transform: scale(1.08);
+}
+
+.skin-arrow:active {
+    transform: scale(0.92);
+}
+
+
+/* 装備ボタン */
+
+#skin-equip-button {
+    width: 220px;
+
+    padding: 13px 20px;
+
+    border: none;
+    border-radius: 10px;
+
+    background: linear-gradient(
+        135deg,
+        #168cff,
+        #315cff
+    );
+
+    color: white;
+
+    font-size: 17px;
+    font-weight: bold;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 0 18px rgba(40, 120, 255, 0.3);
+
+    transition:
+        transform 0.15s,
+        box-shadow 0.2s;
+}
+
+#skin-equip-button:hover {
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 0 25px rgba(40, 140, 255, 0.5);
+}
+
+#skin-equip-button:active {
+    transform: scale(0.96);
+}
+
+
+/* 装備状態 */
+
+#skin-status {
+    margin-top: 12px;
+
+    min-height: 20px;
+
+    font-size: 13px;
+
+    color: rgba(255, 255, 255, 0.6);
+}
+
+
+/* 戻る */
+
+#garage-close-button {
+    margin-top: 25px;
+
+    width: 160px;
+
+    padding: 10px 20px;
+
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 10px;
+
+    background: rgba(20, 25, 45, 0.9);
+
+    color: white;
+
+    font-size: 15px;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.15s,
+        background 0.2s;
+}
+
+#garage-close-button:hover {
+    background: rgba(40, 50, 80, 0.95);
+
+    transform: translateY(-2px);
+}
+
+#garage-close-button:active {
+    transform: scale(0.96);
+}
+
+
+/* START画面のGARAGEボタン */
+
+#garage-button {
+    margin-top: 10px;
+
+    width: 200px;
+
+    padding: 12px 20px;
+
+    border: 1px solid rgba(100, 180, 255, 0.4);
+    border-radius: 10px;
+
+    background: rgba(20, 40, 80, 0.9);
+
+    color: white;
+
+    font-size: 16px;
+    font-weight: bold;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.15s,
+        background 0.2s;
+}
+
+#garage-button:hover {
+    background: rgba(40, 70, 120, 0.95);
+
+    transform: translateY(-2px);
+}
+
+#garage-button:active {
+    transform: scale(0.96);
+}

@@ -19,6 +19,7 @@ const fireButton = document.getElementById("fire-button");
 
 
 
+
 /* ==================================================
    基本設定
 ================================================== */
@@ -78,6 +79,84 @@ const beamDamage = 35;
 // 必殺技を使ったか
 let beamCooldown = 0;
 const beamCooldownMax = 30;
+
+// ========================================
+// SKIN SYSTEM
+// ========================================
+
+const skins = [
+    {
+        id: "nexus-01",
+        name: "NEXUS-01"
+    },
+    {
+        id: "nexus-02",
+        name: "NEXUS-02"
+    },
+    {
+        id: "nexus-03",
+        name: "NEXUS-03"
+    },
+    {
+        id: "nexus-04",
+        name: "NEXUS-04"
+    },
+    {
+        id: "nexus-05",
+        name: "NEXUS-05"
+    }
+];
+
+let selectedSkinIndex = 0;
+
+let equippedSkin =
+    localStorage.getItem("nexus-equipped-skin")
+    || "nexus-01";
+
+const garageScreen =
+    document.getElementById("garage-screen");
+
+const garageButton =
+    document.getElementById("garage-button");
+
+const garageCloseButton =
+    document.getElementById("garage-close-button");
+
+const skinPrevButton =
+    document.getElementById("skin-prev");
+
+const skinNextButton =
+    document.getElementById("skin-next");
+
+const skinEquipButton =
+    document.getElementById("skin-equip-button");
+
+const skinName =
+    document.getElementById("skin-name");
+
+const skinNumber =
+    document.getElementById("skin-number");
+
+const skinStatus =
+    document.getElementById("skin-status");
+
+const skinPreviewCanvas =
+    document.getElementById("skin-preview-canvas");
+
+const skinPreviewCtx =
+    skinPreviewCanvas
+        ? skinPreviewCanvas.getContext("2d")
+        : null;
+
+
+// 現在装備しているスキンを探す
+const equippedIndex = skins.findIndex(
+    skin => skin.id === equippedSkin
+);
+
+if (equippedIndex >= 0) {
+    selectedSkinIndex = equippedIndex;
+}
 /* ==================================================
    プレイヤー
 ================================================== */
@@ -178,6 +257,37 @@ async function initLIFF() {
     }
 
 }
+
+function updateGarage() {
+
+    const skin =
+        skins[selectedSkinIndex];
+
+    if (!skin) return;
+
+    if (skinName) {
+        skinName.textContent =
+            skin.name;
+    }
+
+    if (skinNumber) {
+        skinNumber.textContent =
+            `${selectedSkinIndex + 1} / ${skins.length}`;
+    }
+
+    if (skinStatus) {
+
+        if (skin.id === equippedSkin) {
+            skinStatus.textContent =
+                `装備中：${skin.name}`;
+        } else {
+            skinStatus.textContent =
+                `選択中：${skin.name}`;
+        }
+    }
+
+    drawSkinPreview();
+}
 /* ==================================================
    オブジェクト
 ================================================== */
@@ -232,7 +342,346 @@ window.addEventListener(
 
 resizeCanvas();
 
+function drawSkinPreview() {
 
+    if (!skinPreviewCtx) return;
+
+    const ctx = skinPreviewCtx;
+
+    const width =
+        skinPreviewCanvas.width;
+
+    const height =
+        skinPreviewCanvas.height;
+
+    ctx.clearRect(
+        0,
+        0,
+        width,
+        height
+    );
+
+    const centerX =
+        width / 2;
+
+    const centerY =
+        height / 2 + 5;
+
+    const skin =
+        skins[selectedSkinIndex];
+
+    /*
+        今回は5機体を
+        仮デザインで表示する。
+
+        次の段階で
+        実際のゲーム内プレイヤー
+        と完全に同じデザインへ変更する。
+    */
+
+    ctx.save();
+
+    // 発光
+    ctx.shadowBlur = 25;
+
+    if (skin.id === "nexus-01") {
+        ctx.shadowColor = "#38a8ff";
+    }
+
+    if (skin.id === "nexus-02") {
+        ctx.shadowColor = "#35e0ff";
+    }
+
+    if (skin.id === "nexus-03") {
+        ctx.shadowColor = "#ffb13b";
+    }
+
+    if (skin.id === "nexus-04") {
+        ctx.shadowColor = "#d95cff";
+    }
+
+    if (skin.id === "nexus-05") {
+        ctx.shadowColor = "#9b4dff";
+    }
+
+
+    // ==========================
+    // 機体本体
+    // ==========================
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        centerX,
+        centerY - 70
+    );
+
+    ctx.lineTo(
+        centerX - 38,
+        centerY + 50
+    );
+
+    ctx.lineTo(
+        centerX,
+        centerY + 32
+    );
+
+    ctx.lineTo(
+        centerX + 38,
+        centerY + 50
+    );
+
+    ctx.closePath();
+
+
+    // スキンごとの色
+    if (skin.id === "nexus-01") {
+
+        ctx.fillStyle =
+            "#168cff";
+    }
+
+    else if (skin.id === "nexus-02") {
+
+        ctx.fillStyle =
+            "#20d9e8";
+    }
+
+    else if (skin.id === "nexus-03") {
+
+        ctx.fillStyle =
+            "#d88925";
+    }
+
+    else if (skin.id === "nexus-04") {
+
+        const gradient =
+            ctx.createLinearGradient(
+                centerX - 40,
+                0,
+                centerX + 40,
+                0
+            );
+
+        gradient.addColorStop(
+            0,
+            "#ff4fd8"
+        );
+
+        gradient.addColorStop(
+            0.5,
+            "#8a5cff"
+        );
+
+        gradient.addColorStop(
+            1,
+            "#38c8ff"
+        );
+
+        ctx.fillStyle =
+            gradient;
+    }
+
+    else if (skin.id === "nexus-05") {
+
+        ctx.fillStyle =
+            "#161020";
+    }
+
+    ctx.fill();
+
+    ctx.lineWidth = 2;
+
+    ctx.strokeStyle =
+        "rgba(255,255,255,0.7)";
+
+    ctx.stroke();
+
+
+    // ==========================
+    // コックピット
+    // ==========================
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        centerX,
+        centerY - 40
+    );
+
+    ctx.lineTo(
+        centerX - 13,
+        centerY + 8
+    );
+
+    ctx.lineTo(
+        centerX + 13,
+        centerY + 8
+    );
+
+    ctx.closePath();
+
+    ctx.fillStyle =
+        "#dff8ff";
+
+    ctx.shadowBlur = 12;
+    ctx.shadowColor = "#5eeaff";
+
+    ctx.fill();
+
+
+    // ==========================
+    // エンジン
+    // ==========================
+
+    ctx.shadowBlur = 15;
+    ctx.shadowColor = "#ff6b35";
+
+    ctx.fillStyle =
+        "#ff9d42";
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        centerX - 13,
+        centerY + 40
+    );
+
+    ctx.lineTo(
+        centerX - 5,
+        centerY + 70
+    );
+
+    ctx.lineTo(
+        centerX,
+        centerY + 48
+    );
+
+    ctx.lineTo(
+        centerX + 5,
+        centerY + 70
+    );
+
+    ctx.lineTo(
+        centerX + 13,
+        centerY + 40
+    );
+
+    ctx.closePath();
+
+    ctx.fill();
+
+    ctx.restore();
+}
+
+function selectPreviousSkin() {
+
+    selectedSkinIndex--;
+
+    if (selectedSkinIndex < 0) {
+        selectedSkinIndex =
+            skins.length - 1;
+    }
+
+    updateGarage();
+}
+
+
+function selectNextSkin() {
+
+    selectedSkinIndex++;
+
+    if (selectedSkinIndex >= skins.length) {
+        selectedSkinIndex = 0;
+    }
+
+    updateGarage();
+}
+function equipSelectedSkin() {
+
+    const skin =
+        skins[selectedSkinIndex];
+
+    if (!skin) return;
+
+    equippedSkin =
+        skin.id;
+
+    localStorage.setItem(
+        "nexus-equipped-skin",
+        equippedSkin
+    );
+
+    updateGarage();
+
+    if (skinStatus) {
+        skinStatus.textContent =
+            `装備中：${skin.name}`;
+    }
+}
+
+function openGarage() {
+
+    if (!garageScreen) return;
+
+    garageScreen.style.display =
+        "flex";
+
+    updateGarage();
+}
+
+
+function closeGarage() {
+
+    if (!garageScreen) return;
+
+    garageScreen.style.display =
+        "none";
+}
+
+if (garageButton) {
+
+    garageButton.addEventListener(
+        "click",
+        openGarage
+    );
+}
+
+
+if (garageCloseButton) {
+
+    garageCloseButton.addEventListener(
+        "click",
+        closeGarage
+    );
+}
+
+
+if (skinPrevButton) {
+
+    skinPrevButton.addEventListener(
+        "click",
+        selectPreviousSkin
+    );
+}
+
+
+if (skinNextButton) {
+
+    skinNextButton.addEventListener(
+        "click",
+        selectNextSkin
+    );
+}
+
+
+if (skinEquipButton) {
+
+    skinEquipButton.addEventListener(
+        "click",
+        equipSelectedSkin
+    );
+}
 /* ==================================================
    星
 ================================================== */
