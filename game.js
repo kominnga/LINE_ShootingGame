@@ -2761,6 +2761,8 @@ const beamWidth =
 
             if (boss.hp <= 0) {
                 defeatBoss();
+
+                return;
             }
         }
     }
@@ -4329,6 +4331,8 @@ function checkBossCollision() {
             ) {
 
                 defeatBoss();
+
+                break;
 
             }
 
