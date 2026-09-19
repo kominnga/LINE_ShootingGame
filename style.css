@@ -595,3 +595,10 @@ button {
 #ranking-close-button:active {
     transform: scale(0.97);
 }
+
+#itemControls button {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    -webkit-user-select: none;
+}

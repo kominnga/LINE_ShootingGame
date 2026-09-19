@@ -3480,6 +3480,9 @@ drawPlayer();
 }
 }
 
+
+
+
 const healButton =
     document.getElementById("healButton");
 
@@ -3487,21 +3490,72 @@ const beamButton =
     document.getElementById("beamButton");
 
 
-healButton.addEventListener(
-    "click",
-    () => {
-        useHealItem();
+/* ==================================================
+   アイテムボタン操作
+   PC・スマホ両対応
+================================================== */
+
+
+/* ---------- 回復 ---------- */
+
+function pressHealButton(e) {
+
+    e.preventDefault();
+
+    if (!gameRunning) {
+        return;
     }
-);
+
+    useHealItem();
+}
 
 
-beamButton.addEventListener(
-    "click",
-    () => {
-        useBeam();
+/* ---------- ビーム ---------- */
+
+function pressBeamButton(e) {
+
+    e.preventDefault();
+
+    if (!gameRunning) {
+        return;
     }
-);
 
+    useBeam();
+}
+
+
+/* ==================================================
+   スマホ・タッチ操作
+================================================== */
+
+if (healButton) {
+
+    healButton.addEventListener(
+        "pointerdown",
+        pressHealButton
+    );
+
+}
+
+
+if (beamButton) {
+
+    beamButton.addEventListener(
+        "pointerdown",
+        pressBeamButton
+    );
+
+}
+
+
+/* ==================================================
+   キーボード操作
+   1 = 回復
+   2 = ビーム
+
+   ※既存のkeydown側でも使えるので、
+   ここでは追加しない
+================================================== */
 
 /* ==================================================
    ボタン操作
