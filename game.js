@@ -102,7 +102,53 @@ const player = {
     engineTime: 0
 };
 
+/* ==================================================
+   LINE LIFF
+================================================== */
 
+const LIFF_ID = "2011666788-ny72UKwS";
+
+let lineProfile = null;
+
+async function initLIFF() {
+
+    try {
+
+        await liff.init({
+            liffId: LIFF_ID
+        });
+
+        console.log("LIFF初期化成功");
+
+        if (!liff.isLoggedIn()) {
+
+            console.log("LINEログインが必要です");
+
+            liff.login();
+
+            return;
+        }
+
+        lineProfile = await liff.getProfile();
+
+        console.log("LINEプロフィール取得成功");
+
+        console.log("名前:", lineProfile.displayName);
+
+        console.log("画像:", lineProfile.pictureUrl);
+
+        console.log("User ID:", lineProfile.userId);
+
+    } catch (error) {
+
+        console.error(
+            "LIFF初期化エラー:",
+            error
+        );
+
+    }
+
+}
 /* ==================================================
    オブジェクト
 ================================================== */
@@ -3259,3 +3305,5 @@ restartButton.addEventListener(
     "click",
     startGame
 );
+
+initLIFF();
