@@ -249,10 +249,77 @@ button {
 }
 
 #itemControls {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 105px;
+
     display: flex;
     justify-content: center;
+    align-items: center;
+
     gap: 12px;
-    margin-top: 10px;
+
+    z-index: 30;
+
+    pointer-events: auto;
+}
+
+#itemControls button {
+    width: 90px;
+    height: 55px;
+
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-radius: 12px;
+
+    background: rgba(20, 25, 45, 0.9);
+    color: white;
+
+    font-size: 22px;
+    font-weight: bold;
+
+    cursor: pointer;
+
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    -webkit-user-select: none;
+
+    pointer-events: auto;
+
+    transition:
+        transform 0.15s,
+        background 0.2s,
+        opacity 0.2s;
+}
+
+#itemControls button:hover {
+    transform: translateY(-2px);
+    background: rgba(40, 50, 80, 0.95);
+}
+
+#itemControls button:active {
+    transform: scale(0.94);
+}
+
+#itemControls button span {
+    display: block;
+    font-size: 11px;
+    margin-top: -2px;
+}
+
+/* 使用できないとき */
+#healButton.item-unavailable,
+#beamButton.item-unavailable {
+    opacity: 0.45;
+    filter: grayscale(0.4);
+}
+
+/* 使用可能 */
+#healButton:not(.item-unavailable),
+#beamButton:not(.item-unavailable) {
+    opacity: 1;
+    filter: none;
 }
 
 #itemControls button {

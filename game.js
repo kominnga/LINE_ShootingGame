@@ -3532,29 +3532,6 @@ function pressBeamButton(e) {
    スマホ・PC両対応
 ================================================== */
 
-function pressHealItem(e) {
-
-    e.preventDefault();
-
-    if (!gameRunning) {
-        return;
-    }
-
-    useHealItem();
-}
-
-
-function pressBeamItem(e) {
-
-    e.preventDefault();
-
-    if (!gameRunning) {
-        return;
-    }
-
-    useBeam();
-}
-
 
 /* ---------- 回復 ---------- */
 
@@ -3564,6 +3541,11 @@ function pressBeamItem(e) {
 
 
 
+/* ==================================================
+   アイテムボタン操作
+   スマホ・PC共通
+================================================== */
+
 function pressHealItem(e) {
 
     e.preventDefault();
@@ -3585,6 +3567,31 @@ function pressBeamItem(e) {
     }
 
     useBeam();
+}
+
+
+/* ==================================================
+   pointerdown
+   スマホ・タブレット・PC共通
+================================================== */
+
+if (healButton) {
+
+    healButton.addEventListener(
+        "pointerdown",
+        pressHealItem
+    );
+
+}
+
+
+if (beamButton) {
+
+    beamButton.addEventListener(
+        "pointerdown",
+        pressBeamItem
+    );
+
 }
 
 
@@ -3605,15 +3612,7 @@ if (beamButton) {
 
 /* ---------- PC ---------- */
 
-healButton.addEventListener(
-    "mousedown",
-    pressHealItem
-);
 
-beamButton.addEventListener(
-    "mousedown",
-    pressBeamItem
-);
 
 
 /* ==================================================
