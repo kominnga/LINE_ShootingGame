@@ -397,7 +397,101 @@ function endGame() {
 
     gameOverScreen.style.display = "flex";
 }
+/* ==================================================
+   LINE SHARE
+================================================== */
 
+async function shareScore() {
+
+    // LINEログインしていない場合
+    if (!lineProfile) {
+
+        alert("LINEプロフィールを取得できませんでした。");
+
+        return;
+    }
+
+
+    // シェアターゲットピッカーが使えるか確認
+    if (!liff.isApiAvailable("shareTargetPicker")) {
+
+        alert(
+            "この環境ではLINEシェアを利用できません。"
+        );
+
+        return;
+    }
+
+
+    // プレイヤー名
+    const playerName =
+        lineProfile.displayName || "LINEユーザー";
+
+
+    // シェアするLIFF URL
+    const gameUrl =
+        "https://liff.line.me/" + LIFF_ID;
+
+
+    // メッセージ
+    const shareText =
+`🚀 NEXUS SHOOTER
+
+${playerName} が
+${score} POINTSを獲得！
+
+LEVEL ${level} 到達！
+
+君はこの記録を超えられるか？
+
+🎮 NEXUS SHOOTER
+${gameUrl}`;
+
+
+    try {
+
+        const result =
+            await liff.shareTargetPicker(
+                [
+                    {
+                        type: "text",
+                        text: shareText
+                    }
+                ],
+                {
+                    isMultiple: false
+                }
+            );
+
+
+        if (result) {
+
+            console.log(
+                "LINEシェア成功:",
+                result
+            );
+
+        } else {
+
+            console.log(
+                "LINEシェアがキャンセルされました"
+            );
+
+        }
+
+    } catch (error) {
+
+        console.error(
+            "LINEシェアエラー:",
+            error
+        );
+
+        alert(
+            "LINEシェアに失敗しました。"
+        );
+
+    }
+}
 /* ==================================================
    HUD
 ================================================== */
@@ -3390,5 +3484,16 @@ restartButton.addEventListener(
     "click",
     startGame
 );
+const shareButton =
+    document.getElementById("share-button");
+
+if (shareButton) {
+
+    shareButton.addEventListener(
+        "click",
+        shareScore
+    );
+
+}
 
 initLIFF();

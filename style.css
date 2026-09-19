@@ -340,3 +340,43 @@ button {
     text-overflow: ellipsis;
     white-space: nowrap;
 }
+
+/* ==================================================
+   LINE SHARE BUTTON
+================================================== */
+
+#share-button {
+    margin-top: 12px;
+
+    width: 200px;
+    padding: 12px 20px;
+
+    border: none;
+    border-radius: 10px;
+
+    background: #06c755;
+    color: white;
+
+    font-size: 16px;
+    font-weight: bold;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 0 12px rgba(6, 199, 85, 0.35);
+
+    transition:
+        transform 0.15s ease,
+        box-shadow 0.15s ease;
+}
+
+#share-button:hover {
+    transform: scale(1.03);
+
+    box-shadow:
+        0 0 20px rgba(6, 199, 85, 0.55);
+}
+
+#share-button:active {
+    transform: scale(0.97);
+}
