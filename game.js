@@ -403,37 +403,58 @@ function endGame() {
 
 async function shareScore() {
 
-    // LINEログインしていない場合
-    if (!lineProfile) {
+    console.log("===== LINE SHARE CHECK =====");
 
-        alert("LINEプロフィールを取得できませんでした。");
+    console.log(
+        "LIFFブラウザ:",
+        liff.isInClient()
+    );
 
-        return;
-    }
+    console.log(
+        "ShareTargetPicker:",
+        liff.isApiAvailable("shareTargetPicker")
+    );
+
+    console.log(
+        "ログイン:",
+        liff.isLoggedIn()
+    );
+
+    console.log(
+        "LIFF ID:",
+        LIFF_ID
+    );
 
 
-    // シェアターゲットピッカーが使えるか確認
+    // シェア機能が使えない場合
     if (!liff.isApiAvailable("shareTargetPicker")) {
 
-        alert(
-            "この環境ではLINEシェアを利用できません。"
-        );
+        if (!liff.isInClient()) {
+
+            alert(
+                "LINEのLIFFブラウザでゲームを開いてください。"
+            );
+
+        } else {
+
+            alert(
+                "現在のLINE環境ではLINEシェアを利用できません。"
+            );
+
+        }
 
         return;
     }
 
 
-    // プレイヤー名
     const playerName =
-        lineProfile.displayName || "LINEユーザー";
+        lineProfile?.displayName || "LINEユーザー";
 
 
-    // シェアするLIFF URL
     const gameUrl =
         "https://liff.line.me/" + LIFF_ID;
 
 
-    // メッセージ
     const shareText =
 `🚀 NEXUS SHOOTER
 
@@ -467,14 +488,14 @@ ${gameUrl}`;
         if (result) {
 
             console.log(
-                "LINEシェア成功:",
+                "LINEシェア成功",
                 result
             );
 
         } else {
 
             console.log(
-                "LINEシェアがキャンセルされました"
+                "LINEシェアキャンセル"
             );
 
         }
@@ -487,9 +508,8 @@ ${gameUrl}`;
         );
 
         alert(
-            "LINEシェアに失敗しました。"
+            "LINEシェア中にエラーが発生しました。"
         );
-
     }
 }
 /* ==================================================
