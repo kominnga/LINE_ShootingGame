@@ -32,6 +32,26 @@ let gameRunning = false;
 let score = 0;
 let hp = 3;
 
+// ========================================
+// スキン能力
+// ========================================
+
+// 現在のスキンの最大HP
+function getMaxHP() {
+
+    const currentSkin =
+        localStorage.getItem("nexus-equipped-skin")
+        || "nexus-01";
+
+    // NEXUS-05 → MAX HP +2
+    if (currentSkin === "nexus-05") {
+        return 5;
+    }
+
+    // 通常
+    return 3;
+}
+
 let level = 1;
 
 let boss = null;
@@ -1234,11 +1254,12 @@ ${gameUrl}`;
 /* ==================================================
    HUD
 ================================================== */
-
 function updateHUD() {
 
+    const maxHP = getMaxHP();
+
     scoreText.textContent = score;
-    hpText.textContent = hp;
+    hpText.textContent = `${hp} / ${maxHP}`;
 
 }
 
@@ -1256,11 +1277,18 @@ function addScore(value) {
 }
 
 function useHealItem() {
+
+    const maxHP = getMaxHP();
+
     // HP満タンなら使えない
-    if (hp >= 3) return;
+    if (hp >= maxHP) {
+        return;
+    }
 
     // まだチャージ中なら使えない
-    if (healCooldown > 0) return;
+    if (healCooldown > 0) {
+        return;
+    }
 
     // HPを1回復
     hp++;
@@ -2515,7 +2543,15 @@ function checkBeamCollision() {
     if (!beamActive) return;
 
     const beamX = player.x;
-    const beamWidth = 90;
+
+    const currentSkin =
+    localStorage.getItem("nexus-equipped-skin")
+    || "nexus-01";
+
+const beamWidth =
+    currentSkin === "nexus-04"
+        ? 150
+        : 90;
 
     // ==============================
     // 通常の敵
@@ -2570,6 +2606,8 @@ function checkBeamCollision() {
         }
     }
 }
+
+
 
 
 function drawBoss() {
@@ -4043,27 +4081,33 @@ function updateItemButtons() {
     // ♡ 回復
     // ==============================
 
-    if (hp >= 3) {
+    // ==============================
+// ♡ 回復
+// ==============================
 
-        healButton.classList.add("item-unavailable");
+const maxHP = getMaxHP();
 
-        healButton.innerHTML =
-            "♡<span>HP MAX</span>";
+if (hp >= maxHP) {
 
-    } else if (healCooldown > 0) {
+    healButton.classList.add("item-unavailable");
 
-        healButton.classList.add("item-unavailable");
+    healButton.innerHTML =
+        "♡<span>HP MAX</span>";
 
-        healButton.innerHTML =
-            `♡<span>あと ${Math.ceil(healCooldown)}秒</span>`;
+} else if (healCooldown > 0) {
 
-    } else {
+    healButton.classList.add("item-unavailable");
 
-        healButton.classList.remove("item-unavailable");
+    healButton.innerHTML =
+        `♡<span>あと ${Math.ceil(healCooldown)}秒</span>`;
 
-        healButton.innerHTML =
-            "♡<span>回復可能！</span>";
-    }
+} else {
+
+    healButton.classList.remove("item-unavailable");
+
+    healButton.innerHTML =
+        "♡<span>回復可能！</span>";
+}
 
 
     // ==============================
