@@ -3516,4 +3516,174 @@ if (shareButton) {
 
 }
 
+/* ==================================================
+   RANKING UI
+================================================== */
+
+const rankingScreen =
+    document.getElementById("ranking-screen");
+
+const rankingList =
+    document.getElementById("ranking-list");
+
+const rankingButton =
+    document.getElementById("ranking-button");
+
+const rankingButtonGameOver =
+    document.getElementById("ranking-button-gameover");
+
+const rankingCloseButton =
+    document.getElementById("ranking-close-button");
+
+
+/* ==================================================
+   ランキング画面を開く
+================================================== */
+
+function openRanking() {
+
+    if (!rankingScreen) return;
+
+    rankingScreen.style.display = "flex";
+
+    loadRanking();
+
+}
+
+
+/* ==================================================
+   ランキング画面を閉じる
+================================================== */
+
+function closeRanking() {
+
+    if (!rankingScreen) return;
+
+    rankingScreen.style.display = "none";
+
+}
+
+
+/* ==================================================
+   仮ランキング
+   ※後でCloudflare Workerに置き換える
+================================================== */
+
+async function loadRanking() {
+
+    if (!rankingList) return;
+
+
+    rankingList.innerHTML = `
+        <div class="ranking-loading">
+            RANKING LOADING...
+        </div>
+    `;
+
+
+    // 今はテスト用データ
+    const rankingData = [
+
+        {
+            rank: 1,
+            name: "NEXUS PLAYER",
+            score: 52800
+        },
+
+        {
+            rank: 2,
+            name: "SHOOTER",
+            score: 41200
+        },
+
+        {
+            rank: 3,
+            name: "ACE",
+            score: 38500
+        },
+
+        {
+            rank: 4,
+            name: "PLAYER",
+            score: 25100
+        },
+
+        {
+            rank: 5,
+            name: "GAMER",
+            score: 11900
+        }
+
+    ];
+
+
+    rankingList.innerHTML = "";
+
+
+    rankingData.forEach(player => {
+
+        const item =
+            document.createElement("div");
+
+        item.className =
+            "ranking-item";
+
+
+        item.innerHTML = `
+
+            <div class="ranking-number">
+                ${player.rank}
+            </div>
+
+            <div class="ranking-name">
+                ${player.name}
+            </div>
+
+            <div class="ranking-score">
+                ${player.score.toLocaleString()}
+            </div>
+
+        `;
+
+
+        rankingList.appendChild(item);
+
+    });
+
+}
+
+
+/* ==================================================
+   ボタン
+================================================== */
+
+if (rankingButton) {
+
+    rankingButton.addEventListener(
+        "click",
+        openRanking
+    );
+
+}
+
+
+if (rankingButtonGameOver) {
+
+    rankingButtonGameOver.addEventListener(
+        "click",
+        openRanking
+    );
+
+}
+
+
+if (rankingCloseButton) {
+
+    rankingCloseButton.addEventListener(
+        "click",
+        closeRanking
+    );
+
+}
+
 initLIFF();

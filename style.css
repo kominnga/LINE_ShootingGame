@@ -380,3 +380,218 @@ button {
 #share-button:active {
     transform: scale(0.97);
 }
+
+/* ==================================================
+   RANKING
+================================================== */
+
+#ranking-screen {
+    position: absolute;
+    inset: 0;
+
+    display: none;
+
+    align-items: center;
+    justify-content: center;
+
+    background: rgba(0, 0, 20, 0.92);
+
+    z-index: 1000;
+}
+
+#ranking-panel {
+    width: min(90%, 420px);
+    max-height: 85%;
+
+    padding: 25px 20px;
+
+    box-sizing: border-box;
+
+    border-radius: 18px;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(15, 30, 55, 0.98),
+            rgba(5, 12, 25, 0.98)
+        );
+
+    border: 1px solid rgba(0, 220, 255, 0.35);
+
+    box-shadow:
+        0 0 30px rgba(0, 220, 255, 0.15);
+
+    text-align: center;
+
+    overflow: hidden;
+}
+
+#ranking-panel h1 {
+    margin: 0 0 20px;
+
+    color: white;
+
+    font-size: 28px;
+
+    letter-spacing: 2px;
+}
+
+#ranking-list {
+    width: 100%;
+    max-height: 55vh;
+
+    overflow-y: auto;
+
+    text-align: left;
+}
+
+/* ランキング1行 */
+
+.ranking-item {
+    display: flex;
+    align-items: center;
+
+    width: 100%;
+
+    min-height: 55px;
+
+    margin-bottom: 8px;
+
+    padding: 8px 10px;
+
+    box-sizing: border-box;
+
+    border-radius: 10px;
+
+    background: rgba(255, 255, 255, 0.05);
+
+    border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.ranking-number {
+    width: 38px;
+
+    font-size: 18px;
+    font-weight: bold;
+
+    color: white;
+
+    text-align: center;
+}
+
+.ranking-icon {
+    width: 40px;
+    height: 40px;
+
+    margin: 0 10px;
+
+    border-radius: 50%;
+
+    object-fit: cover;
+}
+
+.ranking-name {
+    flex: 1;
+
+    color: white;
+
+    font-size: 15px;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+}
+
+.ranking-score {
+    margin-left: 8px;
+
+    color: #ffffff;
+
+    font-size: 15px;
+
+    font-weight: bold;
+}
+
+/* 自分のランキング */
+
+.ranking-me {
+    border: 1px solid rgba(0, 220, 255, 0.6);
+
+    background: rgba(0, 220, 255, 0.10);
+
+    box-shadow:
+        0 0 12px rgba(0, 220, 255, 0.12);
+}
+
+/* 読み込み */
+
+.ranking-loading {
+    padding: 30px 10px;
+
+    color: rgba(255, 255, 255, 0.65);
+
+    text-align: center;
+}
+
+/* 閉じる */
+
+#ranking-close-button {
+    width: 180px;
+
+    margin-top: 20px;
+
+    padding: 12px;
+
+    border: none;
+
+    border-radius: 10px;
+
+    background: rgba(255, 255, 255, 0.12);
+
+    color: white;
+
+    font-size: 16px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+}
+
+/* START画面のランキングボタン */
+
+#ranking-button,
+#ranking-button-gameover {
+    width: 200px;
+
+    margin-top: 12px;
+
+    padding: 12px 20px;
+
+    border: none;
+
+    border-radius: 10px;
+
+    background: rgba(255, 255, 255, 0.10);
+
+    color: white;
+
+    font-size: 16px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+}
+
+#ranking-button:hover,
+#ranking-button-gameover:hover,
+#ranking-close-button:hover {
+    background: rgba(255, 255, 255, 0.18);
+}
+
+#ranking-button:active,
+#ranking-button-gameover:active,
+#ranking-close-button:active {
+    transform: scale(0.97);
+}
