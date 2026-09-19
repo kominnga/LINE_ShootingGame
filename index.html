@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <title>LINE Shooting</title>
+
+    <link rel="stylesheet" href="style.css">
+    <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+</head>
+
+<body>
+
+    <div id="game-container">
+
+        <canvas id="gameCanvas"></canvas>
+
+        <div id="hud">
+            <div>SCORE <span id="score">0</span></div>
+            <div>HP <span id="hp">3</span></div>
+        </div>
+
+        <div id="start-screen">
+            <h1>LINE SHOOTING</h1>
+            <p>敵を撃ち落とせ！</p>
+            <button id="start-button">START</button>
+        </div>
+
+        <div id="game-over-screen">
+            <h1>GAME OVER</h1>
+
+            <p>SCORE</p>
+            <div id="final-score">0</div>
+
+            <button id="restart-button">RESTART</button>
+        </div>
+
+        <div id="controls">
+            <button id="left-button">◀</button>
+
+            <button id="fire-button">🔥</button>
+
+            <button id="right-button">▶</button>
+        </div>
+
+        <div id="itemControls">
+
+    <button id="healButton">
+        ♡
+        <span>回復</span>
+    </button>
+
+    <button id="beamButton">
+        🌈
+        <span>BEAM</span>
+    </button>
+
+</div>
+
+    </div>
+
+    <script src="game.js"></script>
+
+</body>
+</html>

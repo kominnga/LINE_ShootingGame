@@ -1,0 +1,292 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html,
+body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #050816;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#game-container {
+    position: relative;
+
+    width: min(100vw, 500px);
+    height: 100vh;
+
+    max-height: 900px;
+
+    overflow: hidden;
+
+    background:
+        radial-gradient(
+            circle at 50% 30%,
+            #16245c 0%,
+            #080d24 45%,
+            #02030b 100%
+        );
+}
+
+#gameCanvas {
+    position: absolute;
+
+    left: 0;
+    top: 0;
+
+    width: 100%;
+    height: 100%;
+}
+
+#hud {
+    position: absolute;
+
+    top: 15px;
+    left: 15px;
+    right: 15px;
+
+    display: flex;
+    justify-content: space-between;
+
+    color: white;
+
+    font-size: 18px;
+    font-weight: bold;
+
+    pointer-events: none;
+
+    z-index: 10;
+
+    text-shadow:
+        0 0 5px #000,
+        0 0 10px #000;
+}
+
+#hud span {
+    color: #59e7ff;
+}
+
+#start-screen,
+#game-over-screen {
+    position: absolute;
+
+    inset: 0;
+
+    display: flex;
+    flex-direction: column;
+
+    justify-content: center;
+    align-items: center;
+
+    background: rgba(2, 4, 15, 0.78);
+
+    color: white;
+
+    z-index: 20;
+
+    text-align: center;
+}
+
+#start-screen h1,
+#game-over-screen h1 {
+    font-size: 38px;
+
+    letter-spacing: 3px;
+
+    margin-bottom: 12px;
+
+    text-shadow:
+        0 0 10px #36d9ff,
+        0 0 30px #1677ff;
+}
+
+#start-screen p {
+    margin-bottom: 30px;
+
+    color: #aeb8d8;
+
+    font-size: 16px;
+}
+
+button {
+    border: none;
+
+    cursor: pointer;
+
+    -webkit-tap-highlight-color: transparent;
+
+    user-select: none;
+}
+
+#start-button,
+#restart-button {
+    padding: 14px 45px;
+
+    border-radius: 10px;
+
+    background: #1599ff;
+
+    color: white;
+
+    font-size: 18px;
+    font-weight: bold;
+
+    box-shadow:
+        0 0 10px #1599ff,
+        0 0 25px rgba(21, 153, 255, 0.5);
+}
+
+#start-button:active,
+#restart-button:active {
+    transform: scale(0.95);
+}
+
+#game-over-screen {
+    display: none;
+}
+
+#game-over-screen p {
+    margin-top: 5px;
+
+    color: #aeb8d8;
+}
+
+#final-score {
+    margin: 5px 0 25px;
+
+    font-size: 48px;
+
+    font-weight: bold;
+
+    color: #59e7ff;
+
+    text-shadow:
+        0 0 10px #59e7ff,
+        0 0 25px #1599ff;
+}
+
+#controls {
+    position: absolute;
+
+    left: 0;
+    right: 0;
+    bottom: 18px;
+
+    display: flex;
+
+    justify-content: center;
+    align-items: center;
+
+    gap: 25px;
+
+    z-index: 15;
+}
+
+#controls button {
+    width: 70px;
+    height: 60px;
+
+    border-radius: 15px;
+
+    background: rgba(30, 45, 90, 0.75);
+
+    border: 1px solid rgba(100, 210, 255, 0.4);
+
+    color: white;
+
+    font-size: 25px;
+
+    box-shadow:
+        0 0 10px rgba(50, 180, 255, 0.2);
+
+    backdrop-filter: blur(5px);
+}
+
+#controls button:active {
+    transform: scale(0.9);
+
+    background: rgba(60, 100, 180, 0.9);
+}
+
+#fire-button {
+    width: 85px !important;
+    height: 70px !important;
+
+    font-size: 30px !important;
+}
+
+@media (max-width: 400px) {
+
+    #controls {
+        bottom: 12px;
+        gap: 15px;
+    }
+
+    #controls button {
+        width: 60px;
+        height: 55px;
+    }
+
+    #fire-button {
+        width: 75px !important;
+        height: 65px !important;
+    }
+
+    #start-screen h1,
+    #game-over-screen h1 {
+        font-size: 30px;
+    }
+}
+
+#itemControls {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 10px;
+}
+
+#itemControls button {
+    width: 90px;
+    height: 55px;
+
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-radius: 12px;
+
+    background: rgba(20, 25, 45, 0.9);
+    color: white;
+
+    font-size: 22px;
+    font-weight: bold;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.15s,
+        background 0.2s,
+        opacity 0.2s;
+}
+
+#itemControls button:hover {
+    transform: translateY(-2px);
+    background: rgba(40, 50, 80, 0.95);
+}
+
+#itemControls button:active {
+    transform: scale(0.94);
+}
+
+#itemControls button span {
+    display: block;
+    font-size: 11px;
+    margin-top: -2px;
+}
