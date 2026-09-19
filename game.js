@@ -330,12 +330,73 @@ function endGame() {
 
     gameRunning = false;
 
+    // ==========================================
+    // スコア表示
+    // ==========================================
+
     finalScore.textContent = score;
 
+
+    // ==========================================
+    // LINEプロフィール表示
+    // ==========================================
+
+    const profileImage =
+        document.getElementById("line-profile-image");
+
+    const profileName =
+        document.getElementById("line-profile-name");
+
+
+    // LINEプロフィールを取得できている場合
+    if (lineProfile) {
+
+        // LINE表示名
+        if (profileName) {
+
+            profileName.textContent =
+                lineProfile.displayName || "LINEユーザー";
+
+        }
+
+
+        // LINEプロフィール画像
+        if (profileImage && lineProfile.pictureUrl) {
+
+            profileImage.src =
+                lineProfile.pictureUrl;
+
+            profileImage.style.display =
+                "block";
+
+        }
+
+    } else {
+
+        // プロフィールを取得できなかった場合
+        if (profileName) {
+
+            profileName.textContent =
+                "ゲスト";
+
+        }
+
+        if (profileImage) {
+
+            profileImage.style.display =
+                "none";
+
+        }
+
+    }
+
+
+    // ==========================================
+    // GAME OVER画面表示
+    // ==========================================
+
     gameOverScreen.style.display = "flex";
-
 }
-
 
 /* ==================================================
    HUD
