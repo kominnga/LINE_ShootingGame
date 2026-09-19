@@ -988,3 +988,88 @@ button {
 #garage-button:active {
     transform: scale(0.96);
 }
+
+/* ========================================
+   機体紹介
+======================================== */
+
+#skin-type {
+    margin-top: 7px;
+    color: #59e7ff;
+    font-size: 12px;
+    font-weight: bold;
+    letter-spacing: 1.5px;
+}
+
+#skin-description {
+    width: 250px;
+    min-height: 38px;
+
+    margin-top: 7px;
+
+    color: rgba(255, 255, 255, 0.72);
+
+    font-size: 12px;
+    line-height: 1.55;
+
+    white-space: pre-line;
+}
+
+#skin-ability {
+    width: 250px;
+
+    margin-top: 7px;
+    padding: 7px 10px;
+
+    box-sizing: border-box;
+
+    border-radius: 8px;
+
+    background: rgba(0, 200, 255, 0.08);
+    border: 1px solid rgba(0, 220, 255, 0.18);
+
+    color: white;
+
+    font-size: 12px;
+    font-weight: bold;
+}
+
+
+/* ========================================
+   スタートへ戻るボタン
+======================================== */
+
+#return-start-button {
+    margin-top: 10px;
+
+    width: 200px;
+    padding: 12px 20px;
+
+    border: 1px solid rgba(120, 180, 255, 0.35);
+    border-radius: 10px;
+
+    background: rgba(20, 35, 70, 0.9);
+
+    color: white;
+
+    font-size: 16px;
+    font-weight: bold;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 0 12px rgba(60, 140, 255, 0.12);
+
+    transition:
+        transform 0.15s ease,
+        background 0.2s ease;
+}
+
+#return-start-button:hover {
+    transform: translateY(-2px);
+    background: rgba(40, 65, 110, 0.95);
+}
+
+#return-start-button:active {
+    transform: scale(0.97);
+}

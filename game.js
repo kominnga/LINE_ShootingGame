@@ -9,6 +9,7 @@ const gameOverScreen = document.getElementById("game-over-screen");
 
 const startButton = document.getElementById("start-button");
 const restartButton = document.getElementById("restart-button");
+const returnStartButton =document.getElementById("return-start-button");
 
 const finalScore = document.getElementById("final-score");
 
@@ -157,6 +158,15 @@ const skinName =
 const skinNumber =
     document.getElementById("skin-number");
 
+    const skinType =
+    document.getElementById("skin-type");
+
+const skinDescription =
+    document.getElementById("skin-description");
+
+const skinAbility =
+    document.getElementById("skin-ability");
+
 const skinStatus =
     document.getElementById("skin-status");
 
@@ -283,6 +293,79 @@ function updateGarage() {
     const skin =
         skins[selectedSkinIndex];
 
+
+const skinInfo = {
+
+    "nexus-01": {
+        type: "STANDARD TYPE",
+
+        description:
+            "バランスに優れた標準型機体。\nあらゆる状況に対応できる基本機。",
+
+        ability:
+            "ABILITY：標準性能"
+    },
+
+    "nexus-02": {
+        type: "SPEED TYPE",
+
+        description:
+            "軽量化された高速機。\n高い機動力で敵の攻撃をかわす。",
+
+        ability:
+            "ABILITY：移動速度 +35%"
+    },
+
+    "nexus-03": {
+        type: "ATTACK TYPE",
+
+        description:
+            "攻撃性能に特化した戦闘機。\n通常機より高速で弾を発射できる。",
+
+        ability:
+            "ABILITY：連射速度 +15%"
+    },
+
+    "nexus-04": {
+        type: "BEAM TYPE",
+
+        description:
+            "特殊ビーム兵器を搭載した機体。\n広範囲を薙ぎ払う強力なビームを放つ。",
+
+        ability:
+            "ABILITY：ビーム幅 90 → 150"
+    },
+
+    "nexus-05": {
+        type: "HEAVY TYPE",
+
+        description:
+            "重装甲を採用した高耐久機。\n圧倒的な耐久力で戦線に居座る。",
+
+        ability:
+            "ABILITY：MAX HP 3 → 5"
+    }
+};
+
+const info = skinInfo[skin.id];
+
+if (info) {
+
+    if (skinType) {
+        skinType.textContent =
+            info.type;
+    }
+
+    if (skinDescription) {
+        skinDescription.textContent =
+            info.description;
+    }
+
+    if (skinAbility) {
+        skinAbility.textContent =
+            info.ability;
+    }
+}        
     if (!skin) return;
 
     if (skinName) {
@@ -1311,7 +1394,7 @@ function getFireInterval() {
 
     // NEXUS-03 ATTACK TYPE
     if (skin === "nexus-03") {
-        return 0.085;
+        return 0.11;
     }
 
     return 0.13;
@@ -5039,6 +5122,15 @@ restartButton.addEventListener(
     "click",
     startGame
 );
+
+if (returnStartButton) {
+
+    returnStartButton.addEventListener(
+        "click",
+        returnToStartScreen
+    );
+
+}
 const shareButton =
     document.getElementById("share-button");
 
@@ -5412,6 +5504,80 @@ function escapeRankingAttribute(text) {
         .replace(/>/g, "&gt;");
 }
 
+/* ========================================
+   GAME OVER → START
+======================================== */
+
+function returnToStartScreen() {
+
+    // ゲーム停止
+    gameRunning = false;
+
+    // 敵・弾・エフェクトを消去
+    bullets = [];
+    enemies = [];
+    particles = [];
+    explosions = [];
+    enemyBullets = [];
+
+    // ボスを消去
+    boss = null;
+    bossActive = false;
+
+    // ボス関連
+    bossWarningTimer = 0;
+    bossAttackTimer = 0;
+    levelClearTimer = 0;
+
+    // レベル関連
+    levelTransitionText = "";
+    bossSpawnScore = 3000;
+    enemyKillCount = 0;
+
+    // ビーム停止
+    beamActive = false;
+    beamTimer = 0;
+
+    // アイテムチャージを初期化
+    healCooldown = healCooldownMax;
+    beamCooldown = beamCooldownMax;
+
+    // 操作を解除
+    player.movingLeft = false;
+    player.movingRight = false;
+
+    fireButtonHeld = false;
+
+    player.fireCooldown = 0;
+
+    // エフェクト解除
+    screenShake = 0;
+    hitFlash = 0;
+
+    // スコア初期化
+    score = 0;
+
+    // 装備中機体に合わせてHP設定
+    hp = getMaxHP();
+
+    updateHUD();
+    updateItemButtons();
+
+    // GAME OVERを閉じる
+    gameOverScreen.style.display = "none";
+
+    // START画面を表示
+    startScreen.style.display = "flex";
+
+    // 他の画面も閉じる
+    if (rankingScreen) {
+        rankingScreen.style.display = "none";
+    }
+
+    if (garageScreen) {
+        garageScreen.style.display = "none";
+    }
+}
 
 /* ==================================================
    ボタン
