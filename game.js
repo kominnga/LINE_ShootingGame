@@ -106,9 +106,18 @@ const player = {
    LINE LIFF
 ================================================== */
 
+/* ==================================================
+   LINE LIFF
+================================================== */
+
 const LIFF_ID = "2011666788-ny72UKwS";
 
 let lineProfile = null;
+
+
+/* ==================================================
+   LIFF初期化
+================================================== */
 
 async function initLIFF() {
 
@@ -120,6 +129,8 @@ async function initLIFF() {
 
         console.log("LIFF初期化成功");
 
+
+        // LINEにログインしていない場合
         if (!liff.isLoggedIn()) {
 
             console.log("LINEログインが必要です");
@@ -129,15 +140,28 @@ async function initLIFF() {
             return;
         }
 
+
+        // LINEプロフィール取得
         lineProfile = await liff.getProfile();
+
 
         console.log("LINEプロフィール取得成功");
 
-        console.log("名前:", lineProfile.displayName);
+        console.log(
+            "名前:",
+            lineProfile.displayName
+        );
 
-        console.log("画像:", lineProfile.pictureUrl);
+        console.log(
+            "画像:",
+            lineProfile.pictureUrl
+        );
 
-        console.log("User ID:", lineProfile.userId);
+        console.log(
+            "User ID:",
+            lineProfile.userId
+        );
+
 
     } catch (error) {
 
