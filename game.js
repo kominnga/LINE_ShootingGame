@@ -3528,24 +3528,76 @@ function pressBeamButton(e) {
    スマホ・タッチ操作
 ================================================== */
 
-if (healButton) {
+/* ==================================================
+   アイテムボタン
+   スマホ・PC両対応
+================================================== */
 
-    healButton.addEventListener(
-        "pointerdown",
-        pressHealButton
-    );
+function pressHealItem(e) {
 
+    e.preventDefault();
+
+    if (!gameRunning) {
+        return;
+    }
+
+    useHealItem();
 }
 
 
-if (beamButton) {
+function pressBeamItem(e) {
 
-    beamButton.addEventListener(
-        "pointerdown",
-        pressBeamButton
-    );
+    e.preventDefault();
 
+    if (!gameRunning) {
+        return;
+    }
+
+    useBeam();
 }
+
+
+/* ---------- 回復 ---------- */
+
+healButton.addEventListener(
+    "touchstart",
+    pressHealItem,
+    { passive: false }
+);
+
+healButton.addEventListener(
+    "touchend",
+    pressHealItem,
+    { passive: false }
+);
+
+
+/* ---------- ビーム ---------- */
+
+beamButton.addEventListener(
+    "touchstart",
+    pressBeamItem,
+    { passive: false }
+);
+
+beamButton.addEventListener(
+    "touchend",
+    pressBeamItem,
+    { passive: false }
+);
+
+
+/* ---------- PC ---------- */
+
+healButton.addEventListener(
+    "mousedown",
+    pressHealItem
+);
+
+beamButton.addEventListener(
+    "mousedown",
+    pressBeamItem
+);
 
 
 /* ==================================================
