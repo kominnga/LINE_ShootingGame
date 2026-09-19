@@ -1617,6 +1617,11 @@ function createExplosion(
    プレイヤー描画
 ================================================== */
 
+/* ==================================================
+   プレイヤー描画
+   SKIN対応
+================================================== */
+
 function drawPlayer() {
 
     player.engineTime += 0.15;
@@ -1624,6 +1629,14 @@ function drawPlayer() {
     const flameSize =
         28 +
         Math.sin(player.engineTime) * 7;
+
+    /*
+        GARAGEで装備したスキンを取得
+    */
+    const currentSkin =
+        localStorage.getItem("nexus-equipped-skin")
+        || "nexus-01";
+
 
     ctx.save();
 
@@ -1633,9 +1646,9 @@ function drawPlayer() {
     );
 
 
-    /* ===============================
+    /* ==================================================
        エンジン炎
-    =============================== */
+    ================================================== */
 
     ctx.beginPath();
 
@@ -1650,9 +1663,32 @@ function drawPlayer() {
 
     ctx.closePath();
 
-    ctx.fillStyle = "#ff7b00";
+    let flameColor = "#ff7b00";
+    let flameShadow = "#ff4500";
 
-    ctx.shadowColor = "#ff4500";
+    if (currentSkin === "nexus-02") {
+        flameColor = "#39eaff";
+        flameShadow = "#00cfff";
+    }
+
+    else if (currentSkin === "nexus-03") {
+        flameColor = "#ff9d32";
+        flameShadow = "#ff5a00";
+    }
+
+    else if (currentSkin === "nexus-04") {
+        flameColor = "#d95cff";
+        flameShadow = "#7b4dff";
+    }
+
+    else if (currentSkin === "nexus-05") {
+        flameColor = "#8b4dff";
+        flameShadow = "#4c16a8";
+    }
+
+    ctx.fillStyle = flameColor;
+
+    ctx.shadowColor = flameShadow;
     ctx.shadowBlur = 25;
 
     ctx.fill();
@@ -1681,106 +1717,433 @@ function drawPlayer() {
     ctx.fill();
 
 
-    /* ===============================
-       本体
-    =============================== */
+    /* ==================================================
+       NEXUS-01
+       標準型
+    ================================================== */
 
-    ctx.beginPath();
+    if (currentSkin === "nexus-01") {
 
-    ctx.moveTo(
-        0,
-        -32
-    );
+        /* 本体 */
 
-    ctx.lineTo(
-        -22,
-        24
-    );
+        ctx.beginPath();
 
-    ctx.lineTo(
-        -4,
-        16
-    );
+        ctx.moveTo(0, -32);
 
-    ctx.lineTo(
-        0,
-        22
-    );
+        ctx.lineTo(-22, 24);
 
-    ctx.lineTo(
-        4,
-        16
-    );
+        ctx.lineTo(-4, 16);
 
-    ctx.lineTo(
-        22,
-        24
-    );
+        ctx.lineTo(0, 22);
 
-    ctx.closePath();
+        ctx.lineTo(4, 16);
 
-    ctx.fillStyle = "#27dfff";
+        ctx.lineTo(22, 24);
 
-    ctx.shadowColor = "#00cfff";
-    ctx.shadowBlur = 20;
+        ctx.closePath();
 
-    ctx.fill();
+        ctx.fillStyle = "#27dfff";
+
+        ctx.shadowColor = "#00cfff";
+        ctx.shadowBlur = 20;
+
+        ctx.fill();
 
 
-    /* ===============================
-       翼
-    =============================== */
+        /* 左翼 */
 
-    ctx.beginPath();
+        ctx.beginPath();
 
-    ctx.moveTo(-12, 4);
+        ctx.moveTo(-12, 4);
 
-    ctx.lineTo(-30, 19);
+        ctx.lineTo(-30, 19);
 
-    ctx.lineTo(-17, 18);
+        ctx.lineTo(-17, 18);
 
-    ctx.closePath();
+        ctx.closePath();
 
-    ctx.fillStyle = "#148dcc";
+        ctx.fillStyle = "#148dcc";
 
-    ctx.fill();
+        ctx.fill();
 
 
-    ctx.beginPath();
+        /* 右翼 */
 
-    ctx.moveTo(12, 4);
+        ctx.beginPath();
 
-    ctx.lineTo(30, 19);
+        ctx.moveTo(12, 4);
 
-    ctx.lineTo(17, 18);
+        ctx.lineTo(30, 19);
 
-    ctx.closePath();
+        ctx.lineTo(17, 18);
 
-    ctx.fillStyle = "#148dcc";
+        ctx.closePath();
 
-    ctx.fill();
+        ctx.fillStyle = "#148dcc";
+
+        ctx.fill();
 
 
-    /* ===============================
-       コックピット
-    =============================== */
+        /* コックピット */
 
-    ctx.beginPath();
+        ctx.beginPath();
 
-    ctx.arc(
-        0,
-        -8,
-        7,
-        0,
-        Math.PI * 2
-    );
+        ctx.arc(
+            0,
+            -8,
+            7,
+            0,
+            Math.PI * 2
+        );
 
-    ctx.fillStyle = "#ffffff";
+        ctx.fillStyle = "#ffffff";
 
-    ctx.shadowColor = "#ffffff";
-    ctx.shadowBlur = 15;
+        ctx.shadowColor = "#ffffff";
+        ctx.shadowBlur = 15;
 
-    ctx.fill();
+        ctx.fill();
+    }
+
+
+    /* ==================================================
+       NEXUS-02
+       高速型
+    ================================================== */
+
+    else if (currentSkin === "nexus-02") {
+
+        ctx.beginPath();
+
+        ctx.moveTo(0, -38);
+
+        ctx.lineTo(-14, 25);
+
+        ctx.lineTo(-5, 18);
+
+        ctx.lineTo(0, 25);
+
+        ctx.lineTo(5, 18);
+
+        ctx.lineTo(14, 25);
+
+        ctx.closePath();
+
+        ctx.fillStyle = "#20d9e8";
+
+        ctx.shadowColor = "#00ffff";
+        ctx.shadowBlur = 25;
+
+        ctx.fill();
+
+
+        /* 細い翼 */
+
+        ctx.beginPath();
+
+        ctx.moveTo(-7, 2);
+
+        ctx.lineTo(-28, 20);
+
+        ctx.lineTo(-12, 16);
+
+        ctx.closePath();
+
+        ctx.fillStyle = "#0da4c0";
+
+        ctx.fill();
+
+
+        ctx.beginPath();
+
+        ctx.moveTo(7, 2);
+
+        ctx.lineTo(28, 20);
+
+        ctx.lineTo(12, 16);
+
+        ctx.closePath();
+
+        ctx.fill();
+
+
+        /* 高速型コア */
+
+        ctx.beginPath();
+
+        ctx.arc(
+            0,
+            -12,
+            6,
+            0,
+            Math.PI * 2
+        );
+
+        ctx.fillStyle = "#ffffff";
+
+        ctx.shadowColor = "#00ffff";
+        ctx.shadowBlur = 20;
+
+        ctx.fill();
+    }
+
+
+    /* ==================================================
+       NEXUS-03
+       重装型
+    ================================================== */
+
+    else if (currentSkin === "nexus-03") {
+
+        /* 重い本体 */
+
+        ctx.beginPath();
+
+        ctx.moveTo(0, -28);
+
+        ctx.lineTo(-27, -2);
+
+        ctx.lineTo(-32, 25);
+
+        ctx.lineTo(-10, 20);
+
+        ctx.lineTo(0, 28);
+
+        ctx.lineTo(10, 20);
+
+        ctx.lineTo(32, 25);
+
+        ctx.lineTo(27, -2);
+
+        ctx.closePath();
+
+        ctx.fillStyle = "#d88925";
+
+        ctx.shadowColor = "#ff8c00";
+        ctx.shadowBlur = 18;
+
+        ctx.fill();
+
+
+        /* 装甲 */
+
+        ctx.fillStyle = "#8e5418";
+
+        ctx.fillRect(
+            -28,
+            2,
+            12,
+            22
+        );
+
+        ctx.fillRect(
+            16,
+            2,
+            12,
+            22
+        );
+
+
+        /* 中央コア */
+
+        ctx.beginPath();
+
+        ctx.arc(
+            0,
+            -7,
+            9,
+            0,
+            Math.PI * 2
+        );
+
+        ctx.fillStyle = "#fff1b0";
+
+        ctx.shadowColor = "#ffb52e";
+        ctx.shadowBlur = 20;
+
+        ctx.fill();
+    }
+
+
+    /* ==================================================
+       NEXUS-04
+       BEAM型
+    ================================================== */
+
+    else if (currentSkin === "nexus-04") {
+
+        /* 虹色グラデーション */
+
+        const gradient =
+            ctx.createLinearGradient(
+                -30,
+                0,
+                30,
+                0
+            );
+
+        gradient.addColorStop(
+            0,
+            "#ff4fd8"
+        );
+
+        gradient.addColorStop(
+            0.25,
+            "#8a5cff"
+        );
+
+        gradient.addColorStop(
+            0.5,
+            "#38c8ff"
+        );
+
+        gradient.addColorStop(
+            0.75,
+            "#5cffaa"
+        );
+
+        gradient.addColorStop(
+            1,
+            "#ffe45c"
+        );
+
+
+        ctx.beginPath();
+
+        ctx.moveTo(0, -34);
+
+        ctx.lineTo(-25, 25);
+
+        ctx.lineTo(-6, 16);
+
+        ctx.lineTo(0, 24);
+
+        ctx.lineTo(6, 16);
+
+        ctx.lineTo(25, 25);
+
+        ctx.closePath();
+
+        ctx.fillStyle = gradient;
+
+        ctx.shadowColor = "#c85cff";
+        ctx.shadowBlur = 30;
+
+        ctx.fill();
+
+
+        /* BEAMコア */
+
+        ctx.beginPath();
+
+        ctx.arc(
+            0,
+            -9,
+            8,
+            0,
+            Math.PI * 2
+        );
+
+        ctx.fillStyle = "#ffffff";
+
+        ctx.shadowColor = "#ffffff";
+        ctx.shadowBlur = 30;
+
+        ctx.fill();
+    }
+
+
+    /* ==================================================
+       NEXUS-05
+       VOID型
+    ================================================== */
+
+    else if (currentSkin === "nexus-05") {
+
+        /* VOID本体 */
+
+        ctx.beginPath();
+
+        ctx.moveTo(0, -36);
+
+        ctx.lineTo(-25, 25);
+
+        ctx.lineTo(-5, 17);
+
+        ctx.lineTo(0, 26);
+
+        ctx.lineTo(5, 17);
+
+        ctx.lineTo(25, 25);
+
+        ctx.closePath();
+
+        ctx.fillStyle = "#130d20";
+
+        ctx.shadowColor = "#8b4dff";
+        ctx.shadowBlur = 30;
+
+        ctx.fill();
+
+
+        /* 紫の外装ライン */
+
+        ctx.strokeStyle = "#9b5cff";
+
+        ctx.lineWidth = 2;
+
+        ctx.stroke();
+
+
+        /* VOID翼 */
+
+        ctx.beginPath();
+
+        ctx.moveTo(-12, 2);
+
+        ctx.lineTo(-34, 22);
+
+        ctx.lineTo(-16, 17);
+
+        ctx.closePath();
+
+        ctx.fillStyle = "#24113d";
+
+        ctx.fill();
+
+
+        ctx.beginPath();
+
+        ctx.moveTo(12, 2);
+
+        ctx.lineTo(34, 22);
+
+        ctx.lineTo(16, 17);
+
+        ctx.closePath();
+
+        ctx.fill();
+
+
+        /* VOIDコア */
+
+        ctx.beginPath();
+
+        ctx.arc(
+            0,
+            -9,
+            7,
+            0,
+            Math.PI * 2
+        );
+
+        ctx.fillStyle = "#d9a3ff";
+
+        ctx.shadowColor = "#a94dff";
+        ctx.shadowBlur = 30;
+
+        ctx.fill();
+    }
+
 
     ctx.restore();
 
