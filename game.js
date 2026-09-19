@@ -737,7 +737,7 @@ function createStars() {
 function startGame() {
 
     score = 0;
-    hp = 3;
+    hp = getMaxHP();
 
     level = 1;
     boss = null;
@@ -1263,6 +1263,74 @@ function updateHUD() {
 
 }
 
+// ========================================
+// SKIN ABILITY SYSTEM
+// ========================================
+
+function getEquippedSkin() {
+
+    return (
+        localStorage.getItem("nexus-equipped-skin")
+        || "nexus-01"
+    );
+
+}
+
+
+// 最大HP
+function getMaxHP() {
+
+    const skin = getEquippedSkin();
+
+    if (skin === "nexus-05") {
+        return 5;
+    }
+
+    return 3;
+}
+
+
+// 移動速度
+function getPlayerSpeed() {
+
+    const skin = getEquippedSkin();
+
+    // NEXUS-02 SPEED TYPE
+    if (skin === "nexus-02") {
+        return 330 * 1.35;
+    }
+
+    return 330;
+}
+
+
+// 弾の発射間隔
+function getFireInterval() {
+
+    const skin = getEquippedSkin();
+
+    // NEXUS-03 ATTACK TYPE
+    if (skin === "nexus-03") {
+        return 0.085;
+    }
+
+    return 0.13;
+}
+
+
+// ビーム幅
+function getBeamWidth() {
+
+    const skin = getEquippedSkin();
+
+    // NEXUS-04 BEAM TYPE
+    if (skin === "nexus-04") {
+        return 150;
+    }
+
+    return 90;
+}
+
 
 /* ==================================================
    スコア加算
@@ -1280,21 +1348,22 @@ function useHealItem() {
 
     const maxHP = getMaxHP();
 
-    // HP満タンなら使えない
+    // HP満タン
     if (hp >= maxHP) {
         return;
     }
 
-    // まだチャージ中なら使えない
+    // クールダウン中
     if (healCooldown > 0) {
         return;
     }
 
-    // HPを1回復
+    // HP +1
     hp++;
 
-    // 60秒チャージ開始
-    healCooldown = healCooldownMax;
+    // 60秒チャージ
+    healCooldown =
+        healCooldownMax;
 
     updateHUD();
     updateItemButtons();
@@ -1330,7 +1399,7 @@ function fireBullet() {
     });
 
     player.fireCooldown =
-        player.fireInterval;
+    getFireInterval();
 
 }
 
@@ -1349,7 +1418,14 @@ function useBeam() {
     }
 
     beamActive = true;
-    beamTimer = beamDuration;
+beamTimer = beamDuration;
+
+// NEXUS-04だけ発射時に強い衝撃
+if (getEquippedSkin() === "nexus-04") {
+    screenShake = 18;
+} else {
+    screenShake = 6;
+}
 
     updateItemButtons();
 }
@@ -2832,7 +2908,7 @@ function drawBeam() {
 
     ctx.save();
 
-    const beamWidth = 90;
+    const beamWidth = getBeamWidth();
     const beamX = player.x;
     const beamTop = 0;
     const beamBottom = player.y - 20;
@@ -2955,6 +3031,215 @@ function drawBeam() {
         beamWidth,
         beamBottom
     );
+
+    // ========================================
+// NEXUS-04 SPECIAL EFFECT
+// エネルギーリング
+// ========================================
+
+if (
+    getEquippedSkin() === "nexus-04"
+) {
+
+    const time =
+        performance.now() / 1000;
+
+    // ----------------------------
+    // 発射口の巨大エネルギーリング
+    // ----------------------------
+
+    for (let i = 0; i < 3; i++) {
+
+        const pulse =
+            ((time * 2.5 + i * 0.8) % 2);
+
+        const radius =
+            35 + pulse * 70;
+
+        const alpha =
+            Math.max(
+                0,
+                0.7 - pulse * 0.35
+            );
+
+        ctx.save();
+
+        ctx.globalAlpha = alpha;
+
+        ctx.beginPath();
+
+        ctx.arc(
+            beamX,
+            beamBottom,
+            radius,
+            0,
+            Math.PI * 2
+        );
+
+        ctx.strokeStyle =
+            i === 0
+                ? "#ffffff"
+                : i === 1
+                    ? "#00ffff"
+                    : "#ff00ff";
+
+        ctx.lineWidth =
+            4 - pulse * 2;
+
+        ctx.shadowColor =
+            ctx.strokeStyle;
+
+        ctx.shadowBlur = 25;
+
+        ctx.stroke();
+
+        ctx.restore();
+    }
+
+
+    // ----------------------------
+    // ビーム左右のエネルギー波
+    // ----------------------------
+
+    ctx.save();
+
+    ctx.globalAlpha = 0.75;
+
+    for (let i = 0; i < 12; i++) {
+
+        const waveY =
+            beamBottom -
+            (
+                (time * 500 + i * 90)
+                % beamBottom
+            );
+
+        const waveWidth =
+            20 +
+            Math.sin(
+                time * 5 + i
+            ) * 15;
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            beamX - beamWidth / 2,
+            waveY
+        );
+
+        ctx.lineTo(
+            beamX -
+            beamWidth / 2 -
+            waveWidth,
+            waveY + 12
+        );
+
+        ctx.lineTo(
+            beamX - beamWidth / 2,
+            waveY + 24
+        );
+
+        ctx.strokeStyle =
+            i % 2 === 0
+                ? "#00ffff"
+                : "#ff00ff";
+
+        ctx.lineWidth = 3;
+
+        ctx.shadowColor =
+            ctx.strokeStyle;
+
+        ctx.shadowBlur = 18;
+
+        ctx.stroke();
+
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            beamX + beamWidth / 2,
+            waveY
+        );
+
+        ctx.lineTo(
+            beamX +
+            beamWidth / 2 +
+            waveWidth,
+            waveY + 12
+        );
+
+        ctx.lineTo(
+            beamX + beamWidth / 2,
+            waveY + 24
+        );
+
+        ctx.stroke();
+
+    }
+
+    ctx.restore();
+
+
+    // ----------------------------
+    // 中央コア
+    // ----------------------------
+
+    const coreGradient =
+        ctx.createRadialGradient(
+            beamX,
+            beamBottom,
+            0,
+            beamX,
+            beamBottom,
+            55
+        );
+
+    coreGradient.addColorStop(
+        0,
+        "#ffffff"
+    );
+
+    coreGradient.addColorStop(
+        0.25,
+        "#00ffff"
+    );
+
+    coreGradient.addColorStop(
+        0.55,
+        "#8a2be2"
+    );
+
+    coreGradient.addColorStop(
+        1,
+        "rgba(255,0,255,0)"
+    );
+
+    ctx.save();
+
+    ctx.globalAlpha = 0.9;
+
+    ctx.fillStyle =
+        coreGradient;
+
+    ctx.shadowColor =
+        "#ffffff";
+
+    ctx.shadowBlur = 40;
+
+    ctx.beginPath();
+
+    ctx.arc(
+        beamX,
+        beamBottom,
+        55,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fill();
+
+    ctx.restore();
+}
 
     ctx.restore();
 }
@@ -3180,10 +3465,13 @@ function drawParticles() {
 
 function updatePlayer(deltaTime) {
 
+
+    const currentSpeed = getPlayerSpeed();
+
     if (player.movingLeft) {
 
         player.x -=
-            player.speed *
+            currentSpeed *
             deltaTime;
 
     }
@@ -3191,7 +3479,7 @@ function updatePlayer(deltaTime) {
     if (player.movingRight) {
 
         player.x +=
-            player.speed *
+            currentSpeed *
             deltaTime;
 
     }
