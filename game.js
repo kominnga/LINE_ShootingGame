@@ -114,7 +114,12 @@ const LIFF_ID = "2011666788-ny72UKwS";
 
 let lineProfile = null;
 
+/* ==================================================
+   ランキングAPI
+================================================== */
 
+const RANKING_API =
+    "https://long-truth-312b.htmlaaasd.workers.dev";
 /* ==================================================
    LIFF初期化
 ================================================== */
@@ -326,42 +331,222 @@ beamCooldown = beamCooldownMax;
    ゲームオーバー
 ================================================== */
 
-function endGame() {
+/* ==================================================
+   スコア送信
+================================================== */
 
-    gameRunning = false;
+async function sendScoreToRanking() {
 
-    // ==========================================
-    // スコア表示
-    // ==========================================
+    /* ------------------------------------------
+       LINEプロフィールがない場合
+    ------------------------------------------ */
 
-    finalScore.textContent = score;
+    if (
+        typeof lineProfile === "undefined" ||
+        !lineProfile
+    ) {
+
+        console.log(
+            "LINEプロフィールがないためスコア送信をスキップします"
+        );
+
+        return;
+
+    }
 
 
-    // ==========================================
-    // LINEプロフィール表示
-    // ==========================================
+    /* ------------------------------------------
+       User ID確認
+    ------------------------------------------ */
 
-    const profileImage =
-        document.getElementById("line-profile-image");
+    if (!lineProfile.userId) {
 
-    const profileName =
-        document.getElementById("line-profile-name");
+        console.log(
+            "LINE User IDがないためスコア送信をスキップします"
+        );
+
+        return;
+
+    }
 
 
-    // LINEプロフィールを取得できている場合
-    if (lineProfile) {
+    /* ------------------------------------------
+       送信データ
+    ------------------------------------------ */
 
-        // LINE表示名
-        if (profileName) {
+    const data = {
 
-            profileName.textContent =
-                lineProfile.displayName || "LINEユーザー";
+        userId:
+            lineProfile.userId,
+
+        displayName:
+            lineProfile.displayName ||
+            "LINEユーザー",
+
+        pictureUrl:
+            lineProfile.pictureUrl ||
+            "",
+
+        score:
+            Number(score),
+
+        level:
+            Number(level)
+
+    };
+
+
+    console.log(
+        "ランキングへスコア送信:",
+        data
+    );
+
+
+    try {
+
+        const response =
+            await fetch(
+                RANKING_API + "/score",
+                {
+
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body:
+                        JSON.stringify(data)
+
+                }
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "HTTP ERROR: " +
+                response.status
+            );
 
         }
 
 
-        // LINEプロフィール画像
-        if (profileImage && lineProfile.pictureUrl) {
+        const result =
+            await response.json();
+
+
+        console.log(
+            "ランキング保存結果:",
+            result
+        );
+
+
+        /* ------------------------------------------
+           保存成功
+        ------------------------------------------ */
+
+        if (result.success) {
+
+            if (result.updated) {
+
+                if (result.inRanking) {
+
+                    console.log(
+                        "ランキング入り！",
+                        result.rank + "位"
+                    );
+
+                } else {
+
+                    console.log(
+                        "スコア更新しましたが、現在50位圏外です"
+                    );
+
+                }
+
+            } else {
+
+                console.log(
+                    "自己ベスト更新なし"
+                );
+
+            }
+
+        }
+
+    }
+    catch (error) {
+
+        console.error(
+            "ランキング送信エラー:",
+            error
+        );
+
+    }
+
+}
+
+
+/* ==================================================
+   ゲームオーバー
+================================================== */
+
+function endGame() {
+
+    /* ------------------------------------------
+       ゲーム停止
+    ------------------------------------------ */
+
+    gameRunning = false;
+
+
+    /* ------------------------------------------
+       最終スコア表示
+    ------------------------------------------ */
+
+    finalScore.textContent =
+        score;
+
+
+    /* ------------------------------------------
+       LINEプロフィール表示
+    ------------------------------------------ */
+
+    const profileImage =
+        document.getElementById(
+            "line-profile-image"
+        );
+
+    const profileName =
+        document.getElementById(
+            "line-profile-name"
+        );
+
+
+    if (
+        typeof lineProfile !== "undefined" &&
+        lineProfile
+    ) {
+
+        /* 名前 */
+
+        if (profileName) {
+
+            profileName.textContent =
+                lineProfile.displayName ||
+                "LINEユーザー";
+
+        }
+
+
+        /* アイコン */
+
+        if (
+            profileImage &&
+            lineProfile.pictureUrl
+        ) {
 
             profileImage.src =
                 lineProfile.pictureUrl;
@@ -371,15 +556,17 @@ function endGame() {
 
         }
 
-    } else {
+    }
 
-        // プロフィールを取得できなかった場合
+    else {
+
         if (profileName) {
 
             profileName.textContent =
                 "ゲスト";
 
         }
+
 
         if (profileImage) {
 
@@ -391,11 +578,94 @@ function endGame() {
     }
 
 
-    // ==========================================
-    // GAME OVER画面表示
-    // ==========================================
+    /* ------------------------------------------
+       ゲームオーバー画面表示
+    ------------------------------------------ */
 
-    gameOverScreen.style.display = "flex";
+    gameOverScreen.style.display =
+        "flex";
+
+
+    /* ------------------------------------------
+       ランキングへ送信
+       ※画面表示を止めない
+    ------------------------------------------ */
+
+    sendScoreToRanking();
+
+}
+
+/* ==================================================
+   ランキングへスコア送信
+================================================== */
+
+async function submitScoreToRanking() {
+
+    try {
+
+        // LINEプロフィールが存在する場合
+        if (typeof lineProfile !== "undefined" && lineProfile) {
+
+            const response = await fetch(
+                RANKING_API + "/score",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify({
+
+                        userId:
+                            lineProfile.userId,
+
+                        displayName:
+                            lineProfile.displayName ||
+                            "LINEユーザー",
+
+                        pictureUrl:
+                            lineProfile.pictureUrl ||
+                            "",
+
+                        score:
+                            score,
+
+                        level:
+                            level
+
+                    })
+                }
+            );
+
+
+            const result =
+                await response.json();
+
+
+            console.log(
+                "ランキング送信結果:",
+                result
+            );
+
+        } else {
+
+            console.log(
+                "LINEプロフィールがないためランキング送信をスキップ"
+            );
+
+        }
+
+    } catch (error) {
+
+        console.error(
+            "ランキング送信エラー:",
+            error
+        );
+
+    }
+
 }
 /* ==================================================
    LINE SHARE
@@ -3569,6 +3839,10 @@ function closeRanking() {
    ※後でCloudflare Workerに置き換える
 ================================================== */
 
+/* ==================================================
+   オンラインランキング取得
+================================================== */
+
 async function loadRanking() {
 
     if (!rankingList) return;
@@ -3581,75 +3855,296 @@ async function loadRanking() {
     `;
 
 
-    // 今はテスト用データ
-    const rankingData = [
+    try {
 
-        {
-            rank: 1,
-            name: "NEXUS PLAYER",
-            score: 52800
-        },
+        const response = await fetch(
+            RANKING_API + "/ranking",
+            {
+                method: "GET"
+            }
+        );
 
-        {
-            rank: 2,
-            name: "SHOOTER",
-            score: 41200
-        },
 
-        {
-            rank: 3,
-            name: "ACE",
-            score: 38500
-        },
-
-        {
-            rank: 4,
-            name: "PLAYER",
-            score: 25100
-        },
-
-        {
-            rank: 5,
-            name: "GAMER",
-            score: 11900
+        if (!response.ok) {
+            throw new Error(
+                "HTTP ERROR: " + response.status
+            );
         }
 
-    ];
+
+        const result =
+            await response.json();
 
 
-    rankingList.innerHTML = "";
+        console.log(
+            "ランキング取得結果:",
+            result
+        );
 
 
-    rankingData.forEach(player => {
+        if (
+            !result.success ||
+            !Array.isArray(result.ranking)
+        ) {
 
-        const item =
-            document.createElement("div");
+            throw new Error(
+                "ランキングデータが不正です"
+            );
 
-        item.className =
-            "ranking-item";
+        }
 
 
-        item.innerHTML = `
+        const rankingData =
+            result.ranking;
 
-            <div class="ranking-number">
-                ${player.rank}
-            </div>
 
-            <div class="ranking-name">
-                ${player.name}
-            </div>
+        // =========================================
+        // ランキングがまだ存在しない場合
+        // =========================================
 
-            <div class="ranking-score">
-                ${player.score.toLocaleString()}
+        if (rankingData.length === 0) {
+
+            rankingList.innerHTML = `
+                <div class="ranking-loading">
+                    まだランキングデータがありません。
+                </div>
+            `;
+
+            return;
+        }
+
+
+        rankingList.innerHTML = "";
+
+
+        // =========================================
+        // ランキング表示
+        // =========================================
+
+        rankingData.forEach(
+            (player, index) => {
+
+                const item =
+                    document.createElement("div");
+
+
+                item.className =
+                    "ranking-item";
+
+
+                // 自分かどうか
+                let isMe = false;
+
+
+                if (
+                    typeof lineProfile !== "undefined" &&
+                    lineProfile &&
+                    player.userId === lineProfile.userId
+                ) {
+
+                    isMe = true;
+
+                }
+
+
+                if (isMe) {
+
+                    item.classList.add(
+                        "ranking-me"
+                    );
+
+                }
+
+
+                // 順位
+                const rank =
+                    index + 1;
+
+
+                // メダル
+                let rankDisplay =
+                    String(rank);
+
+
+                if (rank === 1) {
+                    rankDisplay = "🥇";
+                }
+
+                else if (rank === 2) {
+                    rankDisplay = "🥈";
+                }
+
+                else if (rank === 3) {
+                    rankDisplay = "🥉";
+                }
+
+
+                // 名前
+                const name =
+                    escapeRankingText(
+                        player.displayName ||
+                        "LINEユーザー"
+                    );
+
+
+                // スコア
+                const playerScore =
+                    Number(player.score) || 0;
+
+
+                // =================================
+                // HTML生成
+                // =================================
+
+                item.innerHTML = `
+
+                    <div class="ranking-number">
+                        ${rankDisplay}
+                    </div>
+
+                    ${
+                        player.pictureUrl
+                        ?
+                        `
+                        <img
+                            class="ranking-icon"
+                            src="${escapeRankingAttribute(
+                                player.pictureUrl
+                            )}"
+                            alt=""
+                        >
+                        `
+                        :
+                        `
+                        <div
+                            class="ranking-icon"
+                            style="
+                                background:
+                                rgba(255,255,255,0.12);
+                            "
+                        ></div>
+                        `
+                    }
+
+                    <div class="ranking-name">
+
+                        ${name}
+
+                        ${
+                            isMe
+                            ?
+                            `
+                            <span
+                                style="
+                                    color:#00dcff;
+                                    font-size:12px;
+                                    margin-left:5px;
+                                "
+                            >
+                                YOU
+                            </span>
+                            `
+                            :
+                            ""
+                        }
+
+                    </div>
+
+                    <div class="ranking-score">
+                        ${playerScore.toLocaleString()}
+                    </div>
+
+                `;
+
+
+                rankingList.appendChild(
+                    item
+                );
+
+            }
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            "ランキング取得エラー:",
+            error
+        );
+
+
+        rankingList.innerHTML = `
+
+            <div class="ranking-loading">
+
+                ランキングを
+                取得できませんでした。
+
+                <br>
+
+                <button
+                    id="ranking-retry-button"
+                    style="
+                        margin-top:15px;
+                        padding:10px 20px;
+                        border:none;
+                        border-radius:8px;
+                        background:rgba(255,255,255,0.12);
+                        color:white;
+                        cursor:pointer;
+                    "
+                >
+                    RETRY
+                </button>
+
             </div>
 
         `;
 
 
-        rankingList.appendChild(item);
+        const retryButton =
+            document.getElementById(
+                "ranking-retry-button"
+            );
 
-    });
 
+        if (retryButton) {
+
+            retryButton.addEventListener(
+                "click",
+                loadRanking
+            );
+
+        }
+
+    }
+
+}
+
+
+/* ==================================================
+   ランキング用文字列安全化
+================================================== */
+
+function escapeRankingText(text) {
+
+    const div =
+        document.createElement("div");
+
+    div.textContent = text;
+
+    return div.innerHTML;
+
+}
+
+
+function escapeRankingAttribute(text) {
+
+    return String(text)
+        .replace(/&/g, "&amp;")
+        .replace(/"/g, "&quot;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
 }
 
 
