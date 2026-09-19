@@ -602,3 +602,42 @@ button {
     user-select: none;
     -webkit-user-select: none;
 }
+
+/* ==================================================
+   アイテムボタン
+   スマホタッチ対応
+   ================================================== */
+
+#healButton,
+#beamButton {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+
+/* 使用できないときの見た目 */
+
+#healButton.item-unavailable,
+#beamButton.item-unavailable {
+    opacity: 0.45;
+    filter: grayscale(0.4);
+}
+
+
+/* 使用可能 */
+
+#healButton:not(.item-unavailable),
+#beamButton:not(.item-unavailable) {
+    opacity: 1;
+    filter: none;
+}
+
+
+/* 押したとき */
+
+#healButton:active,
+#beamButton:active {
+    transform: scale(0.94);
+}

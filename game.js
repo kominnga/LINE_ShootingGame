@@ -3227,28 +3227,27 @@ function updateItemButtons() {
         return;
     }
 
-
     // ==============================
     // ♡ 回復
     // ==============================
 
     if (hp >= 3) {
 
-        healButton.disabled = true;
+        healButton.classList.add("item-unavailable");
 
         healButton.innerHTML =
             "♡<span>HP MAX</span>";
 
     } else if (healCooldown > 0) {
 
-        healButton.disabled = true;
+        healButton.classList.add("item-unavailable");
 
         healButton.innerHTML =
             `♡<span>あと ${Math.ceil(healCooldown)}秒</span>`;
 
     } else {
 
-        healButton.disabled = false;
+        healButton.classList.remove("item-unavailable");
 
         healButton.innerHTML =
             "♡<span>回復可能！</span>";
@@ -3261,21 +3260,21 @@ function updateItemButtons() {
 
     if (beamActive) {
 
-        beamButton.disabled = true;
+        beamButton.classList.add("item-unavailable");
 
         beamButton.innerHTML =
             `🌈<span>発射中 ${beamTimer.toFixed(1)}秒</span>`;
 
     } else if (beamCooldown > 0) {
 
-        beamButton.disabled = true;
+        beamButton.classList.add("item-unavailable");
 
         beamButton.innerHTML =
             `🌈<span>あと ${Math.ceil(beamCooldown)}秒</span>`;
 
     } else {
 
-        beamButton.disabled = false;
+        beamButton.classList.remove("item-unavailable");
 
         beamButton.innerHTML =
             "🌈<span>発射可能！</span>";
@@ -3559,33 +3558,50 @@ function pressBeamItem(e) {
 
 /* ---------- 回復 ---------- */
 
-healButton.addEventListener(
-    "touchstart",
-    pressHealItem,
-    { passive: false }
-);
-
-healButton.addEventListener(
-    "touchend",
-    pressHealItem,
-    { passive: false }
-);
+// ==================================================
+// アイテムボタン
+// ==================================================
 
 
-/* ---------- ビーム ---------- */
 
-beamButton.addEventListener(
-    "touchstart",
-    pressBeamItem,
-    { passive: false }
-);
+function pressHealItem(e) {
 
-beamButton.addEventListener(
-    "touchend",
-    pressBeamItem,
-    { passive: false }
-);
+    e.preventDefault();
 
+    if (!gameRunning) {
+        return;
+    }
+
+    useHealItem();
+}
+
+
+function pressBeamItem(e) {
+
+    e.preventDefault();
+
+    if (!gameRunning) {
+        return;
+    }
+
+    useBeam();
+}
+
+
+// スマホ・タブレット・PC共通
+if (healButton) {
+    healButton.addEventListener(
+        "pointerdown",
+        pressHealItem
+    );
+}
+
+if (beamButton) {
+    beamButton.addEventListener(
+        "pointerdown",
+        pressBeamItem
+    );
+}
 
 /* ---------- PC ---------- */
 
