@@ -53,6 +53,7 @@ let gameRunning = false;
 let score = 0;
 let hp = 3;
 
+let bombFlashTimer = 0;
 // ========================================
 // スキン能力
 // ========================================
@@ -161,6 +162,26 @@ let enemySpeed = 150;
 let screenShake = 0;
 let hitFlash = 0;
 
+
+// ========================================
+// ITEM EFFECTS
+// ========================================
+
+// HEAL演出
+let healEffectTimer = 0;
+let healEffectParticles = [];
+
+// SHIELD演出
+let shieldHitTimer = 0;
+let shieldHitX = 0;
+let shieldHitY = 0;
+
+
+
+// BOMB演出
+let bombEffectTimer = 0;
+let bombEffectRadius = 0;
+let bombEffectParticles = [];
 // ==============================
 // アイテム
 // ==============================
@@ -703,6 +724,53 @@ function useBomb() {
 
     screenShake = 20;
     hitFlash = 0.25;
+    bombFlashTimer = 0.18;
+
+        // ==============================
+    // BOMB演出開始
+    // ==============================
+
+    bombEffectTimer = 1.0;
+    bombEffectRadius = 0;
+
+    bombEffectParticles = [];
+
+    for (let i = 0; i < 45; i++) {
+
+        const angle =
+            Math.random() *
+            Math.PI * 2;
+
+        const speed =
+            80 +
+            Math.random() * 280;
+
+        bombEffectParticles.push({
+
+            x: player.x,
+            y: player.y,
+
+            vx:
+                Math.cos(angle) *
+                speed,
+
+            vy:
+                Math.sin(angle) *
+                speed,
+
+            life:
+                0.5 +
+                Math.random() * 0.5,
+
+            maxLife:
+                0.5 +
+                Math.random() * 0.5,
+
+            size:
+                2 +
+                Math.random() * 5
+        });
+    }
 
     // 通常敵を全滅
     for (let i = enemies.length - 1; i >= 0; i--) {
@@ -765,7 +833,112 @@ let enemyBullets = [];
 let levelTransitionText = "";
 
 
+function drawBombEffect() {
 
+    if (bombEffectTimer <= 0) {
+        return;
+    }
+
+    const progress =
+        1 -
+        bombEffectTimer / 1.0;
+
+    const radius =
+        progress * Math.max(width, height) * 0.75;
+
+    const alpha =
+        Math.max(
+            0,
+            1 - progress
+        );
+
+    ctx.save();
+
+    // ==============================
+    // 爆発リング
+    // ==============================
+
+    ctx.beginPath();
+
+    ctx.arc(
+        player.x,
+        player.y,
+        radius,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.strokeStyle =
+        `rgba(255,120,30,${alpha})`;
+
+    ctx.lineWidth =
+        15 * (1 - progress) + 3;
+
+    ctx.shadowColor =
+        "#ff6a00";
+
+    ctx.shadowBlur = 35;
+
+    ctx.stroke();
+
+
+    // ==============================
+    // 白い衝撃波
+    // ==============================
+
+    ctx.beginPath();
+
+    ctx.arc(
+        player.x,
+        player.y,
+        radius * 0.82,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.strokeStyle =
+        `rgba(255,240,200,${alpha * 0.8})`;
+
+    ctx.lineWidth = 4;
+
+    ctx.stroke();
+
+
+    // ==============================
+    // 爆発粒子
+    // ==============================
+
+    for (const p of bombEffectParticles) {
+
+        const pAlpha =
+            Math.max(
+                0,
+                p.life / p.maxLife
+            );
+
+        ctx.beginPath();
+
+        ctx.arc(
+            p.x,
+            p.y,
+            p.size,
+            0,
+            Math.PI * 2
+        );
+
+        ctx.fillStyle =
+            `rgba(255,140,40,${pAlpha})`;
+
+        ctx.shadowColor =
+            "#ff7a00";
+
+        ctx.shadowBlur = 12;
+
+        ctx.fill();
+    }
+
+    ctx.restore();
+}
 /* ==================================================
    リサイズ
 ================================================== */
@@ -2312,6 +2485,10 @@ function addScore(value) {
 
 function useHealItem() {
 
+    if (!gameRunning) {
+        return;
+    }
+
     const maxHP = getMaxHP();
 
     // HP満タン
@@ -2328,13 +2505,35 @@ function useHealItem() {
     hp++;
 
     // 60秒チャージ
-    healCooldown =
-        healCooldownMax;
+    healCooldown = healCooldownMax;
+
+    // ==============================
+    // HEAL演出開始
+    // ==============================
+
+    healEffectTimer = 1.2;
+
+    healEffectParticles = [];
+
+    for (let i = 0; i < 18; i++) {
+
+        healEffectParticles.push({
+            x: player.x + (Math.random() - 0.5) * 45,
+            y: player.y + 20 + Math.random() * 25,
+            vx: (Math.random() - 0.5) * 25,
+            vy: -40 - Math.random() * 50,
+            life: 0.8 + Math.random() * 0.5,
+            maxLife: 0.8 + Math.random() * 0.5,
+            size: 2 + Math.random() * 3
+        });
+
+    }
+
+    screenShake = 3;
 
     updateHUD();
     updateItemButtons();
 }
-
 
 /* ==================================================
    弾発射
@@ -2368,7 +2567,104 @@ function fireBullet() {
     getFireInterval();
 
 }
+function drawHealEffect() {
 
+    if (healEffectTimer <= 0) {
+        return;
+    }
+
+    const progress =
+        1 - healEffectTimer / 1.2;
+
+    const radius =
+        25 + progress * 45;
+
+    const alpha =
+        Math.max(0, 1 - progress);
+
+    ctx.save();
+
+    // ==============================
+    // 回復リング
+    // ==============================
+
+    ctx.beginPath();
+
+    ctx.arc(
+        player.x,
+        player.y,
+        radius,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.strokeStyle =
+        `rgba(80, 255, 160, ${alpha})`;
+
+    ctx.lineWidth = 4;
+
+    ctx.shadowColor =
+        "#50ffb0";
+
+    ctx.shadowBlur = 20;
+
+    ctx.stroke();
+
+
+    // ==============================
+    // +1 HP
+    // ==============================
+
+    ctx.font =
+        "bold 22px Arial";
+
+    ctx.textAlign = "center";
+
+    ctx.fillStyle =
+        `rgba(120, 255, 180, ${alpha})`;
+
+    ctx.shadowColor =
+        "#50ffb0";
+
+    ctx.shadowBlur = 12;
+
+    ctx.fillText(
+        "+1 HP",
+        player.x,
+        player.y - 55 - progress * 20
+    );
+
+
+    // ==============================
+    // 回復粒子
+    // ==============================
+
+    for (const p of healEffectParticles) {
+
+        const pAlpha =
+            Math.max(
+                0,
+                p.life / p.maxLife
+            );
+
+        ctx.beginPath();
+
+        ctx.arc(
+            p.x,
+            p.y,
+            p.size,
+            0,
+            Math.PI * 2
+        );
+
+        ctx.fillStyle =
+            `rgba(100,255,180,${pAlpha})`;
+
+        ctx.fill();
+    }
+
+    ctx.restore();
+}
 function useBeam() {
 
     if (!gameRunning) {
@@ -3334,7 +3630,75 @@ function updateItems(deltaTime) {
             bombCooldown = 0;
         }
     }
+        // ==============================
+    // HEAL演出更新
+    // ==============================
 
+    if (healEffectTimer > 0) {
+
+        healEffectTimer -= deltaTime;
+
+        for (const p of healEffectParticles) {
+
+            p.x += p.vx * deltaTime;
+            p.y += p.vy * deltaTime;
+
+            p.life -= deltaTime;
+        }
+
+        if (healEffectTimer <= 0) {
+
+            healEffectTimer = 0;
+            healEffectParticles = [];
+        }
+    }
+
+        // SHIELD被弾演出
+    if (shieldHitTimer > 0) {
+
+        shieldHitTimer -= deltaTime;
+
+        if (shieldHitTimer < 0) {
+            shieldHitTimer = 0;
+        }
+    }
+
+        // ==============================
+    // BOMB演出更新
+    // ==============================
+
+    if (bombEffectTimer > 0) {
+
+        bombEffectTimer -= deltaTime;
+
+        bombEffectRadius +=
+            Math.max(width, height) *
+            0.75 *
+            deltaTime;
+
+        for (const p of bombEffectParticles) {
+
+            p.x +=
+                p.vx *
+                deltaTime;
+
+            p.y +=
+                p.vy *
+                deltaTime;
+
+            p.vx *= 0.97;
+            p.vy *= 0.97;
+
+            p.life -= deltaTime;
+        }
+
+        if (bombEffectTimer <= 0) {
+
+            bombEffectTimer = 0;
+            bombEffectParticles = [];
+            bombEffectRadius = 0;
+        }
+    }
     updateItemButtons();
 }
 /* ==================================================
@@ -5397,6 +5761,14 @@ function damagePlayer() {
 
     // シールド中
     if (shieldActive) {
+
+        shieldHitTimer = 0.35;
+
+        shieldHitX = player.x;
+        shieldHitY = player.y;
+
+        screenShake = 4;
+
         return;
     }
 
@@ -5421,15 +5793,24 @@ function damagePlayer() {
 
 function drawShield() {
 
-    if (!shieldActive) return;
+    if (!shieldActive) {
+        return;
+    }
+
+    const now =
+        performance.now();
 
     const pulse =
-        Math.sin(performance.now() * 0.008) * 4;
+        Math.sin(now * 0.008) * 4;
 
     const radius =
         42 + pulse;
 
     ctx.save();
+
+    // ==============================
+    // 外側のガードリング
+    // ==============================
 
     ctx.beginPath();
 
@@ -5442,38 +5823,134 @@ function drawShield() {
     );
 
     ctx.strokeStyle =
-        "rgba(80, 200, 255, 0.9)";
+        "rgba(80, 200, 255, 0.95)";
 
-    ctx.lineWidth = 3;
+    ctx.lineWidth = 4;
 
     ctx.shadowColor =
-        "rgba(50, 180, 255, 1)";
+        "#35cfff";
 
-    ctx.shadowBlur = 18;
+    ctx.shadowBlur = 20;
 
     ctx.stroke();
 
+
+    // ==============================
+    // 内側フィールド
+    // ==============================
 
     ctx.beginPath();
 
     ctx.arc(
         player.x,
         player.y,
-        radius - 7,
+        radius - 8,
         0,
         Math.PI * 2
     );
 
+    ctx.fillStyle =
+        "rgba(50,180,255,0.08)";
+
+    ctx.fill();
+
     ctx.strokeStyle =
-        "rgba(120, 230, 255, 0.25)";
+        "rgba(150,240,255,0.3)";
 
     ctx.lineWidth = 2;
 
     ctx.stroke();
 
-    ctx.restore();
-}
 
+    // ==============================
+    // 回転するガードライン
+    // ==============================
+
+    ctx.translate(
+        player.x,
+        player.y
+    );
+
+    ctx.rotate(
+        now * 0.0015
+    );
+
+    for (let i = 0; i < 6; i++) {
+
+        ctx.rotate(
+            Math.PI / 3
+        );
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            radius - 5,
+            0
+        );
+
+        ctx.lineTo(
+            radius + 5,
+            0
+        );
+
+        ctx.strokeStyle =
+            "rgba(150,240,255,0.9)";
+
+        ctx.lineWidth = 3;
+
+        ctx.stroke();
+    }
+
+    ctx.restore();
+
+
+    // ==============================
+    // 被弾した瞬間
+    // ==============================
+
+    if (shieldHitTimer > 0) {
+
+        const hitProgress =
+            1 -
+            shieldHitTimer / 0.35;
+
+        const hitRadius =
+            18 +
+            hitProgress * 35;
+
+        const alpha =
+            Math.max(
+                0,
+                shieldHitTimer / 0.35
+            );
+
+        ctx.save();
+
+        ctx.beginPath();
+
+        ctx.arc(
+            shieldHitX,
+            shieldHitY,
+            hitRadius,
+            0,
+            Math.PI * 2
+        );
+
+        ctx.strokeStyle =
+            `rgba(220,250,255,${alpha})`;
+
+        ctx.lineWidth = 5;
+
+        ctx.shadowColor =
+            "#ffffff";
+
+        ctx.shadowBlur = 25;
+
+        ctx.stroke();
+
+        ctx.restore();
+    }
+}
 function setItemControlsVisible(visible) {
 
     const itemControls =
@@ -5760,14 +6237,34 @@ drawBeam();
 
 checkBeamCollision();
 
-
 drawPlayer();
+
+drawHealEffect();
+
+drawShield();
+
+drawBombEffect();
 
 
     ctx.restore();
 
 
     /* 被弾フラッシュ */
+
+    /* BOMBフラッシュ */
+
+if (bombFlashTimer > 0) {
+
+    ctx.fillStyle =
+        `rgba(255,220,170,${bombFlashTimer})`;
+
+    ctx.fillRect(
+        0,
+        0,
+        width,
+        height
+    );
+}
 
     if (hitFlash > 0) {
 
@@ -5811,6 +6308,14 @@ drawPlayer();
     ctx.restore();
 
 
+        if (bombFlashTimer > 0) {
+
+        bombFlashTimer -= deltaTime;
+
+        if (bombFlashTimer < 0) {
+            bombFlashTimer = 0;
+        }
+    }
 
 }
 }
