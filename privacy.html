@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="description"
+        content="NEXUS SHOOTER プライバシーポリシー">
+
+    <title>
+        NEXUS SHOOTER | Privacy Policy
+    </title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            background:
+                radial-gradient(
+                    circle at 50% -10%,
+                    #17365d 0%,
+                    #081221 38%,
+                    #03070e 78%,
+                    #02040a 100%
+                );
+
+            color: #eaf4ff;
+
+            font-family:
+                "Segoe UI",
+                "Noto Sans JP",
+                Arial,
+                sans-serif;
+
+            line-height: 1.8;
+        }
+
+        /* =========================
+           HEADER
+        ========================= */
+
+        .site-header {
+            position: sticky;
+            top: 0;
+
+            z-index: 100;
+
+            height: 70px;
+
+            display: flex;
+            align-items: center;
+
+            border-bottom:
+                1px solid
+                rgba(130, 190, 255, 0.14);
+
+            background:
+                rgba(3, 9, 18, 0.88);
+
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+        }
+
+        .header-inner {
+            width: min(1100px, 92%);
+
+            margin: 0 auto;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+
+            color: #ffffff;
+
+            text-decoration: none;
+
+            font-weight: 700;
+
+            letter-spacing: 2px;
+        }
+
+        .brand-mark {
+            width: 34px;
+            height: 34px;
+
+            display: grid;
+            place-items: center;
+
+            border:
+                1px solid
+                rgba(100, 200, 255, 0.45);
+
+            border-radius: 9px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(40, 150, 255, 0.25),
+                    rgba(80, 220, 255, 0.05)
+                );
+
+            box-shadow:
+                0 0 18px
+                rgba(40, 170, 255, 0.15);
+        }
+
+        .header-label {
+            font-size: 14px;
+        }
+
+        .back-link {
+            color: #9fb5cc;
+
+            text-decoration: none;
+
+            font-size: 13px;
+
+            transition:
+                color 0.2s ease;
+        }
+
+        .back-link:hover {
+            color: #ffffff;
+        }
+
+        /* =========================
+           PAGE
+        ========================= */
+
+        .page {
+            width: min(920px, 92%);
+
+            margin: 0 auto;
+
+            padding:
+                70px 0
+                100px;
+        }
+
+        /* =========================
+           HERO
+        ========================= */
+
+        .hero {
+            margin-bottom: 60px;
+        }
+
+        .eyebrow {
+            margin-bottom: 12px;
+
+            color: #63c9ff;
+
+            font-size: 12px;
+
+            font-weight: 700;
+
+            letter-spacing: 3px;
+        }
+
+        .hero h1 {
+            margin: 0;
+
+            font-size:
+                clamp(34px, 6vw, 58px);
+
+            line-height: 1.1;
+
+            letter-spacing: 2px;
+
+            color: #ffffff;
+        }
+
+        .hero-subtitle {
+            margin-top: 18px;
+
+            color: #9eb3c9;
+
+            font-size: 18px;
+        }
+
+        .meta {
+            display: flex;
+            flex-wrap: wrap;
+
+            gap: 12px 30px;
+
+            margin-top: 28px;
+
+            color: #71869d;
+
+            font-size: 13px;
+        }
+
+        /* =========================
+           CONTENT
+        ========================= */
+
+        .legal-content {
+            border-top:
+                1px solid
+                rgba(130, 190, 255, 0.14);
+        }
+
+        .legal-section {
+            padding:
+                38px 0;
+
+            border-bottom:
+                1px solid
+                rgba(130, 190, 255, 0.10);
+        }
+
+        .legal-section h2 {
+            margin:
+                0 0 20px;
+
+            color: #ffffff;
+
+            font-size: 21px;
+
+            letter-spacing: 0.5px;
+        }
+
+        .legal-section h2 span {
+            display: inline-block;
+
+            margin-right: 10px;
+
+            color: #55c8ff;
+
+            font-size: 13px;
+
+            letter-spacing: 1px;
+        }
+
+        .legal-section h3 {
+            margin:
+                28px 0 10px;
+
+            color: #ccecff;
+
+            font-size: 16px;
+        }
+
+        .legal-section p {
+            margin:
+                0 0 16px;
+
+            color: #b7c7d8;
+
+            font-size: 15px;
+        }
+
+        .legal-section ul {
+            margin:
+                12px 0 18px;
+
+            padding-left: 24px;
+        }
+
+        .legal-section li {
+            margin-bottom: 8px;
+
+            color: #b7c7d8;
+
+            font-size: 15px;
+        }
+
+        /* =========================
+           INFO TABLE
+        ========================= */
+
+        .info-table {
+            width: 100%;
+
+            border-collapse: collapse;
+
+            margin-top: 20px;
+
+            overflow: hidden;
+
+            border:
+                1px solid
+                rgba(130, 190, 255, 0.13);
+
+            border-radius: 10px;
+        }
+
+        .info-table tr {
+            border-bottom:
+                1px solid
+                rgba(130, 190, 255, 0.10);
+        }
+
+        .info-table tr:last-child {
+            border-bottom: none;
+        }
+
+        .info-table th,
+        .info-table td {
+            padding: 15px 18px;
+
+            text-align: left;
+
+            font-size: 14px;
+        }
+
+        .info-table th {
+            width: 30%;
+
+            color: #8db5d5;
+
+            font-weight: 600;
+
+            background:
+                rgba(20, 50, 80, 0.25);
+        }
+
+        .info-table td {
+            color: #c8d5e1;
+        }
+
+        /* =========================
+           NOTICE
+        ========================= */
+
+        .notice {
+            margin:
+                24px 0;
+
+            padding:
+                18px 20px;
+
+            border-left:
+                3px solid
+                #4bbfff;
+
+            background:
+                rgba(50, 150, 220, 0.07);
+
+            color: #b8cee0;
+
+            font-size: 14px;
+        }
+
+        /* =========================
+           FOOTER
+        ========================= */
+
+        .site-footer {
+            margin-top: 70px;
+
+            padding-top: 30px;
+
+            border-top:
+                1px solid
+                rgba(130, 190, 255, 0.12);
+
+            text-align: center;
+
+            color: #5f748a;
+
+            font-size: 12px;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+
+            gap: 20px;
+
+            margin-bottom: 20px;
+        }
+
+        .footer-links a {
+            color: #8198ae;
+
+            text-decoration: none;
+        }
+
+        .footer-links a:hover {
+            color: #ffffff;
+        }
+
+        /* =========================
+           MOBILE
+        ========================= */
+
+        @media (max-width: 600px) {
+
+            .site-header {
+                height: 62px;
+            }
+
+            .header-label {
+                font-size: 12px;
+            }
+
+            .back-link {
+                font-size: 12px;
+            }
+
+            .page {
+                padding-top: 45px;
+            }
+
+            .hero {
+                margin-bottom: 40px;
+            }
+
+            .hero-subtitle {
+                font-size: 15px;
+            }
+
+            .legal-section {
+                padding: 30px 0;
+            }
+
+            .legal-section p,
+            .legal-section li {
+                font-size: 14px;
+            }
+
+            .info-table th,
+            .info-table td {
+                display: block;
+
+                width: 100%;
+            }
+
+            .info-table th {
+                padding-bottom: 5px;
+            }
+
+            .info-table td {
+                padding-top: 5px;
+            }
+        }
+    </style>
+</head>
+
+
+<body>
+
+<header class="site-header">
+
+    <div class="header-inner">
+
+        <a
+            href="./index.html"
+            class="brand">
+
+            <div class="brand-mark">
+                N
+            </div>
+
+            <div class="header-label">
+                NEXUS SHOOTER
+            </div>
+
+        </a>
+
+        <a
+            href="./index.html"
+            class="back-link">
+
+            BACK TO GAME
+
+        </a>
+
+    </div>
+
+</header>
+
+
+<main class="page">
+
+    <section class="hero">
+
+        <div class="eyebrow">
+            LEGAL / PRIVACY
+        </div>
+
+        <h1>
+            Privacy Policy
+        </h1>
+
+        <div class="hero-subtitle">
+            プライバシーポリシー
+        </div>
+
+        <div class="meta">
+
+            <span>
+                制定日：2026年9月20日
+            </span>
+
+            <span>
+                最終更新日：2026年9月20日
+            </span>
+
+        </div>
+
+    </section>
+
+
+    <div class="legal-content">
+
+
+        <!-- 01 -->
+
+        <section class="legal-section">
+
+            <h2>
+                <span>01</span>
+                基本方針
+            </h2>
+
+            <p>
+                NEXUS SHOOTER運営（以下「運営者」といいます。）は、
+                NEXUS SHOOTER（以下「本サービス」といいます。）において、
+                利用者に関する情報を適切に取り扱うことを重要な責務と考えています。
+            </p>
+
+            <p>
+                本プライバシーポリシーでは、
+                本サービスにおいて取得する情報、
+                その利用目的、管理方法その他の取扱いについて定めます。
+            </p>
+
+        </section>
+
+
+        <!-- 02 -->
+
+        <section class="legal-section">
+
+            <h2>
+                <span>02</span>
+                取得する情報
+            </h2>
+
+            <p>
+                本サービスでは、サービスの提供および機能の実現に必要な範囲で、
+                以下の情報を取得または保存する場合があります。
+            </p>
+
+            <ul>
+                <li>ゲーム内で生成・登録されるユーザー識別情報</li>
+                <li>ゲームのスコアおよびランキング情報</li>
+                <li>ゲーム内コインその他のゲームデータ</li>
+                <li>所持・購入・装備したゲーム内コンテンツに関する情報</li>
+                <li>本サービスの設定情報</li>
+                <li>サービスの利用に伴い生成される技術情報</li>
+            </ul>
+
+            <div class="notice">
+                本サービスで実際に取得する情報は、
+                利用する機能、接続する外部サービスおよび今後の機能追加によって異なる場合があります。
+            </div>
+
+        </section>
+
+
+        <!-- 03 -->
+
+        <section class="legal-section">
+
+            <h2>
+                <span>03</span>
+                利用目的
+            </h2>
+
+            <p>
+                取得した情報は、以下の目的の範囲内で利用します。
+            </p>
+
+            <ul>
+                <li>本サービスの提供および運営</li>
+                <li>ゲームプレイおよびゲーム内機能の提供</li>
+                <li>スコア・ランキング機能の提供</li>
+                <li>ゲームデータの保存および復元</li>
+                <li>不正利用・不正アクセス・不正操作等の防止</li>
+                <li>障害、不具合その他の問題の調査および対応</li>
+                <li>サービスの品質向上および機能改善</li>
+                <li>重要なお知らせその他必要な連絡</li>
+            </ul>
+
+            <p>
+                利用目的については、
+                利用者がその内容を合理的に把握できるよう、
+                可能な限り具体的に定めます。
+            </p>
+
+        </section>
+
+
+        <!-- 04 -->
+
+        <section class="legal-section">
+
+            <h2>
+                <span>04</span>
+                ブラウザ内に保存される情報
+            </h2>
+
+            <p>
+                本サービスでは、一部のゲームデータおよび設定を
+                利用者の端末上に保存するため、
+                ブラウザのLocal Storage（ローカルストレージ）
+                その他のブラウザ標準機能を利用する場合があります。
+            </p>
+
+            <p>
+                これには、所持コイン、所持機体、
+                装備中の機体その他ゲーム設定等が含まれる場合があります。
+            </p>
+
+            <p>
+                ブラウザの設定変更やデータ削除等によって、
+                これらの情報が失われる場合があります。
+            </p>
+
+        </section>
+
+
+        <!-- 05 -->
+
+        <section class="legal-section">
+
+            <h2>
+                <span>05</span>
+                外部サービス
+            </h2>
+
+            <p>
+                本サービスでは、今後の機能提供に伴い、
+                LINE、GitHub Pages、Cloudflareその他の
+                外部サービスを利用する場合があります。
+            </p>
+
+            <p>
+                外部サービスの利用により、
+                当該サービス提供者が独自に情報を取得・処理する場合があります。
+            </p>
+
+            <p>
+                外部サービスにおける情報の取扱いについては、
+                各サービス提供者が定める規約および
+                プライバシーポリシーをご確認ください。
+            </p>
+
+        </section>
+
+
+        <!-- 06 -->
+
+        <section class="legal-section">
+
+            <h2>
+                <span>06</span>
+                第三者提供
+            </h2>
+
+            <p>
+                運営者は、法令に基づく場合その他法令上認められる場合を除き、
+                利用者の情報を本人の同意なく第三者へ提供しません。
+            </p>
+
+            <p>
+                ただし、本サービスの提供に必要な範囲で、
+                外部サービス事業者等に情報の取扱いを委託する場合があります。
+            </p>
+
+        </section>
+
+
+        <!-- 07 -->
+
+        <section class="legal-section">
+
+            <h2>
+                <span>07</span>
+                情報の安全管理
+            </h2>
+
+            <p>
+                運営者は、取り扱う情報について、
+                漏えい、滅失、毀損、不正アクセスその他の
+                リスクを考慮し、適切な安全管理に努めます。
+            </p>
+
+            <p>
+                ただし、インターネット上の通信および
+                コンピューターシステムについて、
+                完全な安全性を保証するものではありません。
+            </p>
+
+        </section>
+
+
+        <!-- 08 -->
+
+        <section class="legal-section">
+
+            <h2>
+                <span>08</span>
+                情報の保存期間
+            </h2>
+
+            <p>
+                取得した情報は、利用目的の達成に必要な期間、
+                または法令上必要な期間保存します。
+            </p>
+
+            <p>
+                保存する必要がなくなった情報については、
+                適切な方法により削除または匿名化等を行います。
+            </p>
+
+        </section>
+
+
+        <!-- 09 -->
+
+        <section class="legal-section">
+
+            <h2>
+                <span>09</span>
+                利用者からの請求等
+            </h2>
+
+            <p>
+                利用者から、自己に関する情報の開示、
+                訂正、削除その他の請求を受けた場合には、
+                法令および本サービスの運営状況に照らし、
+                適切に対応します。
+            </p>
+
+            <p>
+                請求の際には、本人確認その他必要な確認を
+                お願いする場合があります。
+            </p>
+
+        </section>
+
+
+        <!-- 10 -->
+
+        <section class="legal-section">
+
+            <h2>
+                <span>10</span>
+                未成年者による利用
+            </h2>
+
+            <p>
+                未成年の利用者が本サービスを利用する場合、
+                必要に応じて保護者等の確認または同意を得た上で
+                利用してください。
+            </p>
+
+        </section>
+
+
+        <!-- 11 -->
+
+        <section class="legal-section">
+
+            <h2>
+                <span>11</span>
+                ポリシーの変更
+            </h2>
+
+            <p>
+                運営者は、法令の改正、
+                本サービスの機能変更その他必要に応じて、
+                本ポリシーを変更することがあります。
+            </p>
+
+            <p>
+                重要な変更を行う場合には、
+                本サービス上で変更内容を告知するなど、
+                適切な方法により利用者にお知らせします。
+            </p>
+
+        </section>
+
+
+        <!-- 12 -->
+
+        <section class="legal-section">
+
+            <h2>
+                <span>12</span>
+                運営者情報・お問い合わせ
+            </h2>
+
+            <table class="info-table">
+
+                <tr>
+                    <th>
+                        サービス名称
+                    </th>
+
+                    <td>
+                        NEXUS SHOOTER
+                    </td>
+                </tr>
+
+                <tr>
+                    <th>
+                        運営者
+                    </th>
+
+                    <td>
+                        NEXUS SHOOTER運営
+                    </td>
+                </tr>
+
+                <tr>
+                    <th>
+                        お問い合わせ
+                    </th>
+
+                    <td>
+                        本サービス所定のお問い合わせ方法
+                    </td>
+                </tr>
+
+            </table>
+
+        </section>
+
+    </div>
+
+
+    <footer class="site-footer">
+
+        <div class="footer-links">
+
+            <a href="./privacy.html">
+                Privacy Policy
+            </a>
+
+            <a href="./terms.html">
+                Terms of Service
+            </a>
+
+            <a href="./index.html">
+                NEXUS SHOOTER
+            </a>
+
+        </div>
+
+        <div>
+            © 2026 NEXUS SHOOTER
+        </div>
+
+    </footer>
+
+</main>
+
+</body>
+
+</html>

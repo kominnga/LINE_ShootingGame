@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="description"
+        content="NEXUS SHOOTER サービス利用規約">
+
+    <title>
+        NEXUS SHOOTER | Terms of Service
+    </title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+
+            background:
+                radial-gradient(
+                    circle at 50% -10%,
+                    #17365d 0%,
+                    #081221 38%,
+                    #03070e 78%,
+                    #02040a 100%
+                );
+
+            color: #eaf4ff;
+
+            font-family:
+                "Segoe UI",
+                "Noto Sans JP",
+                Arial,
+                sans-serif;
+
+            line-height: 1.8;
+        }
+
+        .site-header {
+            position: sticky;
+            top: 0;
+
+            z-index: 100;
+
+            height: 70px;
+
+            display: flex;
+            align-items: center;
+
+            border-bottom:
+                1px solid
+                rgba(130, 190, 255, 0.14);
+
+            background:
+                rgba(3, 9, 18, 0.88);
+
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+        }
+
+        .header-inner {
+            width: min(1100px, 92%);
+
+            margin: 0 auto;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+
+            color: #ffffff;
+
+            text-decoration: none;
+
+            font-weight: 700;
+
+            letter-spacing: 2px;
+        }
+
+        .brand-mark {
+            width: 34px;
+            height: 34px;
+
+            display: grid;
+            place-items: center;
+
+            border:
+                1px solid
+                rgba(100, 200, 255, 0.45);
+
+            border-radius: 9px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(40, 150, 255, 0.25),
+                    rgba(80, 220, 255, 0.05)
+                );
+        }
+
+        .header-label {
+            font-size: 14px;
+        }
+
+        .back-link {
+            color: #9fb5cc;
+
+            text-decoration: none;
+
+            font-size: 13px;
+        }
+
+        .back-link:hover {
+            color: #ffffff;
+        }
+
+        .page {
+            width: min(920px, 92%);
+
+            margin: 0 auto;
+
+            padding:
+                70px 0
+                100px;
+        }
+
+        .hero {
+            margin-bottom: 60px;
+        }
+
+        .eyebrow {
+            margin-bottom: 12px;
+
+            color: #63c9ff;
+
+            font-size: 12px;
+
+            font-weight: 700;
+
+            letter-spacing: 3px;
+        }
+
+        .hero h1 {
+            margin: 0;
+
+            font-size:
+                clamp(34px, 6vw, 58px);
+
+            line-height: 1.1;
+
+            letter-spacing: 2px;
+
+            color: #ffffff;
+        }
+
+        .hero-subtitle {
+            margin-top: 18px;
+
+            color: #9eb3c9;
+
+            font-size: 18px;
+        }
+
+        .meta {
+            display: flex;
+            flex-wrap: wrap;
+
+            gap: 12px 30px;
+
+            margin-top: 28px;
+
+            color: #71869d;
+
+            font-size: 13px;
+        }
+
+        .legal-content {
+            border-top:
+                1px solid
+                rgba(130, 190, 255, 0.14);
+        }
+
+        .legal-section {
+            padding:
+                38px 0;
+
+            border-bottom:
+                1px solid
+                rgba(130, 190, 255, 0.10);
+        }
+
+        .legal-section h2 {
+            margin:
+                0 0 20px;
+
+            color: #ffffff;
+
+            font-size: 21px;
+        }
+
+        .legal-section h2 span {
+            display: inline-block;
+
+            margin-right: 10px;
+
+            color: #55c8ff;
+
+            font-size: 13px;
+
+            letter-spacing: 1px;
+        }
+
+        .legal-section h3 {
+            margin:
+                28px 0 10px;
+
+            color: #ccecff;
+
+            font-size: 16px;
+        }
+
+        .legal-section p {
+            margin:
+                0 0 16px;
+
+            color: #b7c7d8;
+
+            font-size: 15px;
+        }
+
+        .legal-section ul {
+            margin:
+                12px 0 18px;
+
+            padding-left: 24px;
+        }
+
+        .legal-section li {
+            margin-bottom: 8px;
+
+            color: #b7c7d8;
+
+            font-size: 15px;
+        }
+
+        .notice {
+            margin:
+                24px 0;
+
+            padding:
+                18px 20px;
+
+            border-left:
+                3px solid
+                #4bbfff;
+
+            background:
+                rgba(50, 150, 220, 0.07);
+
+            color: #b8cee0;
+
+            font-size: 14px;
+        }
+
+        .site-footer {
+            margin-top: 70px;
+
+            padding-top: 30px;
+
+            border-top:
+                1px solid
+                rgba(130, 190, 255, 0.12);
+
+            text-align: center;
+
+            color: #5f748a;
+
+            font-size: 12px;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+
+            gap: 20px;
+
+            margin-bottom: 20px;
+        }
+
+        .footer-links a {
+            color: #8198ae;
+
+            text-decoration: none;
+        }
+
+        .footer-links a:hover {
+            color: #ffffff;
+        }
+
+        @media (max-width: 600px) {
+
+            .site-header {
+                height: 62px;
+            }
+
+            .header-label {
+                font-size: 12px;
+            }
+
+            .page {
+                padding-top: 45px;
+            }
+
+            .hero {
+                margin-bottom: 40px;
+            }
+
+            .legal-section {
+                padding: 30px 0;
+            }
+
+            .legal-section p,
+            .legal-section li {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+
+
+<body>
+
+<header class="site-header">
+
+    <div class="header-inner">
+
+        <a
+            href="./index.html"
+            class="brand">
+
+            <div class="brand-mark">
+                N
+            </div>
+
+            <div class="header-label">
+                NEXUS SHOOTER
+            </div>
+
+        </a>
+
+        <a
+            href="./index.html"
+            class="back-link">
+
+            BACK TO GAME
+
+        </a>
+
+    </div>
+
+</header>
+
+
+<main class="page">
+
+    <section class="hero">
+
+        <div class="eyebrow">
+            LEGAL / TERMS
+        </div>
+
+        <h1>
+            Terms of Service
+        </h1>
+
+        <div class="hero-subtitle">
+            サービス利用規約
+        </div>
+
+        <div class="meta">
+
+            <span>
+                制定日：2026年9月20日
+            </span>
+
+            <span>
+                最終更新日：2026年9月20日
+            </span>
+
+        </div>
+
+    </section>
+
+
+    <div class="legal-content">
+
+
+        <section class="legal-section">
+
+            <h2>
+                <span>01</span>
+                総則
+            </h2>
+
+            <p>
+                本サービス利用規約（以下「本規約」といいます。）は、
+                NEXUS SHOOTER運営（以下「運営者」といいます。）が提供する
+                NEXUS SHOOTER（以下「本サービス」といいます。）の
+                利用条件を定めるものです。
+            </p>
+
+            <p>
+                利用者は、本規約に同意した上で本サービスを利用するものとします。
+            </p>
+
+        </section>
+
+
+        <section class="legal-section">
+
+            <h2>
+                <span>02</span>
+                定義
+            </h2>
+
+            <p>
+                本規約において使用する用語は、以下の意味を有します。
+            </p>
+
+            <ul>
+
+                <li>
+                    「利用者」とは、本サービスを利用するすべての者をいいます。
+                </li>
+
+                <li>
+                    「ゲームデータ」とは、
+                    スコア、コイン、所持機体、装備情報その他
+                    本サービス上で生成されるデータをいいます。
+                </li>
+
+                <li>
+                    「ゲーム内コンテンツ」とは、
+                    本サービス上で利用可能な機体、アイテム、
+                    その他のゲーム内要素をいいます。
+                </li>
+
+            </ul>
+
+        </section>
+
+
+        <section class="legal-section">
+
+            <h2>
+                <span>03</span>
+                サービスの利用
+            </h2>
+
+            <p>
+                利用者は、本規約および関係法令を遵守して
+                本サービスを利用するものとします。
+            </p>
+
+            <p>
+                本サービスの利用に必要な通信機器、
+                ソフトウェア、通信環境等については、
+                利用者の責任と費用において準備するものとします。
+            </p>
+
+        </section>
+
+
+        <section class="legal-section">
+
+            <h2>
+                <span>04</span>
+                ゲームデータ
+            </h2>
+
+            <p>
+                本サービスにおけるスコア、コイン、
+                所持機体その他のゲームデータは、
+                本サービスの運営上必要な範囲で保存・管理されます。
+            </p>
+
+            <p>
+                システム障害、通信障害、端末の変更、
+                ブラウザデータの削除その他の事情により、
+                ゲームデータが消失または変更される場合があります。
+            </p>
+
+            <div class="notice">
+                ゲーム内コインその他のゲームデータは、
+                現実の通貨または現実の財産的価値を有するものではありません。
+            </div>
+
+        </section>
+
+
+        <section class="legal-section">
+
+            <h2>
+                <span>05</span>
+                ゲーム内コンテンツ
+            </h2>
+
+            <p>
+                本サービスにおいて提供される機体、
+                アイテム、ゲーム内コインその他のコンテンツは、
+                本サービス内でのみ利用できるものとします。
+            </p>
+
+            <p>
+                ゲーム内コンテンツについて、
+                利用者は現実の金銭その他の財産的権利を取得するものではありません。
+            </p>
+
+        </section>
+
+
+        <section class="legal-section">
+
+            <h2>
+                <span>06</span>
+                禁止事項
+            </h2>
+
+            <p>
+                利用者は、本サービスの利用に際して、
+                以下の行為を行ってはなりません。
+            </p>
+
+            <ul>
+
+                <li>
+                    本サービスの不正な改変、解析または改造
+                </li>
+
+                <li>
+                    ゲームデータを不正に変更または取得する行為
+                </li>
+
+                <li>
+                    不正なプログラム、スクリプト等を使用する行為
+                </li>
+
+                <li>
+                    本サービスまたはサーバーに過度な負荷を与える行為
+                </li>
+
+                <li>
+                    他の利用者の利用を妨害する行為
+                </li>
+
+                <li>
+                    不正アクセスまたはその試み
+                </li>
+
+                <li>
+                    本サービスの脆弱性を悪用する行為
+                </li>
+
+                <li>
+                    運営者または第三者になりすます行為
+                </li>
+
+                <li>
+                    その他、運営者が不適切と判断する行為
+                </li>
+
+            </ul>
+
+        </section>
+
+
+        <section class="legal-section">
+
+            <h2>
+                <span>07</span>
+                利用停止等
+            </h2>
+
+            <p>
+                利用者が本規約に違反した場合、
+                または本サービスの運営上必要と判断した場合、
+                運営者は当該利用者による本サービスの利用を
+                制限または停止することがあります。
+            </p>
+
+        </section>
+
+
+        <section class="legal-section">
+
+            <h2>
+                <span>08</span>
+                知的財産権
+            </h2>
+
+            <p>
+                本サービスに含まれるプログラム、
+                デザイン、画像、文章、ロゴ、名称その他のコンテンツに関する
+                著作権その他の知的財産権は、
+                運営者または正当な権利者に帰属します。
+            </p>
+
+            <p>
+                法令上認められる場合を除き、
+                運営者の許可なくこれらを複製、
+                改変、転載、販売またはその他の方法で利用することを禁止します。
+            </p>
+
+        </section>
+
+
+        <section class="legal-section">
+
+            <h2>
+                <span>09</span>
+                サービスの変更・停止・終了
+            </h2>
+
+            <p>
+                運営者は、以下の場合その他必要と判断した場合、
+                本サービスの全部または一部を変更、
+                一時停止または終了することがあります。
+            </p>
+
+            <ul>
+
+                <li>
+                    システムの保守または更新を行う場合
+                </li>
+
+                <li>
+                    セキュリティ上の対応が必要となった場合
+                </li>
+
+                <li>
+                    外部サービスの仕様変更または停止が発生した場合
+                </li>
+
+                <li>
+                    その他、運営上必要と判断した場合
+                </li>
+
+            </ul>
+
+        </section>
+
+
+        <section class="legal-section">
+
+            <h2>
+                <span>10</span>
+                免責事項
+            </h2>
+
+            <p>
+                運営者は、本サービスについて、
+                常に正常に動作すること、
+                すべての端末または環境において利用できること、
+                および特定の目的に適合することを保証するものではありません。
+            </p>
+
+            <p>
+                通信障害、端末障害、ブラウザの仕様、
+                外部サービスの障害その他運営者の合理的な管理を超える事情により
+                発生した損害について、運営者は法令上許される範囲で責任を負わないものとします。
+            </p>
+
+        </section>
+
+
+        <section class="legal-section">
+
+            <h2>
+                <span>11</span>
+                損害賠償
+            </h2>
+
+            <p>
+                利用者が本規約に違反し、
+                その結果として運営者または第三者に損害を与えた場合、
+                利用者はその損害を賠償する責任を負う場合があります。
+            </p>
+
+        </section>
+
+
+        <section class="legal-section">
+
+            <h2>
+                <span>12</span>
+                規約の変更
+            </h2>
+
+            <p>
+                運営者は、必要に応じて本規約を変更することがあります。
+            </p>
+
+            <p>
+                変更後の本規約は、
+                本サービス上に掲載した時点その他適切な方法により
+                定めた時点から適用されます。
+            </p>
+
+        </section>
+
+
+        <section class="legal-section">
+
+            <h2>
+                <span>13</span>
+                準拠法・管轄
+            </h2>
+
+            <p>
+                本規約は日本法を準拠法とします。
+            </p>
+
+            <p>
+                本サービスに関して利用者と運営者との間で紛争が生じた場合、
+                法令に従い、適切な裁判所を管轄裁判所とします。
+            </p>
+
+        </section>
+
+
+        <section class="legal-section">
+
+            <h2>
+                <span>14</span>
+                お問い合わせ
+            </h2>
+
+            <p>
+                本サービスに関するお問い合わせは、
+                本サービス上で別途案内する方法により受け付けます。
+            </p>
+
+        </section>
+
+
+    </div>
+
+
+    <footer class="site-footer">
+
+        <div class="footer-links">
+
+            <a href="./privacy.html">
+                Privacy Policy
+            </a>
+
+            <a href="./terms.html">
+                Terms of Service
+            </a>
+
+            <a href="./index.html">
+                NEXUS SHOOTER
+            </a>
+
+        </div>
+
+        <div>
+            © 2026 NEXUS SHOOTER
+        </div>
+
+    </footer>
+
+</main>
+
+</body>
+
+</html>

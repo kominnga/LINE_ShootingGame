@@ -3933,3 +3933,60 @@ button {
     opacity: 0.45;
     cursor: default;
 }
+
+/* =========================
+   LEGAL LINKS
+========================= */
+
+#legal-links {
+    position: relative;
+    z-index: 20;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    gap: 10px;
+
+    margin-top: 18px;
+
+    font-family:
+        "Segoe UI",
+        "Noto Sans JP",
+        sans-serif;
+
+    font-size: 11px;
+
+    letter-spacing: 1.2px;
+
+    color: rgba(150, 175, 200, 0.7);
+}
+
+#legal-links a {
+    color: rgba(160, 190, 220, 0.75);
+
+    text-decoration: none;
+
+    transition:
+        color 0.2s ease,
+        text-shadow 0.2s ease;
+}
+
+#legal-links a:hover {
+    color: #ffffff;
+
+    text-shadow:
+        0 0 10px rgba(80, 190, 255, 0.8);
+}
+
+#legal-links span {
+    color: rgba(130, 155, 180, 0.4);
+}
+
+@media (max-width: 600px) {
+
+    #legal-links {
+        margin-top: 14px;
+        font-size: 10px;
+    }
+}
