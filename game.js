@@ -2706,13 +2706,7 @@ function updateItems(deltaTime) {
         }
     }
 
-    // BEAM
-    if (beamCooldown > 0) {
-        beamCooldown -= deltaTime;
-        if (beamCooldown < 0) {
-            beamCooldown = 0;
-        }
-    }
+    
 
     // SHIELD
     if (shieldCooldown > 0) {
@@ -3059,21 +3053,16 @@ function drawEnemy(enemy) {
 }
 
 function checkBeamCollision() {
-    if (!beamActive) return;
+
+    if (!beamActive) {
+        return;
+    }
 
     const beamX = player.x;
-
-    const currentSkin =
-    localStorage.getItem("nexus-equipped-skin")
-    || "nexus-01";
-
-const beamWidth =
-    currentSkin === "nexus-04"
-        ? 150
-        : 90;
+    const beamWidth = getBeamWidth();
 
     // ==============================
-    // 通常の敵
+    // 通常敵
     // ==============================
 
     for (let i = enemies.length - 1; i >= 0; i--) {
@@ -3081,50 +3070,45 @@ const beamWidth =
         const enemy = enemies[i];
 
         if (
-            enemy.x + enemy.width / 2 > beamX - beamWidth / 2 &&
-            enemy.x - enemy.width / 2 < beamX + beamWidth / 2
+            enemy.x + enemy.width / 2 >
+                beamX - beamWidth / 2 &&
+            enemy.x - enemy.width / 2 <
+                beamX + beamWidth / 2
         ) {
 
+            // 毎フレーム少しずつダメージ
             enemy.hp -= beamDamage * 0.016;
 
             if (enemy.hp <= 0) {
 
                 score += enemy.score || 100;
 
-                score += enemyScore;
-
-                addCoins(
-                    enemy.type === "normal"
-                        ? 10
-                        : enemy.type === "fast"
-                        ? 15
-                        : enemy.type === "big"
-                        ? 50
-                        : 10
-                );
-
                 createExplosion(
                     enemy.x,
                     enemy.y,
-                    enemy.width
+                    Math.min(enemy.width, 25)
                 );
 
                 enemies.splice(i, 1);
-
-                updateHUD();
             }
         }
     }
 
     // ==============================
-    // ボス
+    // BOSS
     // ==============================
 
-    if (boss) {
+    if (
+        boss &&
+        bossActive &&
+        bossWarningTimer <= 0
+    ) {
 
         if (
-            boss.x + boss.width / 2 > beamX - beamWidth / 2 &&
-            boss.x - boss.width / 2 < beamX + beamWidth / 2
+            boss.x + boss.width / 2 >
+                beamX - beamWidth / 2 &&
+            boss.x - boss.width / 2 <
+                beamX + beamWidth / 2
         ) {
 
             boss.hp -= beamDamage * 0.016;
@@ -3132,12 +3116,15 @@ const beamWidth =
             boss.flash = 0.08;
 
             if (boss.hp <= 0) {
+
                 defeatBoss();
 
                 return;
             }
         }
     }
+
+    updateHUD();
 }
 
 
