@@ -482,10 +482,16 @@
 
         <div id="garage-preview">
 
-            <button id="skin-prev" class="skin-arrow">
+            <!-- 左 -->
+            <button
+                id="skin-prev"
+                class="skin-arrow"
+                type="button"
+                aria-label="前の機体">
                 ◀
             </button>
 
+            <!-- 機体表示 -->
             <div id="skin-display">
 
                 <canvas
@@ -504,13 +510,20 @@
 
             </div>
 
-            <button id="skin-next" class="skin-arrow">
+            <!-- 右 -->
+            <button
+                id="skin-next"
+                class="skin-arrow"
+                type="button"
+                aria-label="次の機体">
                 ▶
             </button>
 
         </div>
 
-        <button id="skin-equip-button">
+        <button
+            id="skin-equip-button"
+            type="button">
             装備する
         </button>
 
@@ -518,13 +531,26 @@
             装備中：NEXUS-01
         </div>
 
-        <button id="garage-close-button">
+        <div id="skin-type">
+            STANDARD TYPE
+        </div>
+
+        <div id="skin-description">
+            バランスに優れた標準型機体。
+        </div>
+
+        <div id="skin-ability">
+            ABILITY：標準性能
+        </div>
+
+        <button
+            id="garage-close-button"
+            type="button">
             戻る
         </button>
 
-         <div id="skin-number">1 / 5</div>   
- <div id="skin-type">
-    STANDARD TYPE
+    </div>
+
 </div>
 
 <div id="skin-description">

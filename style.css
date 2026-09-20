@@ -3783,3 +3783,153 @@ button {
 
     pointer-events: auto;
 }
+
+/* ==================================================
+   NEXUS GARAGE
+   BUTTON HARD FIX
+================================================== */
+
+/* GARAGE全体 */
+#garage-screen {
+    pointer-events: auto;
+}
+
+/* GARAGEパネル */
+#garage-panel {
+    position: relative;
+    z-index: 1000;
+    pointer-events: auto;
+}
+
+/* プレビューエリア */
+#garage-preview {
+    position: relative;
+    z-index: 1000;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 10px;
+
+    pointer-events: auto;
+}
+
+/* 左右ボタン */
+#skin-prev,
+#skin-next {
+    position: relative;
+
+    z-index: 9999;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 48px;
+    height: 48px;
+
+    min-width: 48px;
+    min-height: 48px;
+
+    padding: 0;
+
+    border: 1px solid rgba(120, 200, 255, 0.55);
+    border-radius: 50%;
+
+    background: rgba(10, 25, 55, 0.98);
+
+    color: #ffffff;
+
+    font-size: 20px;
+    line-height: 1;
+
+    cursor: pointer;
+
+    pointer-events: auto;
+
+    touch-action: manipulation;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+
+    box-shadow:
+        0 0 10px rgba(40, 160, 255, 0.18);
+
+    transition:
+        transform 0.15s ease,
+        background 0.15s ease,
+        border-color 0.15s ease,
+        box-shadow 0.15s ease;
+}
+
+/* 左右ボタン ホバー */
+#skin-prev:hover,
+#skin-next:hover {
+    background: rgba(30, 70, 120, 1);
+
+    border-color:
+        rgba(100, 220, 255, 0.95);
+
+    box-shadow:
+        0 0 18px rgba(50, 180, 255, 0.35);
+
+    transform: scale(1.08);
+}
+
+/* 左右ボタン 押下 */
+#skin-prev:active,
+#skin-next:active {
+    transform: scale(0.90);
+
+    background:
+        rgba(50, 100, 160, 1);
+}
+
+/* 機体表示 */
+#skin-display {
+    position: relative;
+
+    z-index: 100;
+
+    width: 200px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    pointer-events: none;
+
+    flex-shrink: 0;
+}
+
+/* Canvas */
+#skin-preview-canvas {
+    position: relative;
+
+    z-index: 100;
+
+    display: block;
+
+    pointer-events: none;
+}
+
+/* 装飾レイヤー */
+#skin-display::before {
+    pointer-events: none;
+}
+
+/* ボタンが無効化されないようにする */
+#skin-prev:not(:disabled),
+#skin-next:not(:disabled) {
+    pointer-events: auto;
+    cursor: pointer;
+}
+
+/* 明示的にdisabledになった場合だけ無効 */
+#skin-prev:disabled,
+#skin-next:disabled {
+    pointer-events: none;
+    opacity: 0.45;
+    cursor: default;
+}
