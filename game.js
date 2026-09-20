@@ -7,7 +7,8 @@ const hpText = document.getElementById("hp");
 const startScreen = document.getElementById("start-screen");
 const gameOverScreen = document.getElementById("game-over-screen");
 
-
+const howtoButton =
+    document.getElementById("howto-button");
 const howtoScreen =
     document.getElementById("howto-screen");
 
@@ -5842,6 +5843,13 @@ function returnToStartScreen() {
    ボタン
 ================================================== */
 
+
+if (howtoButton) {
+    howtoButton.addEventListener(
+        "click",
+        openHowTo
+    );
+}
 if (rankingButton) {
 
     rankingButton.addEventListener(

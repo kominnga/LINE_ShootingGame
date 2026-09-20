@@ -1379,6 +1379,49 @@ button {
     transform: scale(0.97);
 }
 
+#howto-button {
+    width: 220px;
+
+    margin-top: 4px;
+
+    padding: 12px 20px;
+
+    border:
+        1px solid rgba(100, 190, 255, 0.45);
+
+    border-radius: 10px;
+
+    background:
+        rgba(15, 35, 70, 0.85);
+
+    color: white;
+
+    font-size: 15px;
+    font-weight: bold;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.15s ease,
+        background 0.15s ease,
+        box-shadow 0.15s ease;
+
+    touch-action: manipulation;
+
+    -webkit-tap-highlight-color: transparent;
+}
+
+#howto-button:hover {
+    background:
+        rgba(25, 75, 130, 0.95);
+
+    box-shadow:
+        0 0 15px rgba(60, 180, 255, 0.25);
+}
+
+#howto-button:active {
+    transform: scale(0.96);
+}
 
 /* =========================================
    MOBILE
