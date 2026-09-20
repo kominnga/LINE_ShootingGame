@@ -193,10 +193,7 @@ button {
 }
 
 /* START画面・GAME OVER中はアイテム操作を隠す */
-#start-screen ~ #itemControls,
-#game-over-screen ~ #itemControls {
-    display: none !important;
-}
+
 
 #shieldButton.item-unavailable,
 #bombButton.item-unavailable {
@@ -272,14 +269,14 @@ button {
     right: 0;
     bottom: 105px;
 
-    display: flex;
+    /* 表示・非表示はJavaScriptで制御 */
+    display: none;
+
     justify-content: center;
     align-items: center;
-
     gap: 12px;
 
     z-index: 30;
-
     pointer-events: auto;
 }
 
