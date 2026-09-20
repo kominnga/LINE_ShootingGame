@@ -57,21 +57,7 @@ let bombFlashTimer = 0;
 // スキン能力
 // ========================================
 
-// 現在のスキンの最大HP
-function getMaxHP() {
 
-    const currentSkin =
-        localStorage.getItem("nexus-equipped-skin")
-        || "nexus-01";
-
-    // NEXUS-05 → MAX HP +2
-    if (currentSkin === "nexus-05") {
-        return 5;
-    }
-
-    // 通常
-    return 3;
-}
 
 // ========================================
 // コインシステム
@@ -1482,99 +1468,6 @@ function openPurchaseConfirm(skin) {
         "purchase-modal-visible"
     );
 }
-
-function confirmPurchase() {
-
-    const skin =
-        purchaseTargetSkin;
-
-    if (!skin) {
-        return;
-    }
-
-    // 念のため再確認
-    if (isSkinOwned(skin.id)) {
-
-        closePurchaseConfirm();
-        updateGarage();
-
-        return;
-    }
-
-    if (coins < skin.price) {
-
-        closePurchaseConfirm();
-
-        if (skinStatus) {
-
-            skinStatus.textContent =
-                `⚠ COINS不足　あと ${(skin.price - coins).toLocaleString()} COINS必要`;
-
-            skinStatus.classList.add(
-                "skin-not-enough"
-            );
-
-        }
-
-        return;
-    }
-
-    // ========================================
-    // コイン消費
-    // ========================================
-
-    coins -= skin.price;
-
-    localStorage.setItem(
-        "nexus-coins",
-        String(coins)
-    );
-
-    // ========================================
-    // 所持スキンへ追加
-    // ========================================
-
-    ownedSkins.push(
-        skin.id
-    );
-
-    saveOwnedSkins();
-
-    // ========================================
-    // 自動装備
-    // ========================================
-
-    equippedSkin =
-        skin.id;
-
-    localStorage.setItem(
-        "nexus-equipped-skin",
-        equippedSkin
-    );
-
-    // ========================================
-    // ダイアログを閉じる
-    // ========================================
-
-    closePurchaseConfirm();
-
-    // ========================================
-    // GARAGE更新
-    // ========================================
-
-    updateCoinDisplays();
-
-    updateGarage();
-
-    // ========================================
-    // 購入演出
-    // ========================================
-
-    playPurchaseAnimation(
-        skin
-    );
-
-}
 /* ==================================================
    GARAGE 購入アニメーション
 ================================================== */
@@ -1800,133 +1693,7 @@ function buySelectedSkin() {
 // 購入確認
 // ==================================================
 
-function openPurchaseConfirm(skin) {
 
-    if (!skin) {
-        return;
-    }
-
-    purchaseTargetSkin =
-        skin;
-
-
-    let modal =
-        document.getElementById(
-            "garage-purchase-modal"
-        );
-
-
-    // 初回だけ作成
-    if (!modal) {
-
-        modal =
-            document.createElement(
-                "div"
-            );
-
-        modal.id =
-            "garage-purchase-modal";
-
-
-        modal.innerHTML = `
-
-            <div class="purchase-modal-panel">
-
-                <div class="purchase-modal-label">
-                    NEXUS GARAGE
-                </div>
-
-                <div class="purchase-modal-title">
-                    PURCHASE
-                </div>
-
-                <div
-                    id="purchase-modal-skin"
-                    class="purchase-modal-skin">
-                </div>
-
-                <div
-                    id="purchase-modal-price"
-                    class="purchase-modal-price">
-                </div>
-
-                <div
-                    id="purchase-modal-balance"
-                    class="purchase-modal-balance">
-                </div>
-
-                <div class="purchase-modal-question">
-                    この機体を購入しますか？
-                </div>
-
-                <div class="purchase-modal-buttons">
-
-                    <button
-                        id="purchase-confirm-button"
-                        type="button">
-                        PURCHASE
-                    </button>
-
-                    <button
-                        id="purchase-cancel-button"
-                        type="button">
-                        CANCEL
-                    </button>
-
-                </div>
-
-            </div>
-        `;
-
-
-        document.body.appendChild(
-            modal
-        );
-
-
-        document
-            .getElementById(
-                "purchase-confirm-button"
-            )
-            .addEventListener(
-                "click",
-                confirmPurchase
-            );
-
-
-        document
-            .getElementById(
-                "purchase-cancel-button"
-            )
-            .addEventListener(
-                "click",
-                closePurchaseConfirm
-            );
-    }
-
-
-    document.getElementById(
-        "purchase-modal-skin"
-    ).textContent =
-        skin.name;
-
-
-    document.getElementById(
-        "purchase-modal-price"
-    ).textContent =
-        `🪙 ${skin.price.toLocaleString()} COINS`;
-
-
-    document.getElementById(
-        "purchase-modal-balance"
-    ).textContent =
-        `現在の所持コイン：${coins.toLocaleString()} COINS`;
-
-
-    modal.classList.add(
-        "purchase-modal-visible"
-    );
-}
 
 // ==================================================
 // COINS不足
@@ -1957,19 +1724,7 @@ function showCoinsNotEnough(skin) {
     }
 
 
-    if (skinEquipButton) {
 
-        skinEquipButton.classList.remove(
-            "garage-shake"
-        );
-
-        // 再アニメーション用
-        void skinEquipButton.offsetWidth;
-
-        skinEquipButton.classList.add(
-            "garage-shake"
-        );
-    }
 
 
     // 少し経ったら通常表示へ
@@ -2370,45 +2125,34 @@ if (garageCloseButton) {
 }
 
 
-if (skinEquipButton) {
 
-    skinEquipButton.addEventListener(
+
+
+if (skinPrevButton) {
+
+    skinPrevButton.addEventListener(
         "click",
-        () => {
+        function (event) {
 
-            const skin =
-                skins[selectedSkinIndex];
+            event.preventDefault();
+            event.stopPropagation();
 
-            if (!skin) {
-                return;
-            }
-
-
-            // 未所持 → 購入
-            if (
-                !isSkinOwned(
-                    skin.id
-                )
-            ) {
-
-                buySelectedSkin();
-
-                return;
-            }
-
-
-            // 所持済み → 装備
-            equipSelectedSkin();
+            selectPreviousSkin();
         }
     );
 }
-
 
 if (skinNextButton) {
 
     skinNextButton.addEventListener(
         "click",
-        selectNextSkin
+        function (event) {
+
+            event.preventDefault();
+            event.stopPropagation();
+
+            selectNextSkin();
+        }
     );
 }
 
@@ -3046,7 +2790,6 @@ function getEquippedSkin() {
 }
 
 
-// 最大HP
 function getMaxHP() {
 
     const skin = getEquippedSkin();
