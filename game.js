@@ -438,7 +438,6 @@ if (info) {
 function useShield() {
 
     if (shieldActive) return;
-
     if (shieldCooldown > 0) return;
 
     shieldActive = true;
@@ -459,10 +458,7 @@ function useBomb() {
     screenShake = 20;
     hitFlash = 0.25;
 
-    // =========================
-    // 通常の敵
-    // =========================
-
+    // 通常敵を全滅
     for (let i = enemies.length - 1; i >= 0; i--) {
 
         const enemy = enemies[i];
@@ -478,18 +474,10 @@ function useBomb() {
         enemies.splice(i, 1);
     }
 
-
-    // =========================
     // 敵弾を全消去
-    // =========================
-
     enemyBullets = [];
 
-
-    // =========================
-    // BOSS
-    // =========================
-
+    // BOSSにも100ダメージ
     if (boss && bossActive) {
 
         boss.hp -= 100;
@@ -501,9 +489,7 @@ function useBomb() {
         );
 
         if (boss.hp <= 0) {
-
             defeatBoss();
-
             return;
         }
     }
@@ -982,18 +968,15 @@ healCooldown = healCooldownMax;
 
 beamActive = false;
 beamTimer = 0;
-setItemControlsVisible(true);
-
-// ビームも最初からチャージ開始
 beamCooldown = beamCooldownMax;
 
-// SHIELD
 shieldActive = false;
 shieldTimer = 0;
 shieldCooldown = shieldCooldownMax;
 
-// BOMB
 bombCooldown = bombCooldownMax;
+
+setItemControlsVisible(true);
 
     player.x = width / 2;
     player.y = height - 150;
@@ -2548,35 +2531,31 @@ function updateBeam(deltaTime) {
 }
 function updateItems(deltaTime) {
 
+    // HEAL
     if (healCooldown > 0) {
         healCooldown -= deltaTime;
-
         if (healCooldown < 0) {
             healCooldown = 0;
         }
     }
 
-
+    // BEAM
     if (beamCooldown > 0) {
         beamCooldown -= deltaTime;
-
         if (beamCooldown < 0) {
             beamCooldown = 0;
         }
     }
 
-
     // SHIELD
-
     if (shieldCooldown > 0) {
         shieldCooldown -= deltaTime;
-
         if (shieldCooldown < 0) {
             shieldCooldown = 0;
         }
     }
 
-
+    // SHIELD 持続時間
     if (shieldActive) {
 
         shieldTimer -= deltaTime;
@@ -2588,9 +2567,7 @@ function updateItems(deltaTime) {
         }
     }
 
-
     // BOMB
-
     if (bombCooldown > 0) {
 
         bombCooldown -= deltaTime;
@@ -2599,7 +2576,6 @@ function updateItems(deltaTime) {
             bombCooldown = 0;
         }
     }
-
 
     updateItemButtons();
 }
@@ -4741,67 +4717,125 @@ function updateItemButtons() {
     const beamButton =
         document.getElementById("beamButton");
 
-    if (!healButton || !beamButton) {
-        return;
-    }
+    const shieldButton =
+        document.getElementById("shieldButton");
+
+    const bombButton =
+        document.getElementById("bombButton");
+
 
     // ==============================
     // ♡ 回復
     // ==============================
 
-   // ==============================
-// ♡ 回復
-// ==============================
+    if (healButton) {
 
-const maxHP = getMaxHP();
+        const maxHP = getMaxHP();
 
-if (hp >= maxHP) {
+        if (hp >= maxHP) {
 
-    healButton.classList.add("item-unavailable");
+            healButton.classList.add("item-unavailable");
 
-    healButton.innerHTML =
-        "♡<span>HP MAX</span>";
+            healButton.innerHTML =
+                "♡<span>HP MAX</span>";
 
-} else if (healCooldown > 0) {
+        } else if (healCooldown > 0) {
 
-    healButton.classList.add("item-unavailable");
+            healButton.classList.add("item-unavailable");
 
-    healButton.innerHTML =
-        `♡<span>あと ${Math.ceil(healCooldown)}秒</span>`;
+            healButton.innerHTML =
+                `♡<span>あと ${Math.ceil(healCooldown)}秒</span>`;
 
-} else {
+        } else {
 
-    healButton.classList.remove("item-unavailable");
+            healButton.classList.remove("item-unavailable");
 
-    healButton.innerHTML =
-        "♡<span>回復可能！</span>";
-}
+            healButton.innerHTML =
+                "♡<span>回復可能！</span>";
+        }
+    }
 
 
     // ==============================
     // 🌈 必殺ビーム
     // ==============================
 
-    if (beamActive) {
+    if (beamButton) {
 
-        beamButton.classList.add("item-unavailable");
+        if (beamActive) {
 
-        beamButton.innerHTML =
-            `🌈<span>発射中 ${beamTimer.toFixed(1)}秒</span>`;
+            beamButton.classList.add("item-unavailable");
 
-    } else if (beamCooldown > 0) {
+            beamButton.innerHTML =
+                `🌈<span>発射中 ${beamTimer.toFixed(1)}秒</span>`;
 
-        beamButton.classList.add("item-unavailable");
+        } else if (beamCooldown > 0) {
 
-        beamButton.innerHTML =
-            `🌈<span>あと ${Math.ceil(beamCooldown)}秒</span>`;
+            beamButton.classList.add("item-unavailable");
 
-    } else {
+            beamButton.innerHTML =
+                `🌈<span>あと ${Math.ceil(beamCooldown)}秒</span>`;
 
-        beamButton.classList.remove("item-unavailable");
+        } else {
 
-        beamButton.innerHTML =
-            "🌈<span>発射可能！</span>";
+            beamButton.classList.remove("item-unavailable");
+
+            beamButton.innerHTML =
+                "🌈<span>発射可能！</span>";
+        }
+    }
+
+
+    // ==============================
+    // 🛡️ SHIELD
+    // ==============================
+
+    if (shieldButton) {
+
+        if (shieldActive) {
+
+            shieldButton.classList.add("item-unavailable");
+
+            shieldButton.innerHTML =
+                `🛡️<span>展開中 ${shieldTimer.toFixed(1)}秒</span>`;
+
+        } else if (shieldCooldown > 0) {
+
+            shieldButton.classList.add("item-unavailable");
+
+            shieldButton.innerHTML =
+                `🛡️<span>あと ${Math.ceil(shieldCooldown)}秒</span>`;
+
+        } else {
+
+            shieldButton.classList.remove("item-unavailable");
+
+            shieldButton.innerHTML =
+                "🛡️<span>使用可能！</span>";
+        }
+    }
+
+
+    // ==============================
+    // 💣 BOMB
+    // ==============================
+
+    if (bombButton) {
+
+        if (bombCooldown > 0) {
+
+            bombButton.classList.add("item-unavailable");
+
+            bombButton.innerHTML =
+                `💣<span>あと ${Math.ceil(bombCooldown)}秒</span>`;
+
+        } else {
+
+            bombButton.classList.remove("item-unavailable");
+
+            bombButton.innerHTML =
+                "💣<span>使用可能！</span>";
+        }
     }
 }
 /* ==================================================
