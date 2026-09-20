@@ -38,6 +38,936 @@ body {
         );
 }
 
+/* ==================================================
+   NEXUS GARAGE 2.0
+   機体演出 / 購入演出
+================================================== */
+
+
+/* ========================================
+   機体プレビュー
+======================================== */
+
+#skin-preview-canvas {
+
+    position: relative;
+
+    transition:
+        filter 0.25s ease,
+        transform 0.25s ease;
+
+}
+
+
+#skin-preview-canvas.garage-preview-enter {
+
+    animation:
+        garageShipEnter
+        0.55s
+        cubic-bezier(.2,.8,.2,1);
+
+}
+
+
+#skin-preview-canvas.garage-preview-nexus04 {
+
+    filter:
+        drop-shadow(0 0 8px #00ffff)
+        drop-shadow(0 0 20px #ff00ff);
+
+}
+
+
+/* 機体切り替え */
+@keyframes garageShipEnter {
+
+    0% {
+
+        opacity: 0;
+
+        transform:
+            translateY(18px)
+            scale(0.82);
+
+        filter:
+            brightness(2.5)
+            blur(2px);
+    }
+
+    45% {
+
+        opacity: 1;
+
+        transform:
+            translateY(-5px)
+            scale(1.04);
+
+        filter:
+            brightness(1.7);
+    }
+
+    100% {
+
+        opacity: 1;
+
+        transform:
+            translateY(0)
+            scale(1);
+
+        filter:
+            brightness(1);
+    }
+}
+
+
+/* ========================================
+   購入ボタン
+======================================== */
+
+#skin-equip-button.garage-buy {
+
+    background:
+        linear-gradient(
+            135deg,
+            #008cff,
+            #624cff
+        );
+
+    box-shadow:
+        0 0 15px rgba(40,140,255,0.35),
+        0 0 35px rgba(70,70,255,0.15);
+}
+
+
+#skin-equip-button.garage-owned {
+
+    background:
+        linear-gradient(
+            135deg,
+            #1599ff,
+            #315cff
+        );
+}
+
+
+#skin-equip-button.garage-equipped {
+
+    background:
+        linear-gradient(
+            135deg,
+            #173b4a,
+            #145466
+        );
+
+    color:
+        #75f2ff;
+
+    border:
+        1px solid rgba(80,230,255,0.5);
+
+    cursor:
+        default;
+
+    box-shadow:
+        0 0 15px rgba(0,220,255,0.2);
+}
+
+
+#skin-equip-button:disabled {
+
+    opacity: 0.8;
+}
+
+
+/* ========================================
+   SOLD OUT
+======================================== */
+
+.skin-sold-out {
+
+    color:
+        #72e8ff !important;
+
+    text-shadow:
+        0 0 8px
+        rgba(80,220,255,0.45);
+}
+
+
+/* ========================================
+   COINS不足
+======================================== */
+
+.skin-not-enough {
+
+    color:
+        #ff7588 !important;
+
+    text-shadow:
+        0 0 8px
+        rgba(255,50,80,0.5);
+}
+
+
+/* ========================================
+   COINS不足ボタン振動
+======================================== */
+
+.garage-shake {
+
+    animation:
+        garageButtonShake
+        0.35s
+        ease;
+}
+
+
+@keyframes garageButtonShake {
+
+    0% {
+        transform: translateX(0);
+    }
+
+    20% {
+        transform: translateX(-7px);
+    }
+
+    40% {
+        transform: translateX(7px);
+    }
+
+    60% {
+        transform: translateX(-5px);
+    }
+
+    80% {
+        transform: translateX(5px);
+    }
+
+    100% {
+        transform: translateX(0);
+    }
+}
+
+
+/* ==================================================
+   PURCHASE MODAL
+================================================== */
+
+#garage-purchase-modal {
+
+    position:
+        absolute;
+
+    inset:
+        0;
+
+    display:
+        flex;
+
+    justify-content:
+        center;
+
+    align-items:
+        center;
+
+    z-index:
+        5000;
+
+    background:
+        rgba(2,5,18,0.82);
+
+    backdrop-filter:
+        blur(7px);
+
+    opacity:
+        0;
+
+    pointer-events:
+        none;
+
+    transition:
+        opacity 0.2s ease;
+}
+
+
+#garage-purchase-modal.purchase-modal-visible {
+
+    opacity:
+        1;
+
+    pointer-events:
+        auto;
+}
+
+
+.purchase-modal-panel {
+
+    width:
+        min(88%, 340px);
+
+    padding:
+        28px 22px;
+
+    text-align:
+        center;
+
+    border:
+        1px solid
+        rgba(90,210,255,0.45);
+
+    border-radius:
+        18px;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(20,35,70,0.98),
+            rgba(5,12,30,0.99)
+        );
+
+    box-shadow:
+        0 0 30px
+        rgba(0,190,255,0.18);
+
+    transform:
+        translateY(15px)
+        scale(0.96);
+
+    transition:
+        transform 0.25s ease;
+}
+
+
+#garage-purchase-modal.purchase-modal-visible
+.purchase-modal-panel {
+
+    transform:
+        translateY(0)
+        scale(1);
+}
+
+
+.purchase-modal-label {
+
+    color:
+        #5eeaff;
+
+    font-size:
+        11px;
+
+    letter-spacing:
+        3px;
+}
+
+
+.purchase-modal-title {
+
+    margin-top:
+        5px;
+
+    color:
+        white;
+
+    font-size:
+        27px;
+
+    font-weight:
+        bold;
+
+    letter-spacing:
+        3px;
+}
+
+
+.purchase-modal-skin {
+
+    margin-top:
+        22px;
+
+    color:
+        white;
+
+    font-size:
+        23px;
+
+    font-weight:
+        bold;
+
+    text-shadow:
+        0 0 12px
+        rgba(90,220,255,0.7);
+}
+
+
+.purchase-modal-price {
+
+    margin-top:
+        14px;
+
+    color:
+        #ffd85c;
+
+    font-size:
+        19px;
+
+    font-weight:
+        bold;
+}
+
+
+.purchase-modal-balance {
+
+    margin-top:
+        7px;
+
+    color:
+        rgba(255,255,255,0.55);
+
+    font-size:
+        12px;
+}
+
+
+.purchase-modal-question {
+
+    margin-top:
+        22px;
+
+    color:
+        rgba(255,255,255,0.75);
+
+    font-size:
+        13px;
+}
+
+
+.purchase-modal-buttons {
+
+    display:
+        flex;
+
+    justify-content:
+        center;
+
+    gap:
+        10px;
+
+    margin-top:
+        22px;
+}
+
+
+.purchase-modal-buttons button {
+
+    min-width:
+        125px;
+
+    padding:
+        11px 14px;
+
+    border-radius:
+        9px;
+
+    font-weight:
+        bold;
+
+    cursor:
+        pointer;
+}
+
+
+#purchase-confirm-button {
+
+    color:
+        white;
+
+    background:
+        linear-gradient(
+            135deg,
+            #168cff,
+            #6254ff
+        );
+
+    box-shadow:
+        0 0 15px
+        rgba(50,130,255,0.3);
+}
+
+
+#purchase-cancel-button {
+
+    color:
+        rgba(255,255,255,0.75);
+
+    background:
+        rgba(30,40,65,0.9);
+
+    border:
+        1px solid
+        rgba(255,255,255,0.2);
+}
+
+
+/* ==================================================
+   PURCHASE COMPLETE
+================================================== */
+
+#garage-purchase-complete {
+
+    position:
+        absolute;
+
+    inset:
+        0;
+
+    display:
+        flex;
+
+    justify-content:
+        center;
+
+    align-items:
+        center;
+
+    z-index:
+        6000;
+
+    pointer-events:
+        none;
+
+    opacity:
+        0;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(20,80,150,0.25),
+            rgba(0,0,0,0.8)
+        );
+}
+
+
+#garage-purchase-complete.purchase-complete-visible {
+
+    animation:
+        purchaseComplete
+        2.6s
+        ease forwards;
+}
+
+
+.purchase-complete-panel {
+
+    position:
+        relative;
+
+    text-align:
+        center;
+
+    transform:
+        scale(0.7);
+}
+
+
+.purchase-complete-label {
+
+    color:
+        #59e7ff;
+
+    font-size:
+        11px;
+
+    letter-spacing:
+        4px;
+}
+
+
+.purchase-complete-title {
+
+    margin-top:
+        8px;
+
+    color:
+        white;
+
+    font-size:
+        36px;
+
+    font-weight:
+        bold;
+
+    letter-spacing:
+        4px;
+
+    text-shadow:
+        0 0 12px #59e7ff,
+        0 0 30px #1677ff;
+}
+
+
+.purchase-complete-skin {
+
+    margin-top:
+        12px;
+
+    color:
+        #ffffff;
+
+    font-size:
+        23px;
+
+    font-weight:
+        bold;
+}
+
+
+.purchase-complete-line {
+
+    width:
+        190px;
+
+    height:
+        2px;
+
+    margin:
+        15px auto;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            #59e7ff,
+            transparent
+        );
+
+    box-shadow:
+        0 0 12px #59e7ff;
+}
+
+
+.purchase-complete-sub {
+
+    color:
+        rgba(255,255,255,0.65);
+
+    font-size:
+        11px;
+
+    letter-spacing:
+        3px;
+}
+
+
+@keyframes purchaseComplete {
+
+    0% {
+
+        opacity:
+            0;
+
+    }
+
+    12% {
+
+        opacity:
+            1;
+    }
+
+    25% {
+
+        opacity:
+            1;
+    }
+
+    75% {
+
+        opacity:
+            1;
+    }
+
+    100% {
+
+        opacity:
+            0;
+    }
+}
+
+
+#garage-purchase-complete.purchase-complete-visible
+.purchase-complete-panel {
+
+    animation:
+        purchasePanel
+        2.6s
+        cubic-bezier(.2,.8,.2,1);
+}
+
+
+@keyframes purchasePanel {
+
+    0% {
+
+        transform:
+            scale(0.7);
+
+    }
+
+    20% {
+
+        transform:
+            scale(1.08);
+
+    }
+
+    35% {
+
+        transform:
+            scale(1);
+
+    }
+
+    100% {
+
+        transform:
+            scale(1);
+
+    }
+}
+
+
+/* 購入粒子 */
+
+.purchase-complete-particles {
+
+    position:
+        absolute;
+
+    left:
+        50%;
+
+    top:
+        100%;
+
+    width:
+        1px;
+
+    height:
+        1px;
+}
+
+
+.purchase-complete-particles span {
+
+    position:
+        absolute;
+
+    left:
+        0;
+
+    top:
+        0;
+
+    font-size:
+        18px;
+
+    animation:
+        purchaseParticle
+        1.4s
+        ease-out
+        forwards;
+
+    animation-delay:
+        var(--particle-delay, 0s);
+}
+
+
+@keyframes purchaseParticle {
+
+    0% {
+
+        opacity:
+            0;
+
+        transform:
+            translate(
+                0,
+                0
+            )
+            scale(0.4);
+    }
+
+    20% {
+
+        opacity:
+            1;
+    }
+
+    100% {
+
+        opacity:
+            0;
+
+        transform:
+            translate(
+                var(--particle-x),
+                var(--particle-y)
+            )
+            scale(1.1);
+    }
+}
+
+
+/* ==================================================
+   EQUIP COMPLETE
+================================================== */
+
+#garage-equip-complete {
+
+    position:
+        absolute;
+
+    inset:
+        0;
+
+    z-index:
+        5500;
+
+    display:
+        flex;
+
+    flex-direction:
+        column;
+
+    justify-content:
+        center;
+
+    align-items:
+        center;
+
+    pointer-events:
+        none;
+
+    opacity:
+        0;
+}
+
+
+#garage-equip-complete.equip-complete-visible {
+
+    animation:
+        equipComplete
+        1.4s
+        ease forwards;
+}
+
+
+.equip-complete-line {
+
+    width:
+        260px;
+
+    height:
+        1px;
+
+    background:
+        #59e7ff;
+
+    box-shadow:
+        0 0 12px #59e7ff;
+}
+
+
+.equip-complete-text {
+
+    margin-top:
+        14px;
+
+    color:
+        rgba(255,255,255,0.65);
+
+    font-size:
+        11px;
+
+    letter-spacing:
+        4px;
+}
+
+
+.equip-complete-skin {
+
+    margin-top:
+        8px;
+
+    color:
+        white;
+
+    font-size:
+        30px;
+
+    font-weight:
+        bold;
+
+    letter-spacing:
+        3px;
+
+    text-shadow:
+        0 0 15px #59e7ff;
+}
+
+
+.equip-complete-status {
+
+    margin-top:
+        8px;
+
+    color:
+        #5eeaff;
+
+    font-size:
+        14px;
+
+    font-weight:
+        bold;
+
+    letter-spacing:
+        2px;
+}
+
+
+@keyframes equipComplete {
+
+    0% {
+
+        opacity:
+            0;
+
+        transform:
+            scale(0.9);
+    }
+
+    20% {
+
+        opacity:
+            1;
+
+        transform:
+            scale(1);
+    }
+
+    70% {
+
+        opacity:
+            1;
+    }
+
+    100% {
+
+        opacity:
+            0;
+    }
+}
+
 #gameCanvas {
     position: absolute;
 

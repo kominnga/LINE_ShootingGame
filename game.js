@@ -329,9 +329,7 @@ let ownedSkins = JSON.parse(
     localStorage.getItem("nexus-owned-skins")
     || '["nexus-01"]'
 );
-if (!ownedSkins.includes("nexus-04")) {
-    ownedSkins.push("nexus-04");
-}
+
 
 saveOwnedSkins();
 
@@ -467,7 +465,6 @@ async function initLIFF() {
 }
 
 
-
 function updateGarage() {
 
     const skin =
@@ -477,58 +474,44 @@ function updateGarage() {
         return;
     }
 
-    // ========================================
-    // スキン情報
-    // ========================================
-
     const skinInfo = {
 
         "nexus-01": {
             type: "STANDARD TYPE",
-
             description:
                 "バランスに優れた標準型機体。\nあらゆる状況に対応できる基本機。",
-
             ability:
                 "ABILITY：標準性能"
         },
 
         "nexus-02": {
             type: "SPEED TYPE",
-
             description:
                 "軽量化された高速機。\n高い機動力で敵の攻撃をかわす。",
-
             ability:
                 "ABILITY：移動速度 +35%"
         },
 
         "nexus-03": {
             type: "ATTACK TYPE",
-
             description:
                 "攻撃性能に特化した戦闘機。\n通常機より高速で弾を発射できる。",
-
             ability:
                 "ABILITY：連射速度 +15%"
         },
 
         "nexus-04": {
             type: "BEAM TYPE",
-
             description:
                 "特殊ビーム兵器を搭載した機体。\n広範囲を薙ぎ払う強力なビームを放つ。",
-
             ability:
                 "ABILITY：ビーム幅 90 → 150"
         },
 
         "nexus-05": {
             type: "HEAVY TYPE",
-
             description:
                 "重装甲を採用した高耐久機。\n圧倒的な耐久力で戦線に居座る。",
-
             ability:
                 "ABILITY：MAX HP 3 → 5"
         }
@@ -567,8 +550,9 @@ function updateGarage() {
             info.ability;
     }
 
+
     // ========================================
-    // 所持状態
+    // 所持・装備状態
     // ========================================
 
     const owned =
@@ -577,45 +561,27 @@ function updateGarage() {
     const equipped =
         skin.id === equippedSkin;
 
+
     if (skinStatus) {
+
+        skinStatus.classList.remove(
+            "skin-not-enough",
+            "skin-sold-out"
+        );
 
         if (equipped) {
 
             skinStatus.textContent =
                 `✓ 装備中：${skin.name}`;
 
-            skinStatus.classList.remove(
-                "skin-sold-out",
-                "skin-not-enough"
-            );
-
         }
 
         else if (owned) {
 
             skinStatus.textContent =
-                `✓ 所持済み　•　SOLD OUT`;
+                `✓ 所持済み：${skin.name}  •  SOLD OUT`;
 
             skinStatus.classList.add(
-                "skin-sold-out"
-            );
-
-            skinStatus.classList.remove(
-                "skin-not-enough"
-            );
-
-        }
-
-        else if (coins < skin.price) {
-
-            skinStatus.textContent =
-                `⚠ COINS不足　必要：${skin.price.toLocaleString()} COINS`;
-
-            skinStatus.classList.add(
-                "skin-not-enough"
-            );
-
-            skinStatus.classList.remove(
                 "skin-sold-out"
             );
 
@@ -624,16 +590,11 @@ function updateGarage() {
         else {
 
             skinStatus.textContent =
-                `購入可能：${skin.price.toLocaleString()} COINS`;
-
-            skinStatus.classList.remove(
-                "skin-sold-out",
-                "skin-not-enough"
-            );
+                `未所持：${skin.name}`;
 
         }
-
     }
+
 
     // ========================================
     // 購入 / 装備ボタン
@@ -641,20 +602,36 @@ function updateGarage() {
 
     if (skinEquipButton) {
 
+        skinEquipButton.classList.remove(
+            "garage-equipped",
+            "garage-owned",
+            "garage-buy",
+            "garage-disabled"
+        );
+
+
+        // ------------------------------------
+        // 装備中
+        // ------------------------------------
+
         if (equipped) {
 
             skinEquipButton.textContent =
-                "✓ 装備中";
+                "✓ EQUIPPED";
 
             skinEquipButton.disabled =
                 true;
 
-            skinEquipButton.classList.remove(
-                "skin-buy-button",
-                "skin-sold-out-button"
+            skinEquipButton.classList.add(
+                "garage-equipped"
             );
 
         }
+
+
+        // ------------------------------------
+        // 所持済み
+        // ------------------------------------
 
         else if (owned) {
 
@@ -664,30 +641,16 @@ function updateGarage() {
             skinEquipButton.disabled =
                 false;
 
-            skinEquipButton.classList.remove(
-                "skin-buy-button",
-                "skin-sold-out-button"
-            );
-
-        }
-
-        else if (coins < skin.price) {
-
-            skinEquipButton.textContent =
-                `🪙 ${skin.price.toLocaleString()} COINS`;
-
-            skinEquipButton.disabled =
-                false;
-
             skinEquipButton.classList.add(
-                "skin-buy-button"
-            );
-
-            skinEquipButton.classList.remove(
-                "skin-sold-out-button"
+                "garage-owned"
             );
 
         }
+
+
+        // ------------------------------------
+        // 未所持
+        // ------------------------------------
 
         else {
 
@@ -698,16 +661,13 @@ function updateGarage() {
                 false;
 
             skinEquipButton.classList.add(
-                "skin-buy-button"
-            );
-
-            skinEquipButton.classList.remove(
-                "skin-sold-out-button"
+                "garage-buy"
             );
 
         }
 
     }
+
 
     // ========================================
     // コイン表示
@@ -715,14 +675,23 @@ function updateGarage() {
 
     updateCoinDisplays();
 
+
     // ========================================
-    // プレビュー
+    // プレビュー更新
     // ========================================
 
     drawSkinPreview();
 
-}
 
+    // ========================================
+    // 切り替え演出
+    // ========================================
+
+    playGaragePreviewAnimation(
+        skin.id
+    );
+
+}
 function useShield() {
 
     if (shieldActive) return;
@@ -1265,26 +1234,122 @@ function equipSelectedSkin() {
         return;
     }
 
-    // 未所持なら装備不可
+
     if (!isSkinOwned(skin.id)) {
         return;
     }
 
-    // すでに装備中
-    if (skin.id === equippedSkin) {
+
+    if (
+        skin.id ===
+        equippedSkin
+    ) {
+
         return;
     }
 
+
     equippedSkin =
         skin.id;
+
 
     localStorage.setItem(
         "nexus-equipped-skin",
         equippedSkin
     );
 
+
     updateGarage();
 
+
+    playEquipAnimation(
+        skin
+    );
+}
+
+// ==================================================
+// EQUIP COMPLETE
+// ==================================================
+
+function playEquipAnimation(skin) {
+
+    if (!skin) {
+        return;
+    }
+
+
+    let overlay =
+        document.getElementById(
+            "garage-equip-complete"
+        );
+
+
+    if (!overlay) {
+
+        overlay =
+            document.createElement(
+                "div"
+            );
+
+        overlay.id =
+            "garage-equip-complete";
+
+
+        overlay.innerHTML = `
+
+            <div class="equip-complete-line"></div>
+
+            <div class="equip-complete-text">
+                SYSTEM LINK
+            </div>
+
+            <div
+                id="equip-complete-skin"
+                class="equip-complete-skin">
+            </div>
+
+            <div class="equip-complete-status">
+                ✓ EQUIPPED
+            </div>
+
+        `;
+
+
+        document.body.appendChild(
+            overlay
+        );
+    }
+
+
+    document.getElementById(
+        "equip-complete-skin"
+    ).textContent =
+        skin.name;
+
+
+    overlay.classList.remove(
+        "equip-complete-visible"
+    );
+
+
+    void overlay.offsetWidth;
+
+
+    overlay.classList.add(
+        "equip-complete-visible"
+    );
+
+
+    setTimeout(
+        () => {
+
+            overlay.classList.remove(
+                "equip-complete-visible"
+            );
+
+        },
+        1400
+    );
 }
 /* ==================================================
    GARAGE 購入確認
@@ -1731,6 +1796,513 @@ function buySelectedSkin() {
 
 }
 
+// ==================================================
+// 購入確認
+// ==================================================
+
+function openPurchaseConfirm(skin) {
+
+    if (!skin) {
+        return;
+    }
+
+    purchaseTargetSkin =
+        skin;
+
+
+    let modal =
+        document.getElementById(
+            "garage-purchase-modal"
+        );
+
+
+    // 初回だけ作成
+    if (!modal) {
+
+        modal =
+            document.createElement(
+                "div"
+            );
+
+        modal.id =
+            "garage-purchase-modal";
+
+
+        modal.innerHTML = `
+
+            <div class="purchase-modal-panel">
+
+                <div class="purchase-modal-label">
+                    NEXUS GARAGE
+                </div>
+
+                <div class="purchase-modal-title">
+                    PURCHASE
+                </div>
+
+                <div
+                    id="purchase-modal-skin"
+                    class="purchase-modal-skin">
+                </div>
+
+                <div
+                    id="purchase-modal-price"
+                    class="purchase-modal-price">
+                </div>
+
+                <div
+                    id="purchase-modal-balance"
+                    class="purchase-modal-balance">
+                </div>
+
+                <div class="purchase-modal-question">
+                    この機体を購入しますか？
+                </div>
+
+                <div class="purchase-modal-buttons">
+
+                    <button
+                        id="purchase-confirm-button"
+                        type="button">
+                        PURCHASE
+                    </button>
+
+                    <button
+                        id="purchase-cancel-button"
+                        type="button">
+                        CANCEL
+                    </button>
+
+                </div>
+
+            </div>
+        `;
+
+
+        document.body.appendChild(
+            modal
+        );
+
+
+        document
+            .getElementById(
+                "purchase-confirm-button"
+            )
+            .addEventListener(
+                "click",
+                confirmPurchase
+            );
+
+
+        document
+            .getElementById(
+                "purchase-cancel-button"
+            )
+            .addEventListener(
+                "click",
+                closePurchaseConfirm
+            );
+    }
+
+
+    document.getElementById(
+        "purchase-modal-skin"
+    ).textContent =
+        skin.name;
+
+
+    document.getElementById(
+        "purchase-modal-price"
+    ).textContent =
+        `🪙 ${skin.price.toLocaleString()} COINS`;
+
+
+    document.getElementById(
+        "purchase-modal-balance"
+    ).textContent =
+        `現在の所持コイン：${coins.toLocaleString()} COINS`;
+
+
+    modal.classList.add(
+        "purchase-modal-visible"
+    );
+}
+
+// ==================================================
+// COINS不足
+// ==================================================
+
+function showCoinsNotEnough(skin) {
+
+    if (!skin) {
+        return;
+    }
+
+
+    const shortage =
+        Math.max(
+            0,
+            skin.price - coins
+        );
+
+
+    if (skinStatus) {
+
+        skinStatus.textContent =
+            `⚠ COINS不足　あと ${shortage.toLocaleString()} COINS必要`;
+
+        skinStatus.classList.add(
+            "skin-not-enough"
+        );
+    }
+
+
+    if (skinEquipButton) {
+
+        skinEquipButton.classList.remove(
+            "garage-shake"
+        );
+
+        // 再アニメーション用
+        void skinEquipButton.offsetWidth;
+
+        skinEquipButton.classList.add(
+            "garage-shake"
+        );
+    }
+
+
+    // 少し経ったら通常表示へ
+    setTimeout(
+        () => {
+
+            if (
+                skinStatus &&
+                skins[selectedSkinIndex] === skin
+            ) {
+
+                updateGarage();
+            }
+
+        },
+        1600
+    );
+}
+
+// ==================================================
+// PURCHASE COMPLETE
+// ==================================================
+
+function playPurchaseAnimation(skin) {
+
+    if (!skin) {
+        return;
+    }
+
+
+    let overlay =
+        document.getElementById(
+            "garage-purchase-complete"
+        );
+
+
+    if (!overlay) {
+
+        overlay =
+            document.createElement(
+                "div"
+            );
+
+        overlay.id =
+            "garage-purchase-complete";
+
+
+        overlay.innerHTML = `
+
+            <div class="purchase-complete-panel">
+
+                <div class="purchase-complete-label">
+                    NEXUS GARAGE
+                </div>
+
+                <div class="purchase-complete-title">
+                    PURCHASED
+                </div>
+
+                <div
+                    id="purchase-complete-skin"
+                    class="purchase-complete-skin">
+                </div>
+
+                <div class="purchase-complete-line">
+                </div>
+
+                <div class="purchase-complete-sub">
+                    PURCHASE COMPLETE
+                </div>
+
+                <div
+                    id="purchase-complete-particles"
+                    class="purchase-complete-particles">
+                </div>
+
+            </div>
+        `;
+
+
+        document.body.appendChild(
+            overlay
+        );
+    }
+
+
+    document.getElementById(
+        "purchase-complete-skin"
+    ).textContent =
+        skin.name;
+
+
+    const particleContainer =
+        document.getElementById(
+            "purchase-complete-particles"
+        );
+
+
+    particleContainer.innerHTML =
+        "";
+
+
+    // 軽量なコイン粒子
+    for (
+        let i = 0;
+        i < 18;
+        i++
+    ) {
+
+        const particle =
+            document.createElement(
+                "span"
+            );
+
+        particle.textContent =
+            i % 2 === 0
+                ? "✦"
+                : "🪙";
+
+
+        particle.style.setProperty(
+            "--particle-x",
+            `${(Math.random() - 0.5) * 260}px`
+        );
+
+
+        particle.style.setProperty(
+            "--particle-y",
+            `${-60 - Math.random() * 180}px`
+        );
+
+
+        particle.style.animationDelay =
+            `${Math.random() * 0.25}s`;
+
+
+        particleContainer.appendChild(
+            particle
+        );
+    }
+
+
+    overlay.classList.remove(
+        "purchase-complete-visible"
+    );
+
+
+    void overlay.offsetWidth;
+
+
+    overlay.classList.add(
+        "purchase-complete-visible"
+    );
+
+
+    setTimeout(
+        () => {
+
+            overlay.classList.remove(
+                "purchase-complete-visible"
+            );
+
+        },
+        2600
+    );
+}
+
+// ==================================================
+// GARAGE 機体プレビュー演出
+// ==================================================
+
+function playGaragePreviewAnimation(
+    skinId
+) {
+
+    if (!skinPreviewCanvas) {
+        return;
+    }
+
+
+    skinPreviewCanvas.classList.remove(
+        "garage-preview-enter"
+    );
+
+    skinPreviewCanvas.classList.remove(
+        "garage-preview-nexus04"
+    );
+
+
+    // 強制的にアニメーションを再スタート
+    void skinPreviewCanvas.offsetWidth;
+
+
+    skinPreviewCanvas.classList.add(
+        "garage-preview-enter"
+    );
+
+
+    if (
+        skinId ===
+        "nexus-04"
+    ) {
+
+        skinPreviewCanvas.classList.add(
+            "garage-preview-nexus04"
+        );
+    }
+}
+// ==================================================
+// 購入確定
+// ==================================================
+
+function confirmPurchase() {
+
+    const skin =
+        purchaseTargetSkin;
+
+    if (!skin) {
+        return;
+    }
+
+
+    // 二重購入防止
+    if (isSkinOwned(skin.id)) {
+
+        closePurchaseConfirm();
+
+        updateGarage();
+
+        return;
+    }
+
+
+    // ========================================
+    // 最終コインチェック
+    // ========================================
+
+    if (
+        skin.price > 0 &&
+        coins < skin.price
+    ) {
+
+        closePurchaseConfirm();
+
+        showCoinsNotEnough(
+            skin
+        );
+
+        return;
+    }
+
+
+    // ========================================
+    // コイン消費
+    // ========================================
+
+    coins -=
+        skin.price;
+
+
+    localStorage.setItem(
+        "nexus-coins",
+        String(coins)
+    );
+
+
+    // ========================================
+    // 所持登録
+    // ========================================
+
+    ownedSkins.push(
+        skin.id
+    );
+
+    saveOwnedSkins();
+
+
+    // ========================================
+    // 自動装備
+    // ========================================
+
+    equippedSkin =
+        skin.id;
+
+
+    localStorage.setItem(
+        "nexus-equipped-skin",
+        equippedSkin
+    );
+
+
+    // ========================================
+    // UI更新
+    // ========================================
+
+    closePurchaseConfirm();
+
+    updateCoinDisplays();
+
+    updateGarage();
+
+
+    // ========================================
+    // 購入成功演出
+    // ========================================
+
+    playPurchaseAnimation(
+        skin
+    );
+}
+
+// ==================================================
+// 購入確認を閉じる
+// ==================================================
+
+function closePurchaseConfirm() {
+
+    const modal =
+        document.getElementById(
+            "garage-purchase-modal"
+        );
+
+    if (modal) {
+
+        modal.classList.remove(
+            "purchase-modal-visible"
+        );
+    }
+
+    purchaseTargetSkin =
+        null;
+}
+
 
 
 function openGarage() {
@@ -1786,11 +2358,36 @@ if (garageCloseButton) {
 }
 
 
-if (skinPrevButton) {
+if (skinEquipButton) {
 
-    skinPrevButton.addEventListener(
+    skinEquipButton.addEventListener(
         "click",
-        selectPreviousSkin
+        () => {
+
+            const skin =
+                skins[selectedSkinIndex];
+
+            if (!skin) {
+                return;
+            }
+
+
+            // 未所持 → 購入
+            if (
+                !isSkinOwned(
+                    skin.id
+                )
+            ) {
+
+                buySelectedSkin();
+
+                return;
+            }
+
+
+            // 所持済み → 装備
+            equipSelectedSkin();
+        }
     );
 }
 
