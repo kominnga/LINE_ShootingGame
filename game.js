@@ -982,6 +982,7 @@ healCooldown = healCooldownMax;
 
 beamActive = false;
 beamTimer = 0;
+setItemControlsVisible(true);
 
 // ビームも最初からチャージ開始
 beamCooldown = beamCooldownMax;
