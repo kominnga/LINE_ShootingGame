@@ -1,4 +1,3 @@
-
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 const scoreText = document.getElementById("score");
@@ -202,6 +201,23 @@ const beamDamage = 35;
 let beamCooldown = 0;
 const beamCooldownMax = 30;
 
+// ========================================
+// BEAM EFFECT SYSTEM
+// ========================================
+
+// ビーム発射演出
+let beamStartEffect = 0;
+
+// ビームのエネルギー蓄積
+let beamEnergy = 0;
+
+// ビームヒット演出
+let beamHitEffectTimer = 0;
+let beamHitX = 0;
+let beamHitY = 0;
+
+// ビームが当たった瞬間の強さ
+let beamImpactPower = 0;
 // ================================
 // SHIELD
 // ================================
@@ -2679,15 +2695,38 @@ function useBeam() {
         return;
     }
 
-    beamActive = true;
-beamTimer = beamDuration;
+    // ==============================
+    // ビーム発射開始
+    // ==============================
 
-// NEXUS-04だけ発射時に強い衝撃
-if (getEquippedSkin() === "nexus-04") {
-    screenShake = 18;
-} else {
-    screenShake = 6;
-}
+    beamActive = true;
+
+    beamTimer = beamDuration;
+
+    beamStartEffect = 0.35;
+
+    beamEnergy = 0;
+
+    beamHitEffectTimer = 0;
+
+    beamImpactPower = 0;
+
+
+    // ==============================
+    // NEXUS-04 OVERDRIVE
+    // ==============================
+
+    if (
+        getEquippedSkin() === "nexus-04"
+    ) {
+
+        screenShake = 18;
+
+    } else {
+
+        screenShake = 7;
+
+    }
 
     updateItemButtons();
 }
@@ -3555,37 +3594,94 @@ function showHowToMobile() {
 }
 function updateBeam(deltaTime) {
 
-    // =========================
+    // ==============================
+    // 発射開始演出
+    // ==============================
+
+    if (beamStartEffect > 0) {
+
+        beamStartEffect -= deltaTime;
+
+        if (beamStartEffect < 0) {
+            beamStartEffect = 0;
+        }
+    }
+
+
+    // ==============================
     // ビーム発射中
-    // =========================
+    // ==============================
 
     if (beamActive) {
 
         beamTimer -= deltaTime;
 
+
+        // エネルギーを徐々に上昇
+        beamEnergy +=
+            deltaTime * 5;
+
+        if (beamEnergy > 1) {
+            beamEnergy = 1;
+        }
+
+
+        // ==========================
+        // ビーム終了
+        // ==========================
+
         if (beamTimer <= 0) {
 
             beamTimer = 0;
+
             beamActive = false;
 
-            // 発射終了 → 30秒チャージ開始
-            beamCooldown = beamCooldownMax;
+            beamEnergy = 0;
+
+            // 発射終了
+            // ここから30秒チャージ
+            beamCooldown =
+                beamCooldownMax;
         }
 
         return;
     }
 
 
-    // =========================
-    // チャージ中
-    // =========================
+    // ==============================
+    // ビームチャージ中
+    // ==============================
 
     if (beamCooldown > 0) {
 
         beamCooldown -= deltaTime;
 
         if (beamCooldown <= 0) {
+
             beamCooldown = 0;
+        }
+    }
+
+
+    // ==============================
+    // ヒット演出
+    // ==============================
+
+    if (beamHitEffectTimer > 0) {
+
+        beamHitEffectTimer -=
+            deltaTime;
+
+        beamImpactPower =
+            Math.max(
+                0,
+                beamHitEffectTimer / 0.22
+            );
+
+        if (beamHitEffectTimer <= 0) {
+
+            beamHitEffectTimer = 0;
+            beamImpactPower = 0;
         }
     }
 }
@@ -4019,45 +4115,136 @@ function checkBeamCollision() {
         return;
     }
 
-    const beamX = player.x;
-    const beamWidth = getBeamWidth();
 
-    // ==============================
+    const beamX =
+        player.x;
+
+    const beamWidth =
+        getBeamWidth();
+
+
+    const isOverdrive =
+        getEquippedSkin() ===
+        "nexus-04";
+
+
+    let hitSomething = false;
+
+
+    // ==================================================
     // 通常敵
-    // ==============================
+    // ==================================================
 
-    for (let i = enemies.length - 1; i >= 0; i--) {
+    for (
+        let i = enemies.length - 1;
+        i >= 0;
+        i--
+    ) {
 
-        const enemy = enemies[i];
+        const enemy =
+            enemies[i];
+
 
         if (
-            enemy.x + enemy.width / 2 >
-                beamX - beamWidth / 2 &&
-            enemy.x - enemy.width / 2 <
-                beamX + beamWidth / 2
+            enemy.x +
+                enemy.width / 2 >
+                beamX -
+                beamWidth / 2 &&
+
+            enemy.x -
+                enemy.width / 2 <
+                beamX +
+                beamWidth / 2
         ) {
 
-            // 毎フレーム少しずつダメージ
-            enemy.hp -= beamDamage * 0.016;
+            enemy.hp -=
+                beamDamage *
+                0.016;
 
+
+            // ビームヒット位置
+            beamHitX =
+                enemy.x;
+
+            beamHitY =
+                enemy.y;
+
+            hitSomething = true;
+
+
+            // 敵撃破
             if (enemy.hp <= 0) {
 
-                score += enemy.score || 100;
+                score +=
+                    enemy.score ||
+                    100;
+
+
+                // コイン
+                if (
+                    enemy.type ===
+                    "normal"
+                ) {
+
+                    addCoins(10);
+
+                } else if (
+                    enemy.type ===
+                    "fast"
+                ) {
+
+                    addCoins(15);
+
+                } else if (
+                    enemy.type ===
+                    "big"
+                ) {
+
+                    addCoins(50);
+
+                } else {
+
+                    addCoins(10);
+                }
+
 
                 createExplosion(
                     enemy.x,
                     enemy.y,
-                    Math.min(enemy.width, 25)
+                    isOverdrive
+                        ? Math.min(
+                            enemy.width,
+                            35
+                        )
+                        : Math.min(
+                            enemy.width,
+                            25
+                        )
                 );
 
-                enemies.splice(i, 1);
+
+                // ヒット演出
+                beamHitEffectTimer =
+                    isOverdrive
+                        ? 0.22
+                        : 0.16;
+
+
+                beamImpactPower = 1;
+
+
+                enemies.splice(
+                    i,
+                    1
+                );
             }
         }
     }
 
-    // ==============================
+
+    // ==================================================
     // BOSS
-    // ==============================
+    // ==================================================
 
     if (
         boss &&
@@ -4066,16 +4253,48 @@ function checkBeamCollision() {
     ) {
 
         if (
-            boss.x + boss.width / 2 >
-                beamX - beamWidth / 2 &&
-            boss.x - boss.width / 2 <
-                beamX + beamWidth / 2
+            boss.x +
+                boss.width / 2 >
+                beamX -
+                beamWidth / 2 &&
+
+            boss.x -
+                boss.width / 2 <
+                beamX +
+                beamWidth / 2
         ) {
 
-            boss.hp -= beamDamage * 0.016;
+            boss.hp -=
+                beamDamage *
+                0.016;
 
-            boss.flash = 0.08;
 
+            boss.flash =
+                isOverdrive
+                    ? 0.14
+                    : 0.08;
+
+
+            beamHitX =
+                boss.x;
+
+            beamHitY =
+                boss.y;
+
+
+            beamHitEffectTimer =
+                isOverdrive
+                    ? 0.22
+                    : 0.16;
+
+
+            beamImpactPower = 1;
+
+
+            hitSomething = true;
+
+
+            // BOSS撃破
             if (boss.hp <= 0) {
 
                 defeatBoss();
@@ -4085,9 +4304,12 @@ function checkBeamCollision() {
         }
     }
 
-    updateHUD();
-}
 
+    if (hitSomething) {
+
+        updateHUD();
+    }
+}
 
 
 
@@ -4309,167 +4531,426 @@ function drawBoss() {
 }
 
 function drawBeam() {
-    if (!beamActive) return;
 
-    ctx.save();
-
-    const beamWidth = getBeamWidth();
-    const beamX = player.x;
-    const beamTop = 0;
-    const beamBottom = player.y - 20;
-
-    // ==============================
-    // 外側の強い光
-    // ==============================
-
-    ctx.globalAlpha = 0.25;
-    ctx.fillStyle = "#ffffff";
-    ctx.fillRect(
-        beamX - beamWidth / 2 - 25,
-        beamTop,
-        beamWidth + 50,
-        beamBottom
-    );
-
-    ctx.globalAlpha = 1;
-
-    // ==============================
-    // 虹色グラデーション
-    // ==============================
-
-    const gradient = ctx.createLinearGradient(
-        beamX - beamWidth / 2,
-        0,
-        beamX + beamWidth / 2,
-        0
-    );
-
-    gradient.addColorStop(0.00, "#ff0000");
-    gradient.addColorStop(0.16, "#ff8800");
-    gradient.addColorStop(0.32, "#ffff00");
-    gradient.addColorStop(0.48, "#00ff66");
-    gradient.addColorStop(0.64, "#00ffff");
-    gradient.addColorStop(0.80, "#4488ff");
-    gradient.addColorStop(1.00, "#ff00ff");
-
-    ctx.fillStyle = gradient;
-
-    ctx.fillRect(
-        beamX - beamWidth / 2,
-        beamTop,
-        beamWidth,
-        beamBottom
-    );
-
-    // ==============================
-    // 中央の白い光
-    // ==============================
-
-    ctx.globalAlpha = 0.85;
-
-    ctx.fillStyle = "#ffffff";
-
-    ctx.fillRect(
-        beamX - 18,
-        beamTop,
-        36,
-        beamBottom
-    );
-
-    // ==============================
-    // 「ドパガキの頭の中」感
-    // ランダムな光の帯
-    // ==============================
-
-    ctx.globalAlpha = 0.75;
-
-    for (let i = 0; i < 18; i++) {
-
-        const x =
-            beamX -
-            beamWidth / 2 +
-            Math.random() * beamWidth;
-
-        const y =
-            Math.random() * beamBottom;
-
-        const width =
-            5 + Math.random() * 20;
-
-        const height =
-            2 + Math.random() * 10;
-
-        const colors = [
-            "#ff0055",
-            "#ff8800",
-            "#ffff00",
-            "#00ff66",
-            "#00ffff",
-            "#0088ff",
-            "#8800ff",
-            "#ff00ff"
-        ];
-
-        ctx.fillStyle =
-            colors[Math.floor(Math.random() * colors.length)];
-
-        ctx.fillRect(
-            x,
-            y,
-            width,
-            height
-        );
+    if (!beamActive) {
+        return;
     }
 
-    // ==============================
-    // ビームの輪郭
-    // ==============================
+    const skin =
+        getEquippedSkin();
 
-    ctx.globalAlpha = 0.9;
-
-    ctx.strokeStyle = "#ffffff";
-    ctx.lineWidth = 4;
-
-    ctx.strokeRect(
-        beamX - beamWidth / 2,
-        beamTop,
-        beamWidth,
-        beamBottom
-    );
-
-    // ========================================
-// NEXUS-04 SPECIAL EFFECT
-// エネルギーリング
-// ========================================
-
-if (
-    getEquippedSkin() === "nexus-04"
-) {
+    const isOverdrive =
+        skin === "nexus-04";
 
     const time =
         performance.now() / 1000;
 
-    // ----------------------------
-    // 発射口の巨大エネルギーリング
-    // ----------------------------
+    const beamWidth =
+        getBeamWidth();
+
+    const beamX =
+        player.x;
+
+    const beamTop =
+        0;
+
+    const beamBottom =
+        Math.max(
+            0,
+            player.y - 20
+        );
+
+
+    // ==============================
+    // ビームの出力
+    // ==============================
+
+    const power =
+        Math.min(
+            1,
+            beamEnergy
+        );
+
+
+    ctx.save();
+
+
+    // ==================================================
+    // ① 発射口のチャージリング
+    // ==================================================
+
+    const muzzlePulse =
+        1 +
+        Math.sin(time * 12) * 0.12;
+
+    const muzzleRadius =
+        (isOverdrive ? 48 : 36) *
+        muzzlePulse;
+
+
+    ctx.beginPath();
+
+    ctx.arc(
+        beamX,
+        beamBottom,
+        muzzleRadius,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.strokeStyle =
+        isOverdrive
+            ? "rgba(0,255,255,0.95)"
+            : "rgba(255,255,255,0.9)";
+
+    ctx.lineWidth =
+        isOverdrive ? 5 : 3;
+
+    ctx.shadowColor =
+        isOverdrive
+            ? "#00ffff"
+            : "#ffffff";
+
+    ctx.shadowBlur =
+        isOverdrive ? 30 : 20;
+
+    ctx.stroke();
+
+
+    // ==================================================
+    // ② ビーム全体の外側グロー
+    // ==================================================
+
+    const glowWidth =
+        beamWidth +
+        (isOverdrive ? 55 : 35);
+
+
+    const glowGradient =
+        ctx.createLinearGradient(
+            beamX - glowWidth / 2,
+            0,
+            beamX + glowWidth / 2,
+            0
+        );
+
+    glowGradient.addColorStop(
+        0,
+        "rgba(255,0,100,0)"
+    );
+
+    glowGradient.addColorStop(
+        0.2,
+        "rgba(255,80,180,0.22)"
+    );
+
+    glowGradient.addColorStop(
+        0.5,
+        "rgba(255,255,255,0.32)"
+    );
+
+    glowGradient.addColorStop(
+        0.8,
+        "rgba(80,220,255,0.22)"
+    );
+
+    glowGradient.addColorStop(
+        1,
+        "rgba(0,255,255,0)"
+    );
+
+
+    ctx.fillStyle =
+        glowGradient;
+
+    ctx.globalAlpha =
+        0.75;
+
+
+    ctx.fillRect(
+        beamX - glowWidth / 2,
+        beamTop,
+        glowWidth,
+        beamBottom
+    );
+
+
+    ctx.globalAlpha = 1;
+
+
+    // ==================================================
+    // ③ メインRAINBOWビーム
+    // ==================================================
+
+    const rainbow =
+        ctx.createLinearGradient(
+            beamX - beamWidth / 2,
+            0,
+            beamX + beamWidth / 2,
+            0
+        );
+
+
+    rainbow.addColorStop(
+        0.00,
+        "#ff1744"
+    );
+
+    rainbow.addColorStop(
+        0.16,
+        "#ff9100"
+    );
+
+    rainbow.addColorStop(
+        0.32,
+        "#ffee00"
+    );
+
+    rainbow.addColorStop(
+        0.48,
+        "#00ff88"
+    );
+
+    rainbow.addColorStop(
+        0.64,
+        "#00eaff"
+    );
+
+    rainbow.addColorStop(
+        0.80,
+        "#397bff"
+    );
+
+    rainbow.addColorStop(
+        1.00,
+        "#ff22dd"
+    );
+
+
+    ctx.fillStyle =
+        rainbow;
+
+    ctx.globalAlpha =
+        0.88 +
+        Math.sin(time * 10) * 0.08;
+
+
+    ctx.fillRect(
+        beamX - beamWidth / 2,
+        beamTop,
+        beamWidth,
+        beamBottom
+    );
+
+
+    ctx.globalAlpha = 1;
+
+
+    // ==================================================
+    // ④ 中央エネルギーコア
+    // ==================================================
+
+    const coreWidth =
+        isOverdrive
+            ? 34
+            : 24;
+
+
+    const core =
+        ctx.createLinearGradient(
+            beamX - coreWidth / 2,
+            0,
+            beamX + coreWidth / 2,
+            0
+        );
+
+
+    core.addColorStop(
+        0,
+        "rgba(255,255,255,0)"
+    );
+
+    core.addColorStop(
+        0.25,
+        "rgba(255,255,255,0.8)"
+    );
+
+    core.addColorStop(
+        0.5,
+        "#ffffff"
+    );
+
+    core.addColorStop(
+        0.75,
+        "rgba(255,255,255,0.8)"
+    );
+
+    core.addColorStop(
+        1,
+        "rgba(255,255,255,0)"
+    );
+
+
+    ctx.fillStyle =
+        core;
+
+    ctx.shadowColor =
+        "#ffffff";
+
+    ctx.shadowBlur =
+        isOverdrive ? 30 : 18;
+
+
+    ctx.fillRect(
+        beamX - coreWidth / 2,
+        beamTop,
+        coreWidth,
+        beamBottom
+    );
+
+
+    // ==================================================
+    // ⑤ 流れるエネルギーライン
+    // ==================================================
+
+    const lineCount =
+        isOverdrive ? 9 : 5;
+
+
+    for (
+        let i = 0;
+        i < lineCount;
+        i++
+    ) {
+
+        const offset =
+            (
+                time *
+                (
+                    isOverdrive
+                        ? 520
+                        : 380
+                ) +
+                i *
+                (
+                    beamBottom /
+                    lineCount
+                )
+            ) %
+            beamBottom;
+
+
+        const y =
+            beamBottom -
+            offset;
+
+
+        const wave =
+            Math.sin(
+                time * 7 + i
+            ) * 10;
+
+
+        const lineWidth =
+            isOverdrive
+                ? 18
+                : 12;
+
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            beamX -
+            beamWidth / 2 +
+            8,
+            y
+        );
+
+        ctx.lineTo(
+            beamX +
+            wave,
+            y - 18
+        );
+
+        ctx.lineTo(
+            beamX +
+            beamWidth / 2 -
+            8,
+            y
+        );
+
+
+        ctx.strokeStyle =
+            i % 2 === 0
+                ? "rgba(255,255,255,0.72)"
+                : "rgba(0,255,255,0.55)";
+
+
+        ctx.lineWidth =
+            lineWidth;
+
+
+        ctx.shadowColor =
+            "#ffffff";
+
+        ctx.shadowBlur =
+            12;
+
+
+        ctx.stroke();
+    }
+
+
+    // ==================================================
+    // ⑥ ビーム外周ライン
+    // ==================================================
+
+    ctx.shadowBlur = 0;
+
+    ctx.strokeStyle =
+        isOverdrive
+            ? "rgba(255,255,255,0.95)"
+            : "rgba(255,255,255,0.75)";
+
+
+    ctx.lineWidth =
+        isOverdrive ? 4 : 2;
+
+
+    ctx.strokeRect(
+        beamX -
+        beamWidth / 2,
+
+        beamTop,
+
+        beamWidth,
+
+        beamBottom
+    );
+
+
+    // ==================================================
+    // ⑦ 通常ビームのエネルギー波
+    // ==================================================
 
     for (let i = 0; i < 3; i++) {
 
-        const pulse =
-            ((time * 2.5 + i * 0.8) % 2);
+        const waveProgress =
+            (
+                time * 1.8 +
+                i * 0.33
+            ) % 1;
+
 
         const radius =
-            35 + pulse * 70;
+            25 +
+            waveProgress * 55;
+
 
         const alpha =
-            Math.max(
-                0,
-                0.7 - pulse * 0.35
-            );
+            (1 - waveProgress) *
+            0.45;
 
-        ctx.save();
-
-        ctx.globalAlpha = alpha;
 
         ctx.beginPath();
 
@@ -4481,172 +4962,344 @@ if (
             Math.PI * 2
         );
 
+
         ctx.strokeStyle =
-            i === 0
-                ? "#ffffff"
-                : i === 1
+            `rgba(255,255,255,${alpha})`;
+
+        ctx.lineWidth = 2;
+
+        ctx.stroke();
+    }
+
+
+    // ==================================================
+    // ⑧ NEXUS-04 OVERDRIVE専用
+    // ==================================================
+
+    if (isOverdrive) {
+
+        // --------------------------------
+        // 巨大エネルギーリング
+        // --------------------------------
+
+        for (let i = 0; i < 4; i++) {
+
+            const progress =
+                (
+                    time * 1.7 +
+                    i * 0.25
+                ) % 1;
+
+
+            const radius =
+                35 +
+                progress * 100;
+
+
+            const alpha =
+                (1 - progress) *
+                0.75;
+
+
+            ctx.beginPath();
+
+            ctx.arc(
+                beamX,
+                beamBottom,
+                radius,
+                0,
+                Math.PI * 2
+            );
+
+
+            ctx.strokeStyle =
+                i % 2 === 0
+                    ? `rgba(0,255,255,${alpha})`
+                    : `rgba(255,0,255,${alpha})`;
+
+
+            ctx.lineWidth =
+                3;
+
+
+            ctx.shadowColor =
+                i % 2 === 0
                     ? "#00ffff"
                     : "#ff00ff";
 
-        ctx.lineWidth =
-            4 - pulse * 2;
 
-        ctx.shadowColor =
-            ctx.strokeStyle;
-
-        ctx.shadowBlur = 25;
-
-        ctx.stroke();
-
-        ctx.restore();
-    }
+            ctx.shadowBlur =
+                18;
 
 
-    // ----------------------------
-    // ビーム左右のエネルギー波
-    // ----------------------------
+            ctx.stroke();
+        }
 
-    ctx.save();
 
-    ctx.globalAlpha = 0.75;
+        // --------------------------------
+        // 左右に放出される波動
+        // --------------------------------
 
-    for (let i = 0; i < 12; i++) {
+        for (let i = 0; i < 6; i++) {
 
-        const waveY =
-            beamBottom -
-            (
-                (time * 500 + i * 90)
-                % beamBottom
+            const waveProgress =
+                (
+                    time * 2.4 +
+                    i * 0.17
+                ) % 1;
+
+
+            const y =
+                beamBottom -
+                waveProgress *
+                beamBottom;
+
+
+            const waveSize =
+                15 +
+                Math.sin(
+                    time * 8 + i
+                ) * 12;
+
+
+            ctx.beginPath();
+
+            ctx.moveTo(
+                beamX -
+                beamWidth / 2,
+                y
             );
 
-        const waveWidth =
-            20 +
-            Math.sin(
-                time * 5 + i
-            ) * 15;
+            ctx.lineTo(
+                beamX -
+                beamWidth / 2 -
+                waveSize,
+                y + 12
+            );
+
+            ctx.lineTo(
+                beamX -
+                beamWidth / 2,
+                y + 24
+            );
+
+
+            ctx.strokeStyle =
+                i % 2 === 0
+                    ? "#00ffff"
+                    : "#ff00ff";
+
+
+            ctx.lineWidth =
+                3;
+
+
+            ctx.shadowColor =
+                ctx.strokeStyle;
+
+            ctx.shadowBlur =
+                16;
+
+
+            ctx.stroke();
+
+
+            ctx.beginPath();
+
+            ctx.moveTo(
+                beamX +
+                beamWidth / 2,
+                y
+            );
+
+            ctx.lineTo(
+                beamX +
+                beamWidth / 2 +
+                waveSize,
+                y + 12
+            );
+
+            ctx.lineTo(
+                beamX +
+                beamWidth / 2,
+                y + 24
+            );
+
+            ctx.stroke();
+        }
+
+
+        // --------------------------------
+        // OVERDRIVE中央コア
+        // --------------------------------
+
+        const overdriveCore =
+            ctx.createRadialGradient(
+                beamX,
+                beamBottom,
+                0,
+                beamX,
+                beamBottom,
+                75
+            );
+
+
+        overdriveCore.addColorStop(
+            0,
+            "#ffffff"
+        );
+
+        overdriveCore.addColorStop(
+            0.18,
+            "#00ffff"
+        );
+
+        overdriveCore.addColorStop(
+            0.45,
+            "#7b2cff"
+        );
+
+        overdriveCore.addColorStop(
+            0.7,
+            "#ff00ff"
+        );
+
+        overdriveCore.addColorStop(
+            1,
+            "rgba(255,0,255,0)"
+        );
+
 
         ctx.beginPath();
 
-        ctx.moveTo(
-            beamX - beamWidth / 2,
-            waveY
+        ctx.arc(
+            beamX,
+            beamBottom,
+            75,
+            0,
+            Math.PI * 2
         );
 
-        ctx.lineTo(
-            beamX -
-            beamWidth / 2 -
-            waveWidth,
-            waveY + 12
-        );
 
-        ctx.lineTo(
-            beamX - beamWidth / 2,
-            waveY + 24
-        );
+        ctx.fillStyle =
+            overdriveCore;
 
-        ctx.strokeStyle =
-            i % 2 === 0
-                ? "#00ffff"
-                : "#ff00ff";
 
-        ctx.lineWidth = 3;
+        ctx.globalAlpha =
+            0.85 +
+            Math.sin(time * 12) * 0.12;
+
 
         ctx.shadowColor =
-            ctx.strokeStyle;
+            "#00ffff";
 
-        ctx.shadowBlur = 18;
+        ctx.shadowBlur =
+            45;
 
-        ctx.stroke();
+
+        ctx.fill();
 
 
-        ctx.beginPath();
-
-        ctx.moveTo(
-            beamX + beamWidth / 2,
-            waveY
-        );
-
-        ctx.lineTo(
-            beamX +
-            beamWidth / 2 +
-            waveWidth,
-            waveY + 12
-        );
-
-        ctx.lineTo(
-            beamX + beamWidth / 2,
-            waveY + 24
-        );
-
-        ctx.stroke();
-
+        ctx.globalAlpha = 1;
     }
 
-    ctx.restore();
 
-
-    // ----------------------------
-    // 中央コア
-    // ----------------------------
-
-    const coreGradient =
-        ctx.createRadialGradient(
-            beamX,
-            beamBottom,
-            0,
-            beamX,
-            beamBottom,
-            55
-        );
-
-    coreGradient.addColorStop(
-        0,
-        "#ffffff"
-    );
-
-    coreGradient.addColorStop(
-        0.25,
-        "#00ffff"
-    );
-
-    coreGradient.addColorStop(
-        0.55,
-        "#8a2be2"
-    );
-
-    coreGradient.addColorStop(
-        1,
-        "rgba(255,0,255,0)"
-    );
-
-    ctx.save();
-
-    ctx.globalAlpha = 0.9;
-
-    ctx.fillStyle =
-        coreGradient;
-
-    ctx.shadowColor =
-        "#ffffff";
-
-    ctx.shadowBlur = 40;
+    // ==================================================
+    // ⑨ 発射口の中央コア
+    // ==================================================
 
     ctx.beginPath();
 
     ctx.arc(
         beamX,
         beamBottom,
-        55,
+        isOverdrive ? 20 : 14,
         0,
         Math.PI * 2
     );
 
+
+    ctx.fillStyle =
+        "#ffffff";
+
+
+    ctx.shadowColor =
+        isOverdrive
+            ? "#00ffff"
+            : "#ffffff";
+
+
+    ctx.shadowBlur =
+        isOverdrive
+            ? 35
+            : 20;
+
+
     ctx.fill();
 
-    ctx.restore();
-}
 
     ctx.restore();
+
+
+    // ==================================================
+    // ⑩ ビームヒットエフェクト
+    // ==================================================
+
+    if (beamImpactPower > 0) {
+
+        ctx.save();
+
+        const impactRadius =
+            20 +
+            (
+                1 -
+                beamImpactPower
+            ) *
+            (
+                isOverdrive
+                    ? 80
+                    : 55
+            );
+
+
+        ctx.beginPath();
+
+        ctx.arc(
+            beamHitX,
+            beamHitY,
+            impactRadius,
+            0,
+            Math.PI * 2
+        );
+
+
+        ctx.strokeStyle =
+            isOverdrive
+                ? `rgba(0,255,255,${beamImpactPower})`
+                : `rgba(255,255,255,${beamImpactPower})`;
+
+
+        ctx.lineWidth =
+            isOverdrive
+                ? 7
+                : 4;
+
+
+        ctx.shadowColor =
+            isOverdrive
+                ? "#00ffff"
+                : "#ffffff";
+
+
+        ctx.shadowBlur =
+            25;
+
+
+        ctx.stroke();
+
+
+        ctx.restore();
+    }
 }
 
 function drawEnemyBullets() {
