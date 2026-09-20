@@ -7,16 +7,6 @@ const hpText = document.getElementById("hp");
 const startScreen = document.getElementById("start-screen");
 const gameOverScreen = document.getElementById("game-over-screen");
 
-const startButton = document.getElementById("start-button");
-const restartButton = document.getElementById("restart-button");
-const returnStartButton =document.getElementById("return-start-button");
-
-const finalScore = document.getElementById("final-score");
-
-const leftButton = document.getElementById("left-button");
-const rightButton = document.getElementById("right-button");
-const fireButton = document.getElementById("fire-button");
-
 
 const howtoScreen =
     document.getElementById("howto-screen");
@@ -24,9 +14,7 @@ const howtoScreen =
 const howtoCloseButton =
     document.getElementById("howto-close-button");
 
-
-
-    const howtoPcTab =
+const howtoPcTab =
     document.getElementById("howto-pc-tab");
 
 const howtoMobileTab =
@@ -37,6 +25,16 @@ const howtoPcControls =
 
 const howtoMobileControls =
     document.getElementById("howto-mobile-controls");
+const startButton = document.getElementById("start-button");
+const restartButton = document.getElementById("restart-button");
+const returnStartButton =document.getElementById("return-start-button");
+
+const finalScore = document.getElementById("final-score");
+
+const leftButton = document.getElementById("left-button");
+const rightButton = document.getElementById("right-button");
+const fireButton = document.getElementById("fire-button");
+
 /* ==================================================
    基本設定
 ================================================== */
@@ -5261,6 +5259,7 @@ function openHowTo() {
 
     if (!howtoScreen) return;
 
+    // 他の画面を全部閉じる
     if (startScreen) {
         startScreen.style.display = "none";
     }
@@ -5277,9 +5276,13 @@ function openHowTo() {
         garageScreen.style.display = "none";
     }
 
+    // HOW TOだけ表示
     howtoScreen.style.display = "flex";
-}
 
+    // 初期状態
+    showHowToPC();
+
+}
 function closeHowTo() {
 
     if (!howtoScreen) return;
@@ -5307,6 +5310,104 @@ function closeRanking() {
     }
 }
 
+
+
+/* ==================================================
+   HOW TOを開く
+================================================== */
+
+function openHowTo() {
+
+    if (!howtoScreen) return;
+
+    // 他の画面を全部閉じる
+    if (startScreen) {
+        startScreen.style.display = "none";
+    }
+
+    if (gameOverScreen) {
+        gameOverScreen.style.display = "none";
+    }
+
+    if (rankingScreen) {
+        rankingScreen.style.display = "none";
+    }
+
+    if (garageScreen) {
+        garageScreen.style.display = "none";
+    }
+
+    // HOW TOを表示
+    howtoScreen.style.display = "flex";
+
+    // 最初はPC操作
+    showHowToPC();
+}
+
+
+
+
+/* ==================================================
+   HOW TOを閉じる
+================================================== */
+
+function closeHowTo() {
+
+    if (!howtoScreen) return;
+
+    // HOW TOを閉じる
+    howtoScreen.style.display = "none";
+
+    // スタート画面を表示
+    if (startScreen) {
+        startScreen.style.display = "flex";
+    }
+
+}
+/* ==================================================
+   HOW TO 操作切り替え
+================================================== */
+
+function showHowToPC() {
+
+    if (howtoPcControls) {
+        howtoPcControls.style.display = "block";
+    }
+
+    if (howtoMobileControls) {
+        howtoMobileControls.style.display = "none";
+    }
+
+    if (howtoPcTab) {
+        howtoPcTab.classList.add("active");
+    }
+
+    if (howtoMobileTab) {
+        howtoMobileTab.classList.remove("active");
+    }
+
+}
+
+
+function showHowToMobile() {
+
+    if (howtoPcControls) {
+        howtoPcControls.style.display = "none";
+    }
+
+    if (howtoMobileControls) {
+        howtoMobileControls.style.display = "block";
+    }
+
+    if (howtoPcTab) {
+        howtoPcTab.classList.remove("active");
+    }
+
+    if (howtoMobileTab) {
+        howtoMobileTab.classList.add("active");
+    }
+
+}
 
 /* ==================================================
    仮ランキング
@@ -5747,6 +5848,39 @@ if (rankingCloseButton) {
 
 }
 
+/* ==================================================
+   HOW TO BUTTON
+================================================== */
+
+if (howtoCloseButton) {
+
+    howtoCloseButton.addEventListener(
+        "click",
+        closeHowTo
+    );
+
+}
+
+
+if (howtoPcTab) {
+
+    howtoPcTab.addEventListener(
+        "click",
+        showHowToPC
+    );
+
+}
+
+
+if (howtoMobileTab) {
+
+    howtoMobileTab.addEventListener(
+        "click",
+        showHowToMobile
+    );
+
+}
+
 function handleMenuScreen() {
 
     const params = new URLSearchParams(
@@ -5759,6 +5893,7 @@ function handleMenuScreen() {
         "LINE MENU SCREEN:",
         screen
     );
+
 
     // ========================================
     // 通常のゲーム
@@ -5775,6 +5910,7 @@ function handleMenuScreen() {
 
         return;
     }
+
 
     // ========================================
     // ランキング
@@ -5795,6 +5931,7 @@ function handleMenuScreen() {
         return;
     }
 
+
     // ========================================
     // GARAGE
     // ========================================
@@ -5814,25 +5951,19 @@ function handleMenuScreen() {
         return;
     }
 
+
     // ========================================
     // HOW TO
     // ========================================
 
- if (screen === "howto") {
+    if (screen === "howto") {
 
-    if (startScreen) {
-        startScreen.style.display = "none";
+        openHowTo();
+
+        return;
     }
 
-    if (gameOverScreen) {
-        gameOverScreen.style.display = "none";
-    }
-
-    openHowTo();
-
-    return;
 }
 
-}
 
 initLIFF();
