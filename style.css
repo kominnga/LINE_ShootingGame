@@ -69,54 +69,134 @@ body {
 }
 
 
-#skin-preview-canvas.garage-preview-nexus04 {
+/* ========================================
+   GARAGE 機体スキャン
+======================================== */
 
-    filter:
-        drop-shadow(0 0 8px #00ffff)
-        drop-shadow(0 0 20px #ff00ff);
+#skin-preview-canvas.garage-preview-enter {
 
+    animation:
+        garageShipScan
+        0.42s
+        cubic-bezier(.4, 0, .2, 1);
 }
 
 
-/* 機体切り替え */
-@keyframes garageShipEnter {
+@keyframes garageShipScan {
 
     0% {
 
-        opacity: 0;
+        opacity: 0.45;
 
         transform:
-            translateY(18px)
-            scale(0.82);
+            translateX(18px);
 
         filter:
-            brightness(2.5)
-            blur(2px);
+            brightness(1.8)
+            blur(1px);
     }
 
-    45% {
+
+    35% {
+
+        opacity: 0.85;
+
+        transform:
+            translateX(5px);
+
+        filter:
+            brightness(1.35)
+            blur(0.5px);
+    }
+
+
+    65% {
 
         opacity: 1;
 
         transform:
-            translateY(-5px)
-            scale(1.04);
+            translateX(-2px);
 
         filter:
-            brightness(1.7);
+            brightness(1.1);
     }
+
 
     100% {
 
         opacity: 1;
 
         transform:
-            translateY(0)
-            scale(1);
+            translateX(0);
 
         filter:
-            brightness(1);
+            brightness(1)
+            blur(0);
     }
+}
+
+/* ========================================
+   機体スキャンフィールド
+======================================== */
+
+#skin-display::before {
+
+    content: "";
+
+    position: absolute;
+
+    top: 8px;
+    left: 50%;
+
+    width: 150px;
+    height: 180px;
+
+    transform:
+        translateX(-50%);
+
+    pointer-events: none;
+
+    border:
+        1px solid
+        rgba(70, 210, 255, 0.08);
+
+    border-radius: 12px;
+
+    background:
+        repeating-linear-gradient(
+            to bottom,
+            transparent 0px,
+            transparent 7px,
+            rgba(70, 210, 255, 0.025) 8px,
+            transparent 9px
+        );
+}
+
+#skin-preview-canvas.garage-preview-enter {
+
+    animation:
+        garageShipScan
+        0.42s
+        cubic-bezier(.4, 0, .2, 1);
+
+    filter:
+        drop-shadow(
+            0 0 8px
+            rgba(80,220,255,0.25)
+        );
+}
+
+#skin-preview-canvas.garage-preview-nexus04 {
+
+    filter:
+        drop-shadow(
+            0 0 8px
+            rgba(0,255,255,0.8)
+        )
+        drop-shadow(
+            0 0 18px
+            rgba(180,0,255,0.45)
+        );
 }
 
 
@@ -966,6 +1046,131 @@ body {
         opacity:
             0;
     }
+}
+
+/* ========================================
+   GARAGE 左右ボタン
+======================================== */
+
+#garage-preview {
+    position: relative;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 8px;
+
+    margin: 10px 0 20px;
+}
+
+
+.skin-arrow {
+
+    position: relative;
+
+    z-index: 50;
+
+    flex-shrink: 0;
+
+    width: 48px;
+    height: 48px;
+
+    padding: 0;
+
+    border: 1px solid rgba(120, 200, 255, 0.45);
+
+    border-radius: 50%;
+
+    background:
+        rgba(15, 30, 60, 0.95);
+
+    color: white;
+
+    font-size: 20px;
+
+    line-height: 48px;
+
+    text-align: center;
+
+    cursor: pointer;
+
+    pointer-events: auto;
+
+    touch-action: manipulation;
+
+    user-select: none;
+
+    -webkit-user-select: none;
+
+    transition:
+        transform 0.15s ease,
+        background 0.2s ease,
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+.skin-arrow:hover {
+
+    background:
+        rgba(30, 65, 110, 0.98);
+
+    border-color:
+        rgba(100, 220, 255, 0.8);
+
+    box-shadow:
+        0 0 15px
+        rgba(50, 180, 255, 0.25);
+
+    transform:
+        scale(1.06);
+}
+
+
+.skin-arrow:active {
+
+    transform:
+        scale(0.90);
+
+    background:
+        rgba(50, 100, 150, 1);
+}
+
+
+/* 中央の機体表示 */
+
+#skin-display {
+
+    position: relative;
+
+    z-index: 10;
+
+    width: 200px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    flex-shrink: 0;
+}
+
+
+#skin-preview-canvas {
+
+    position: relative;
+
+    z-index: 10;
+
+    display: block;
+
+    pointer-events: none;
+
+    transition:
+        filter 0.25s ease;
 }
 
 #gameCanvas {

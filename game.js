@@ -2141,6 +2141,10 @@ function playPurchaseAnimation(skin) {
 // GARAGE 機体プレビュー演出
 // ==================================================
 
+// ==================================================
+// GARAGE 機体切り替え演出
+// ==================================================
+
 function playGaragePreviewAnimation(
     skinId
 ) {
@@ -2150,23 +2154,31 @@ function playGaragePreviewAnimation(
     }
 
 
-    skinPreviewCanvas.classList.remove(
-        "garage-preview-enter"
-    );
+    // ========================================
+    // 現在のアニメーションをリセット
+    // ========================================
 
     skinPreviewCanvas.classList.remove(
+        "garage-preview-enter",
         "garage-preview-nexus04"
     );
 
 
-    // 強制的にアニメーションを再スタート
     void skinPreviewCanvas.offsetWidth;
 
+
+    // ========================================
+    // スキャン演出
+    // ========================================
 
     skinPreviewCanvas.classList.add(
         "garage-preview-enter"
     );
 
+
+    // ========================================
+    // NEXUS-04専用
+    // ========================================
 
     if (
         skinId ===
