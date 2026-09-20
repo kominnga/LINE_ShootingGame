@@ -81,27 +81,46 @@ let coins =
     Number(localStorage.getItem("nexus-coins")) || 0;
 
 
+    function updateCoinDisplays() {
+
+        const startCoins =
+            document.getElementById("start-coins");
+
+        const gameoverCoins =
+            document.getElementById("gameover-coins");
+
+        const currentCoins =
+            Number(localStorage.getItem("nexus-coins")) || 0;
+
+        if (startCoins) {
+            startCoins.textContent =
+                currentCoins.toLocaleString();
+        }
+
+        if (gameoverCoins) {
+            gameoverCoins.textContent =
+                currentCoins.toLocaleString();
+        }
+    } 
+
+
 // コインを追加
 function addCoins(amount) {
 
     amount = Math.floor(amount);
 
-    if (amount <= 0) {
-        return;
-    }
+    if (amount <= 0) return;
 
     coins += amount;
 
-    // 保存
     localStorage.setItem(
         "nexus-coins",
         String(coins)
     );
 
-    console.log(
-        `🪙 +${amount} COINS`
-    );
+    updateCoinDisplays();
 
+    console.log(`🪙 +${amount} COINS`);
 }
 
 let level = 1;
@@ -1121,6 +1140,7 @@ function startGame() {
 
     screenShake = 0;
     hitFlash = 0;
+    updateCoinDisplays();
 
     // ==============================
 // アイテムを完全リセット
@@ -1160,6 +1180,7 @@ setItemControlsVisible(true);
 
     lastTime = performance.now();
 
+    updateCoinDisplays();
     requestAnimationFrame(gameLoop);
 }
 

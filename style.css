@@ -372,6 +372,44 @@ button {
     font-size: 11px;
     margin-top: -2px;
 }
+#start-coin-display,
+#gameover-coin-display {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 8px 18px;
+
+    border: 1px solid rgba(255, 210, 80, 0.45);
+    border-radius: 999px;
+
+    background: rgba(20, 25, 35, 0.75);
+
+    color: #ffd84d;
+
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 1px;
+
+    box-shadow:
+        0 0 12px rgba(255, 210, 80, 0.12);
+
+    backdrop-filter: blur(8px);
+}
+
+#start-coin-display {
+    margin: 12px auto 20px;
+}
+
+#gameover-coin-display {
+    margin: 10px auto 20px;
+}
+
+#start-coins,
+#gameover-coins {
+    margin: 0 5px;
+    color: #ffe98a;
+}
 
 /* ==================================================
    LINE PROFILE
