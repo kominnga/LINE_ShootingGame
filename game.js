@@ -26,6 +26,11 @@ const howtoPcControls =
 
 const howtoMobileControls =
     document.getElementById("howto-mobile-controls");
+    const shieldButton =
+    document.getElementById("shieldButton");
+
+const bombButton =
+    document.getElementById("bombButton");
 const startButton = document.getElementById("start-button");
 const restartButton = document.getElementById("restart-button");
 const returnStartButton =document.getElementById("return-start-button");
@@ -115,6 +120,23 @@ const beamDamage = 35;
 // 必殺技を使ったか
 let beamCooldown = 0;
 const beamCooldownMax = 30;
+
+// ================================
+// SHIELD
+// ================================
+let shieldActive = false;
+let shieldTimer = 0;
+const shieldDuration = 8;
+
+let shieldCooldown = 0;
+const shieldCooldownMax = 30;
+
+
+// ================================
+// BOMB
+// ================================
+let bombCooldown = 0;
+const bombCooldownMax = 20;
 
 // ========================================
 // SKIN SYSTEM
@@ -407,6 +429,83 @@ if (info) {
     }
 
     drawSkinPreview();
+}
+
+function useShield() {
+
+    if (shieldActive) return;
+
+    if (shieldCooldown > 0) return;
+
+    shieldActive = true;
+    shieldTimer = shieldDuration;
+
+    shieldCooldown = shieldCooldownMax;
+
+    screenShake = 8;
+
+    updateItemButtons();
+}
+function useBomb() {
+
+    if (bombCooldown > 0) return;
+
+    bombCooldown = bombCooldownMax;
+
+    screenShake = 20;
+    hitFlash = 0.25;
+
+    // =========================
+    // 通常の敵
+    // =========================
+
+    for (let i = enemies.length - 1; i >= 0; i--) {
+
+        const enemy = enemies[i];
+
+        createExplosion(
+            enemy.x,
+            enemy.y,
+            enemy.size * 1.5
+        );
+
+        score += enemy.score;
+
+        enemies.splice(i, 1);
+    }
+
+
+    // =========================
+    // 敵弾を全消去
+    // =========================
+
+    enemyBullets = [];
+
+
+    // =========================
+    // BOSS
+    // =========================
+
+    if (boss && bossActive) {
+
+        boss.hp -= 100;
+
+        createExplosion(
+            boss.x,
+            boss.y,
+            80
+        );
+
+        if (boss.hp <= 0) {
+
+            defeatBoss();
+
+            return;
+        }
+    }
+
+    updateHUD();
+    updateItemButtons();
 }
 /* ==================================================
    オブジェクト
@@ -882,6 +981,12 @@ beamTimer = 0;
 
 // ビームも最初からチャージ開始
 beamCooldown = beamCooldownMax;
+
+shieldActive = false;
+shieldTimer = 0;
+shieldCooldown = shieldCooldownMax;
+
+bombCooldown = bombCooldownMax;
 
     player.x = width / 2;
     player.y = height - 150;
@@ -2434,15 +2539,58 @@ function updateBeam(deltaTime) {
 }
 function updateItems(deltaTime) {
 
-    // ♡回復のチャージ
     if (healCooldown > 0) {
-
         healCooldown -= deltaTime;
 
         if (healCooldown < 0) {
             healCooldown = 0;
         }
     }
+
+
+    if (beamCooldown > 0) {
+        beamCooldown -= deltaTime;
+
+        if (beamCooldown < 0) {
+            beamCooldown = 0;
+        }
+    }
+
+
+    // SHIELD
+
+    if (shieldCooldown > 0) {
+        shieldCooldown -= deltaTime;
+
+        if (shieldCooldown < 0) {
+            shieldCooldown = 0;
+        }
+    }
+
+
+    if (shieldActive) {
+
+        shieldTimer -= deltaTime;
+
+        if (shieldTimer <= 0) {
+
+            shieldTimer = 0;
+            shieldActive = false;
+        }
+    }
+
+
+    // BOMB
+
+    if (bombCooldown > 0) {
+
+        bombCooldown -= deltaTime;
+
+        if (bombCooldown < 0) {
+            bombCooldown = 0;
+        }
+    }
+
 
     updateItemButtons();
 }
@@ -4479,18 +4627,19 @@ function isPlayerHit(
 
 function damagePlayer() {
 
-    // ========================================
-    // ビーム発動中は完全無敵
-    // ========================================
-
+    // ビーム中
     if (beamActive) {
+        return;
+    }
+
+    // シールド中
+    if (shieldActive) {
         return;
     }
 
     hp--;
 
     screenShake = 12;
-
     hitFlash = 0.25;
 
     updateHUD();
@@ -4504,9 +4653,62 @@ function damagePlayer() {
         );
 
         endGame();
-
     }
+}
 
+function drawShield() {
+
+    if (!shieldActive) return;
+
+    const pulse =
+        Math.sin(performance.now() * 0.008) * 4;
+
+    const radius =
+        42 + pulse;
+
+    ctx.save();
+
+    ctx.beginPath();
+
+    ctx.arc(
+        player.x,
+        player.y,
+        radius,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.strokeStyle =
+        "rgba(80, 200, 255, 0.9)";
+
+    ctx.lineWidth = 3;
+
+    ctx.shadowColor =
+        "rgba(50, 180, 255, 1)";
+
+    ctx.shadowBlur = 18;
+
+    ctx.stroke();
+
+
+    ctx.beginPath();
+
+    ctx.arc(
+        player.x,
+        player.y,
+        radius - 7,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.strokeStyle =
+        "rgba(120, 230, 255, 0.25)";
+
+    ctx.lineWidth = 2;
+
+    ctx.stroke();
+
+    ctx.restore();
 }
 function updateItemButtons() {
 
@@ -4778,7 +4980,7 @@ drawPlayer();
 }
 }
 
-
+drawShield();
 
 
 const healButton =
@@ -5141,6 +5343,14 @@ if (e.key === "2") {
     useBeam();
 }
 
+if (event.key === "3") {
+    useShield();
+}
+
+if (event.key === "4") {
+    useBomb();
+}
+
     }
 );
 
@@ -5179,6 +5389,7 @@ window.addEventListener(
 
     }
 );
+
 
 
 /* ==================================================
@@ -5220,6 +5431,21 @@ if (shareButton) {
         shareScore
     );
 
+}
+
+
+if (shieldButton) {
+    shieldButton.addEventListener(
+        "click",
+        useShield
+    );
+}
+
+if (bombButton) {
+    bombButton.addEventListener(
+        "click",
+        useBomb
+    );
 }
 
 /* ==================================================
@@ -5915,6 +6141,8 @@ if (howtoPcTab) {
     );
 
 }
+
+
 
 
 if (howtoMobileTab) {
