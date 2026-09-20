@@ -18,9 +18,25 @@ const rightButton = document.getElementById("right-button");
 const fireButton = document.getElementById("fire-button");
 
 
+const howtoScreen =
+    document.getElementById("howto-screen");
+
+const howtoCloseButton =
+    document.getElementById("howto-close-button");
 
 
 
+    const howtoPcTab =
+    document.getElementById("howto-pc-tab");
+
+const howtoMobileTab =
+    document.getElementById("howto-mobile-tab");
+
+const howtoPcControls =
+    document.getElementById("howto-pc-controls");
+
+const howtoMobileControls =
+    document.getElementById("howto-mobile-controls");
 /* ==================================================
    基本設定
 ================================================== */
@@ -2343,6 +2359,44 @@ function drawPlayer() {
 
 }
 
+function showHowToPC() {
+
+    if (howtoPcControls) {
+        howtoPcControls.style.display = "block";
+    }
+
+    if (howtoMobileControls) {
+        howtoMobileControls.style.display = "none";
+    }
+
+    if (howtoPcTab) {
+        howtoPcTab.classList.add("active");
+    }
+
+    if (howtoMobileTab) {
+        howtoMobileTab.classList.remove("active");
+    }
+}
+
+
+function showHowToMobile() {
+
+    if (howtoPcControls) {
+        howtoPcControls.style.display = "none";
+    }
+
+    if (howtoMobileControls) {
+        howtoMobileControls.style.display = "block";
+    }
+
+    if (howtoPcTab) {
+        howtoPcTab.classList.remove("active");
+    }
+
+    if (howtoMobileTab) {
+        howtoMobileTab.classList.add("active");
+    }
+}
 function updateBeam(deltaTime) {
 
     // =========================
@@ -5142,6 +5196,13 @@ restartButton.addEventListener(
     startGame
 );
 
+if (howtoCloseButton) {
+    howtoCloseButton.addEventListener(
+        "click",
+        closeHowTo
+    );
+}
+
 if (returnStartButton) {
 
     returnStartButton.addEventListener(
@@ -5194,6 +5255,40 @@ function openRanking() {
 
     loadRanking();
 
+}
+
+function openHowTo() {
+
+    if (!howtoScreen) return;
+
+    if (startScreen) {
+        startScreen.style.display = "none";
+    }
+
+    if (gameOverScreen) {
+        gameOverScreen.style.display = "none";
+    }
+
+    if (rankingScreen) {
+        rankingScreen.style.display = "none";
+    }
+
+    if (garageScreen) {
+        garageScreen.style.display = "none";
+    }
+
+    howtoScreen.style.display = "flex";
+}
+
+function closeHowTo() {
+
+    if (!howtoScreen) return;
+
+    howtoScreen.style.display = "none";
+
+    if (startScreen) {
+        startScreen.style.display = "flex";
+    }
 }
 
 
@@ -5618,6 +5713,20 @@ if (rankingButton) {
 
 }
 
+if (howtoPcTab) {
+    howtoPcTab.addEventListener(
+        "click",
+        showHowToPC
+    );
+}
+
+if (howtoMobileTab) {
+    howtoMobileTab.addEventListener(
+        "click",
+        showHowToMobile
+    );
+}
+
 
 if (rankingButtonGameOver) {
 
@@ -5709,18 +5818,20 @@ function handleMenuScreen() {
     // HOW TO
     // ========================================
 
-    if (screen === "howto") {
+ if (screen === "howto") {
 
-        if (startScreen) {
-            startScreen.style.display = "flex";
-        }
-
-        console.log(
-            "HOW TO画面は次の段階で追加します。"
-        );
-
-        return;
+    if (startScreen) {
+        startScreen.style.display = "none";
     }
+
+    if (gameOverScreen) {
+        gameOverScreen.style.display = "none";
+    }
+
+    openHowTo();
+
+    return;
+}
 
 }
 
