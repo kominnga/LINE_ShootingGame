@@ -329,6 +329,11 @@ let ownedSkins = JSON.parse(
     localStorage.getItem("nexus-owned-skins")
     || '["nexus-01"]'
 );
+if (!ownedSkins.includes("nexus-04")) {
+    ownedSkins.push("nexus-04");
+}
+
+saveOwnedSkins();
 
 // NEXUS-01は必ず所持
 if (!ownedSkins.includes("nexus-01")) {
