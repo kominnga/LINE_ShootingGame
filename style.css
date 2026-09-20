@@ -410,6 +410,536 @@ button {
     margin: 0 5px;
     color: #ffe98a;
 }
+/* ==================================================
+   GARAGE PURCHASE SYSTEM
+================================================== */
+
+/* --------------------------------
+   購入確認モーダル
+-------------------------------- */
+
+#garage-purchase-modal {
+
+    position: fixed;
+
+    inset: 0;
+
+    display: flex;
+
+    justify-content: center;
+    align-items: center;
+
+    background:
+        rgba(2, 8, 20, 0.82);
+
+    backdrop-filter:
+        blur(8px);
+
+    opacity: 0;
+
+    pointer-events: none;
+
+    transition:
+        opacity 0.2s ease;
+
+    z-index: 9999;
+}
+
+
+#garage-purchase-modal.purchase-modal-visible {
+
+    opacity: 1;
+
+    pointer-events: auto;
+}
+
+
+.purchase-modal-panel {
+
+    width: min(
+        90vw,
+        420px
+    );
+
+    padding: 30px;
+
+    text-align: center;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(12, 28, 50, 0.98),
+            rgba(5, 13, 27, 0.98)
+        );
+
+    border:
+        1px solid
+        rgba(80, 210, 255, 0.5);
+
+    border-radius: 18px;
+
+    box-shadow:
+        0 0 40px
+        rgba(40, 190, 255, 0.25);
+
+    transform:
+        scale(0.9);
+
+    transition:
+        transform 0.25s ease;
+}
+
+
+#garage-purchase-modal.purchase-modal-visible
+.purchase-modal-panel {
+
+    transform:
+        scale(1);
+
+}
+
+
+.purchase-modal-label {
+
+    font-size: 11px;
+
+    letter-spacing: 4px;
+
+    color:
+        rgba(130, 220, 255, 0.7);
+
+    margin-bottom: 8px;
+}
+
+
+.purchase-modal-title {
+
+    font-size: 30px;
+
+    font-weight: 800;
+
+    letter-spacing: 4px;
+
+    color: #ffffff;
+
+    margin-bottom: 20px;
+}
+
+
+.purchase-modal-skin {
+
+    font-size: 24px;
+
+    font-weight: 800;
+
+    color: #65e7ff;
+
+    text-shadow:
+        0 0 15px
+        rgba(80, 220, 255, 0.7);
+
+    margin-bottom: 10px;
+}
+
+
+.purchase-modal-price {
+
+    font-size: 18px;
+
+    font-weight: 700;
+
+    color: #ffd86b;
+
+    margin-bottom: 8px;
+}
+
+
+.purchase-modal-balance {
+
+    font-size: 12px;
+
+    color:
+        rgba(255,255,255,0.55);
+
+    margin-bottom: 20px;
+}
+
+
+.purchase-modal-question {
+
+    font-size: 14px;
+
+    color:
+        rgba(255,255,255,0.8);
+
+    margin-bottom: 22px;
+}
+
+
+.purchase-modal-buttons {
+
+    display: flex;
+
+    gap: 12px;
+
+    justify-content: center;
+}
+
+
+.purchase-modal-buttons button {
+
+    min-width: 130px;
+
+    padding: 12px 18px;
+
+    border-radius: 10px;
+
+    border: 1px solid
+        rgba(255,255,255,0.15);
+
+    cursor: pointer;
+
+    font-weight: 800;
+
+    letter-spacing: 1px;
+
+    transition:
+        transform 0.15s ease,
+        filter 0.15s ease;
+}
+
+
+.purchase-modal-buttons button:hover {
+
+    transform:
+        translateY(-2px);
+
+    filter:
+        brightness(1.15);
+
+}
+
+
+#purchase-confirm-button {
+
+    background:
+        linear-gradient(
+            135deg,
+            #19bfff,
+            #416cff
+        );
+
+    color: white;
+
+}
+
+
+#purchase-cancel-button {
+
+    background:
+        rgba(255,255,255,0.08);
+
+    color:
+        rgba(255,255,255,0.75);
+}
+
+
+/* --------------------------------
+   SOLD OUT
+-------------------------------- */
+
+.skin-sold-out {
+
+    color:
+        #8fa2b8 !important;
+
+    letter-spacing:
+        1px;
+}
+
+
+.skin-sold-out::after {
+
+    content:
+        "";
+
+}
+
+
+.skin-sold-out-button {
+
+    opacity:
+        0.65;
+}
+
+
+/* --------------------------------
+   COINS不足
+-------------------------------- */
+
+.skin-not-enough {
+
+    color:
+        #ff8b8b !important;
+
+    text-shadow:
+        0 0 10px
+        rgba(255, 80, 80, 0.25);
+
+}
+
+
+/* --------------------------------
+   コイン不足時のボタン振動
+-------------------------------- */
+
+.garage-shake {
+
+    animation:
+        garageButtonShake
+        0.35s ease;
+
+}
+
+
+@keyframes garageButtonShake {
+
+    0% {
+        transform: translateX(0);
+    }
+
+    20% {
+        transform: translateX(-7px);
+    }
+
+    40% {
+        transform: translateX(7px);
+    }
+
+    60% {
+        transform: translateX(-5px);
+    }
+
+    80% {
+        transform: translateX(5px);
+    }
+
+    100% {
+        transform: translateX(0);
+    }
+
+}
+
+
+/* --------------------------------
+   購入成功フラッシュ
+-------------------------------- */
+
+.purchase-success-flash {
+
+    animation:
+        purchasePanelFlash
+        0.7s ease;
+
+}
+
+
+@keyframes purchasePanelFlash {
+
+    0% {
+        box-shadow:
+            0 0 0
+            rgba(60,220,255,0);
+    }
+
+    30% {
+        box-shadow:
+            0 0 70px
+            rgba(60,220,255,0.9);
+    }
+
+    100% {
+        box-shadow:
+            0 0 25px
+            rgba(60,220,255,0.2);
+    }
+
+}
+
+
+/* --------------------------------
+   PURCHASED演出
+-------------------------------- */
+
+.purchase-success-effect {
+
+    position: fixed;
+
+    left: 50%;
+    top: 50%;
+
+    transform:
+        translate(-50%, -50%);
+
+    width: 100%;
+
+    text-align: center;
+
+    pointer-events: none;
+
+    z-index: 10000;
+
+    animation:
+        purchaseSuccessIn
+        1.6s ease forwards;
+}
+
+
+.purchase-success-main {
+
+    font-size:
+        clamp(36px, 9vw, 72px);
+
+    font-weight: 900;
+
+    letter-spacing:
+        8px;
+
+    color:
+        #ffffff;
+
+    text-shadow:
+        0 0 12px #35dfff,
+        0 0 35px #35dfff,
+        0 0 70px rgba(50,190,255,0.7);
+}
+
+
+.purchase-success-skin {
+
+    margin-top: 8px;
+
+    font-size: 22px;
+
+    font-weight: 800;
+
+    color:
+        #65e7ff;
+
+    letter-spacing:
+        3px;
+}
+
+
+.purchase-success-coin {
+
+    margin-top: 12px;
+
+    font-size: 14px;
+
+    color:
+        #ffd86b;
+
+}
+
+
+@keyframes purchaseSuccessIn {
+
+    0% {
+
+        opacity: 0;
+
+        transform:
+            translate(-50%, -42%)
+            scale(0.65);
+
+    }
+
+    20% {
+
+        opacity: 1;
+
+        transform:
+            translate(-50%, -50%)
+            scale(1.08);
+
+    }
+
+    45% {
+
+        transform:
+            translate(-50%, -50%)
+            scale(1);
+
+    }
+
+    100% {
+
+        opacity: 0;
+
+        transform:
+            translate(-50%, -58%)
+            scale(1.05);
+
+    }
+
+}
+
+
+/* --------------------------------
+   コインパーティクル
+-------------------------------- */
+
+.purchase-coin-particle {
+
+    position: absolute;
+
+    left: 50%;
+    top: 55%;
+
+    font-size: 20px;
+
+    animation:
+        purchaseCoinFly
+        1.2s ease-out forwards;
+
+    animation-delay:
+        var(--delay);
+}
+
+
+@keyframes purchaseCoinFly {
+
+    0% {
+
+        opacity: 0;
+
+        transform:
+            translate(-50%, 0)
+            scale(0.5);
+
+    }
+
+    15% {
+
+        opacity: 1;
+
+    }
+
+    100% {
+
+        opacity: 0;
+
+        transform:
+            translate(
+                var(--particle-x),
+                var(--particle-y)
+            )
+            scale(1.1);
+
+    }
+
+}
 
 /* ==================================================
    LINE PROFILE
