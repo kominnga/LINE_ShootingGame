@@ -5202,6 +5202,7 @@ function closeRanking() {
 
     rankingScreen.style.display = "none";
 
+    startScreen.style.display = "flex";
 }
 
 
@@ -5586,10 +5587,14 @@ function returnToStartScreen() {
     // 他の画面も閉じる
     if (rankingScreen) {
         rankingScreen.style.display = "none";
+
+        startScreen.style.display = "flex";
     }
 
     if (garageScreen) {
         garageScreen.style.display = "none";
+
+        startScreen.style.display = "flex";
     }
 }
 
