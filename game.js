@@ -257,9 +257,11 @@ async function initLIFF() {
 
         // LINEプロフィール取得
         lineProfile = await liff.getProfile();
-
-
+        
+       
         console.log("LINEプロフィール取得成功");
+
+        handleMenuScreen();
 
         console.log(
             "名前:",
@@ -5621,6 +5623,92 @@ if (rankingCloseButton) {
         "click",
         closeRanking
     );
+
+}
+
+function handleMenuScreen() {
+
+    const params = new URLSearchParams(
+        window.location.search
+    );
+
+    const screen = params.get("screen");
+
+    console.log(
+        "LINE MENU SCREEN:",
+        screen
+    );
+
+    // ========================================
+    // 通常のゲーム
+    // ========================================
+
+    if (
+        !screen ||
+        screen === "game"
+    ) {
+
+        if (startScreen) {
+            startScreen.style.display = "flex";
+        }
+
+        return;
+    }
+
+    // ========================================
+    // ランキング
+    // ========================================
+
+    if (screen === "ranking") {
+
+        if (startScreen) {
+            startScreen.style.display = "none";
+        }
+
+        if (gameOverScreen) {
+            gameOverScreen.style.display = "none";
+        }
+
+        openRanking();
+
+        return;
+    }
+
+    // ========================================
+    // GARAGE
+    // ========================================
+
+    if (screen === "garage") {
+
+        if (startScreen) {
+            startScreen.style.display = "none";
+        }
+
+        if (gameOverScreen) {
+            gameOverScreen.style.display = "none";
+        }
+
+        openGarage();
+
+        return;
+    }
+
+    // ========================================
+    // HOW TO
+    // ========================================
+
+    if (screen === "howto") {
+
+        if (startScreen) {
+            startScreen.style.display = "flex";
+        }
+
+        console.log(
+            "HOW TO画面は次の段階で追加します。"
+        );
+
+        return;
+    }
 
 }
 
