@@ -1086,7 +1086,7 @@ button {
     justify-content: center;
     align-items: center;
 
-    z-index: 110;
+    z-index: 1000;
 
     background:
         radial-gradient(
@@ -1094,217 +1094,341 @@ button {
             rgba(25, 50, 110, 0.97),
             rgba(3, 6, 20, 0.99) 70%
         );
+
+    pointer-events: auto;
+}
+
+/* =========================================
+   HOW TO SCREEN
+========================================= */
+
+#howto-screen {
+    position: absolute;
+    inset: 0;
+
+    display: none;
+
+    justify-content: center;
+    align-items: center;
+
+    z-index: 1000;
+
+    background:
+        radial-gradient(
+            circle at 50% 20%,
+            rgba(20, 50, 110, 0.98),
+            rgba(3, 6, 20, 0.99) 75%
+        );
+
+    pointer-events: auto;
+
+    box-sizing: border-box;
 }
 
 
+/* HOW TO PANEL */
+
 #howto-panel {
+    position: relative;
 
-    width: min(92%, 430px);
+    width: min(92vw, 900px);
+    height: min(92vh, 900px);
 
-    max-height: 90vh;
-
-    padding: 25px 20px 20px;
-
-    box-sizing: border-box;
-
-    border-radius: 20px;
-
-    border:
-        1px solid
-        rgba(120, 190, 255, 0.35);
-
-    background:
-        linear-gradient(
-            180deg,
-            rgba(20, 30, 65, 0.97),
-            rgba(5, 10, 28, 0.99)
-        );
-
-    box-shadow:
-        0 0 45px rgba(40, 120, 255, 0.2),
-        inset 0 0 35px rgba(70, 130, 220, 0.05);
-
-    color: white;
+    max-height: 92vh;
 
     display: flex;
     flex-direction: column;
 
+    background:
+        linear-gradient(
+            180deg,
+            rgba(12, 25, 55, 0.98),
+            rgba(5, 10, 25, 0.99)
+        );
+
+    border:
+        1px solid rgba(80, 190, 255, 0.55);
+
+    border-radius: 18px;
+
+    box-shadow:
+        0 0 40px rgba(0, 140, 255, 0.2),
+        inset 0 0 30px rgba(0, 100, 255, 0.05);
+
     overflow: hidden;
+
+    z-index: 1001;
+
+    pointer-events: auto;
 }
 
 
 /* HEADER */
 
 .howto-header {
-    text-align: center;
+    flex-shrink: 0;
 
-    padding-bottom: 15px;
+    padding: 20px 24px 14px;
 
     border-bottom:
-        1px solid
-        rgba(120, 180, 255, 0.2);
-}
+        1px solid rgba(100, 190, 255, 0.2);
 
+    text-align: center;
+}
 
 .howto-title {
-
-    font-size: 28px;
-
+    font-size: 26px;
     font-weight: 800;
-
-    letter-spacing: 3px;
-
-    color: #ffffff;
-
-    text-shadow:
-        0 0 10px rgba(80, 170, 255, 0.7);
+    letter-spacing: 4px;
+    color: white;
 }
 
-
 .howto-subtitle {
-
     margin-top: 4px;
 
     font-size: 11px;
+    letter-spacing: 3px;
 
-    letter-spacing: 4px;
-
-    color: #78baff;
-
+    color: rgba(120, 200, 255, 0.8);
 }
 
 
 /* CONTENT */
 
-.howto-content {
+#howto-panel .howto-content {
+    flex: 1;
 
     overflow-y: auto;
+    overflow-x: hidden;
 
-    padding: 15px 3px;
+    padding: 18px;
 
-    scrollbar-width: thin;
+    -webkit-overflow-scrolling: touch;
 
-    scrollbar-color:
-        rgba(100, 170, 255, 0.5)
-        transparent;
+    pointer-events: auto;
 }
 
 
 /* SECTION */
 
 .howto-section {
+    margin-bottom: 18px;
 
-    margin-bottom: 14px;
-
-    padding: 13px;
-
-    border-radius: 13px;
+    padding: 16px;
 
     background:
         rgba(255, 255, 255, 0.035);
 
     border:
-        1px solid
-        rgba(130, 180, 255, 0.1);
+        1px solid rgba(100, 180, 255, 0.15);
+
+    border-radius: 12px;
 }
 
+
+/* TITLE */
 
 .howto-section-title {
+    margin-bottom: 14px;
 
     font-size: 15px;
-
     font-weight: bold;
-
-    margin-bottom: 10px;
-
-    color: #8bc7ff;
-
     letter-spacing: 1px;
+
+    color: #dff5ff;
 }
 
 
-/* ROW */
+/* TABS */
 
-.howto-row {
-
+.howto-tabs {
     display: flex;
 
-    align-items: center;
+    gap: 8px;
 
-    gap: 12px;
+    margin-bottom: 14px;
+}
 
-    min-height: 38px;
+.howto-tab {
+    flex: 1;
+
+    padding: 12px;
+
+    border: 1px solid
+        rgba(100, 190, 255, 0.35);
+
+    border-radius: 9px;
+
+    background:
+        rgba(20, 35, 70, 0.8);
+
+    color: white;
 
     font-size: 14px;
+    font-weight: bold;
 
-    color: #e8f2ff;
+    cursor: pointer;
+
+    pointer-events: auto;
+
+    touch-action: manipulation;
+
+    -webkit-tap-highlight-color: transparent;
+}
+
+.howto-tab.active {
+    background:
+        rgba(25, 100, 180, 0.85);
+
+    border-color:
+        rgba(120, 210, 255, 0.8);
+
+    box-shadow:
+        0 0 12px rgba(50, 170, 255, 0.2);
+}
+
+.howto-tab:active {
+    transform: scale(0.97);
 }
 
 
-.howto-key {
+/* OPERATION */
 
-    width: 38px;
-
-    height: 30px;
-
+.howto-row {
     display: flex;
 
     align-items: center;
 
-    justify-content: center;
+    gap: 14px;
 
-    flex-shrink: 0;
+    padding: 9px 0;
+
+    color: rgba(240, 248, 255, 0.9);
+
+    font-size: 14px;
+}
+
+.howto-key {
+    min-width: 55px;
+
+    padding: 7px 10px;
+
+    text-align: center;
+
+    border:
+        1px solid rgba(100, 190, 255, 0.35);
 
     border-radius: 7px;
 
     background:
-        rgba(70, 130, 220, 0.18);
+        rgba(0, 0, 0, 0.25);
 
-    border:
-        1px solid
-        rgba(120, 190, 255, 0.3);
-
-    color: white;
+    color: #fff;
 
     font-weight: bold;
-
-    box-shadow:
-        0 0 8px
-        rgba(70, 150, 255, 0.15);
-}
-
-
-.howto-row small {
-
-    display: block;
-
-    margin-top: 2px;
-
-    font-size: 10px;
-
-    color: #8191aa;
 }
 
 
 /* TEXT */
 
 .howto-text {
+    color: rgba(235, 245, 255, 0.85);
 
-    font-size: 13px;
+    font-size: 14px;
 
-    line-height: 1.7;
-
-    color: #c8d7eb;
+    line-height: 1.8;
 }
 
 
-.howto-text strong {
+/* CLOSE BUTTON */
 
-    color: #7ed0ff;
+.howto-close-button {
+    flex-shrink: 0;
 
-    text-shadow:
-        0 0 8px
-        rgba(80, 190, 255, 0.5);
+    margin: 12px 18px 18px;
+
+    padding: 14px;
+
+    border:
+        1px solid rgba(90, 190, 255, 0.55);
+
+    border-radius: 10px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(25, 75, 130, 0.9),
+            rgba(10, 35, 75, 0.95)
+        );
+
+    color: white;
+
+    font-size: 15px;
+    font-weight: bold;
+
+    cursor: pointer;
+
+    pointer-events: auto;
+
+    touch-action: manipulation;
+
+    -webkit-tap-highlight-color: transparent;
+}
+
+.howto-close-button:active {
+    transform: scale(0.97);
+}
+
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width: 600px) {
+
+    #howto-panel {
+        width: 94vw;
+        height: 92vh;
+
+        border-radius: 14px;
+    }
+
+    .howto-header {
+        padding: 15px 16px 10px;
+    }
+
+    .howto-title {
+        font-size: 21px;
+        letter-spacing: 3px;
+    }
+
+    #howto-panel .howto-content {
+        padding: 12px;
+    }
+
+    .howto-section {
+        padding: 13px;
+        margin-bottom: 12px;
+    }
+
+    .howto-section-title {
+        font-size: 14px;
+    }
+
+    .howto-row {
+        font-size: 13px;
+    }
+
+    .howto-key {
+        min-width: 48px;
+        padding: 6px 8px;
+    }
+
+    .howto-close-button {
+        margin: 8px 12px 12px;
+
+        padding: 13px;
+    }
 }
 
 

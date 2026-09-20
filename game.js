@@ -5276,12 +5276,26 @@ function openHowTo() {
         garageScreen.style.display = "none";
     }
 
-    // HOW TOだけ表示
+    // ゲーム操作UIを隠す
+    const controls =
+        document.getElementById("controls");
+
+    const itemControls =
+        document.getElementById("itemControls");
+
+    if (controls) {
+        controls.style.display = "none";
+    }
+
+    if (itemControls) {
+        itemControls.style.display = "none";
+    }
+
+    // HOW TOを表示
     howtoScreen.style.display = "flex";
 
-    // 初期状態
+    // PCを初期表示
     showHowToPC();
-
 }
 function closeHowTo() {
 
@@ -5289,9 +5303,32 @@ function closeHowTo() {
 
     howtoScreen.style.display = "none";
 
+    // ゲーム操作UIを戻す
+    const controls =
+        document.getElementById("controls");
+
+    const itemControls =
+        document.getElementById("itemControls");
+
+    if (controls) {
+        controls.style.display = "";
+    }
+
+    if (itemControls) {
+        itemControls.style.display = "";
+    }
+
+    // スタート画面へ
     if (startScreen) {
         startScreen.style.display = "flex";
     }
+
+    // LINEメニューの ?screen=howto を消す
+    window.history.replaceState(
+        {},
+        "",
+        window.location.pathname
+    );
 }
 
 
