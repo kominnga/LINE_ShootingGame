@@ -740,8 +740,13 @@ function closeGarage() {
 
     if (!garageScreen) return;
 
-    garageScreen.style.display =
-        "none";
+    // GARAGEを閉じる
+    garageScreen.style.display = "none";
+
+    // スタート画面に戻る
+    if (startScreen) {
+        startScreen.style.display = "flex";
+    }
 }
 
 if (garageButton) {
@@ -5198,11 +5203,13 @@ function openRanking() {
 
 function closeRanking() {
 
-    if (!rankingScreen) return;
+    if (rankingScreen) {
+        rankingScreen.style.display = "none";
+    }
 
-    rankingScreen.style.display = "none";
-
-    startScreen.style.display = "flex";
+    if (startScreen) {
+        startScreen.style.display = "flex";
+    }
 }
 
 
