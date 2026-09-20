@@ -73,6 +73,37 @@ function getMaxHP() {
     return 3;
 }
 
+// ========================================
+// コインシステム
+// ========================================
+
+let coins =
+    Number(localStorage.getItem("nexus-coins")) || 0;
+
+
+// コインを追加
+function addCoins(amount) {
+
+    amount = Math.floor(amount);
+
+    if (amount <= 0) {
+        return;
+    }
+
+    coins += amount;
+
+    // 保存
+    localStorage.setItem(
+        "nexus-coins",
+        String(coins)
+    );
+
+    console.log(
+        `🪙 +${amount} COINS`
+    );
+
+}
+
 let level = 1;
 
 let boss = null;
@@ -149,23 +180,28 @@ const bombCooldownMax = 20;
 const skins = [
     {
         id: "nexus-01",
-        name: "NEXUS-01"
+        name: "NEXUS-01",
+        price: 0
     },
     {
         id: "nexus-02",
-        name: "NEXUS-02"
+        name: "NEXUS-02",
+        price: 3000
     },
     {
         id: "nexus-03",
-        name: "NEXUS-03"
+        name: "NEXUS-03",
+        price: 5000
     },
     {
         id: "nexus-04",
-        name: "NEXUS-04"
+        name: "NEXUS-04",
+        price: 8000
     },
     {
         id: "nexus-05",
-        name: "NEXUS-05"
+        name: "NEXUS-05",
+        price: 12000
     }
 ];
 
@@ -219,6 +255,29 @@ const skinPreviewCtx =
         ? skinPreviewCanvas.getContext("2d")
         : null;
 
+        // ========================================
+// GARAGE 購入システム
+// ========================================
+
+let ownedSkins =
+    JSON.parse(
+        localStorage.getItem("nexus-owned-skins")
+    ) || ["nexus-01"];
+
+
+// 購入済みか確認
+function isSkinOwned(skinId) {
+    return ownedSkins.includes(skinId);
+}
+
+
+// 購入状態を保存
+function saveOwnedSkins() {
+    localStorage.setItem(
+        "nexus-owned-skins",
+        JSON.stringify(ownedSkins)
+    );
+}
 
 // 現在装備しているスキンを探す
 const equippedIndex = skins.findIndex(
@@ -432,6 +491,41 @@ if (info) {
         }
     }
 
+    // ========================================
+// 購入 / 装備ボタン表示
+// ========================================
+
+if (skinEquipButton) {
+
+    if (!isSkinOwned(skin.id)) {
+
+        // 未購入
+        skinEquipButton.textContent =
+            `🪙 ${skin.price.toLocaleString()} で購入`;
+
+        skinEquipButton.onclick =
+            buySelectedSkin;
+
+    } else if (skin.id === equippedSkin) {
+
+        // 現在装備中
+        skinEquipButton.textContent =
+            "✓ 装備中";
+
+        skinEquipButton.onclick =
+            null;
+
+    } else {
+
+        // 購入済み・未装備
+        skinEquipButton.textContent =
+            "🚀 装備する";
+
+        skinEquipButton.onclick =
+            equipSelectedSkin;
+    }
+}
+
     drawSkinPreview();
 }
 
@@ -470,6 +564,16 @@ function useBomb() {
         );
 
         score += enemy.score;
+
+        addCoins(
+            enemy.type === "normal"
+                ? 10
+                : enemy.type === "fast"
+                ? 15
+                : enemy.type === "big"
+                ? 50
+                : 10
+        );          
 
         enemies.splice(i, 1);
     }
@@ -813,6 +917,11 @@ function equipSelectedSkin() {
 
     if (!skin) return;
 
+    // 未購入なら装備できない
+    if (!isSkinOwned(skin.id)) {
+        return;
+    }
+
     equippedSkin =
         skin.id;
 
@@ -827,6 +936,70 @@ function equipSelectedSkin() {
         skinStatus.textContent =
             `装備中：${skin.name}`;
     }
+}
+
+function buySelectedSkin() {
+
+    const skin =
+        skins[selectedSkinIndex];
+
+    if (!skin) return;
+
+    // すでに購入済み
+    if (isSkinOwned(skin.id)) {
+        return;
+    }
+
+    // NEXUS-01は無料
+    if (skin.price <= 0) {
+        ownedSkins.push(skin.id);
+
+        saveOwnedSkins();
+
+        updateGarage();
+
+        return;
+    }
+
+    // コイン不足
+    if (coins < skin.price) {
+
+        alert(
+            `コインが足りません。\n\n` +
+            `必要：🪙 ${skin.price.toLocaleString()}\n` +
+            `所持：🪙 ${coins.toLocaleString()}`
+        );
+
+        return;
+    }
+
+    // コインを支払う
+    coins -= skin.price;
+
+    localStorage.setItem(
+        "nexus-coins",
+        String(coins)
+    );
+
+    // 所持機体に追加
+    ownedSkins.push(skin.id);
+
+    saveOwnedSkins();
+
+    // 購入したらそのまま装備
+    equippedSkin =
+        skin.id;
+
+    localStorage.setItem(
+        "nexus-equipped-skin",
+        equippedSkin
+    );
+
+    updateGarage();
+
+    alert(
+        `${skin.name} を購入しました！ 🚀`
+    );
 }
 
 function openGarage() {
@@ -889,13 +1062,7 @@ if (skinNextButton) {
 }
 
 
-if (skinEquipButton) {
 
-    skinEquipButton.addEventListener(
-        "click",
-        equipSelectedSkin
-    );
-}
 /* ==================================================
    星
 ================================================== */
@@ -2924,6 +3091,18 @@ const beamWidth =
 
                 score += enemy.score || 100;
 
+                score += enemyScore;
+
+                addCoins(
+                    enemy.type === "normal"
+                        ? 10
+                        : enemy.type === "fast"
+                        ? 15
+                        : enemy.type === "big"
+                        ? 50
+                        : 10
+                );
+
                 createExplosion(
                     enemy.x,
                     enemy.y,
@@ -3574,7 +3753,12 @@ function defeatBoss() {
     createExplosion(boss.x, boss.y, 80);
 
     // ボーナス
-    score += 5000 * level;
+    const bossScore = 5000 * level;
+
+    score += bossScore;
+
+// BOSS撃破コイン
+addCoins(500 * level);
 
     // ボスを消す
     boss = null;
@@ -4397,6 +4581,16 @@ function checkCollisions() {
                     addScore(
                         enemy.score
                     );
+
+                    addCoins(
+                      enemy.type === "normal"
+                            ? 10
+                            : enemy.type === "fast"
+                            ? 15
+                            : enemy.type === "big"
+                            ? 50
+                            : 10
+);
 
 
                     destroyed =
