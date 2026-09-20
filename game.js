@@ -89,6 +89,9 @@ let coins =
         const gameoverCoins =
             document.getElementById("gameover-coins");
 
+            const garageCoins =
+    document.getElementById("garage-coins");
+
         const currentCoins =
             Number(localStorage.getItem("nexus-coins")) || 0;
 
@@ -101,6 +104,13 @@ let coins =
             gameoverCoins.textContent =
                 currentCoins.toLocaleString();
         }
+
+        if (garageCoins) {
+
+    garageCoins.textContent =
+        currentCoins.toLocaleString();
+
+}
     } 
 
 
@@ -274,28 +284,33 @@ const skinPreviewCtx =
         ? skinPreviewCanvas.getContext("2d")
         : null;
 
-        // ========================================
-// GARAGE 購入システム
+// ========================================
+// 所持スキン
 // ========================================
 
-let ownedSkins =
-    JSON.parse(
-        localStorage.getItem("nexus-owned-skins")
-    ) || ["nexus-01"];
+let ownedSkins = JSON.parse(
+    localStorage.getItem("nexus-owned-skins")
+    || '["nexus-01"]'
+);
 
-
-// 購入済みか確認
-function isSkinOwned(skinId) {
-    return ownedSkins.includes(skinId);
+// NEXUS-01は必ず所持
+if (!ownedSkins.includes("nexus-01")) {
+    ownedSkins.push("nexus-01");
 }
 
+function isSkinOwned(skinId) {
 
-// 購入状態を保存
+    return ownedSkins.includes(skinId);
+
+}
+
 function saveOwnedSkins() {
+
     localStorage.setItem(
         "nexus-owned-skins",
         JSON.stringify(ownedSkins)
     );
+
 }
 
 // 現在装備しているスキンを探す
@@ -409,143 +424,202 @@ async function initLIFF() {
 
 }
 
+
+
 function updateGarage() {
 
     const skin =
         skins[selectedSkinIndex];
 
-
-const skinInfo = {
-
-    "nexus-01": {
-        type: "STANDARD TYPE",
-
-        description:
-            "バランスに優れた標準型機体。\nあらゆる状況に対応できる基本機。",
-
-        ability:
-            "ABILITY：標準性能"
-    },
-
-    "nexus-02": {
-        type: "SPEED TYPE",
-
-        description:
-            "軽量化された高速機。\n高い機動力で敵の攻撃をかわす。",
-
-        ability:
-            "ABILITY：移動速度 +35%"
-    },
-
-    "nexus-03": {
-        type: "ATTACK TYPE",
-
-        description:
-            "攻撃性能に特化した戦闘機。\n通常機より高速で弾を発射できる。",
-
-        ability:
-            "ABILITY：連射速度 +15%"
-    },
-
-    "nexus-04": {
-        type: "BEAM TYPE",
-
-        description:
-            "特殊ビーム兵器を搭載した機体。\n広範囲を薙ぎ払う強力なビームを放つ。",
-
-        ability:
-            "ABILITY：ビーム幅 90 → 150"
-    },
-
-    "nexus-05": {
-        type: "HEAVY TYPE",
-
-        description:
-            "重装甲を採用した高耐久機。\n圧倒的な耐久力で戦線に居座る。",
-
-        ability:
-            "ABILITY：MAX HP 3 → 5"
-    }
-};
-
-const info = skinInfo[skin.id];
-
-if (info) {
-
-    if (skinType) {
-        skinType.textContent =
-            info.type;
-    }
-
-    if (skinDescription) {
-        skinDescription.textContent =
-            info.description;
-    }
-
-    if (skinAbility) {
-        skinAbility.textContent =
-            info.ability;
-    }
-}        
-    if (!skin) return;
-
-    if (skinName) {
-        skinName.textContent =
-            skin.name;
-    }
-
-    if (skinNumber) {
-        skinNumber.textContent =
-            `${selectedSkinIndex + 1} / ${skins.length}`;
-    }
-
-    if (skinStatus) {
-
-        if (skin.id === equippedSkin) {
-            skinStatus.textContent =
-                `装備中：${skin.name}`;
-        } else {
-            skinStatus.textContent =
-                `選択中：${skin.name}`;
-        }
+    if (!skin) {
+        return;
     }
 
     // ========================================
-// 購入 / 装備ボタン表示
-// ========================================
+    // スキン情報
+    // ========================================
 
-if (skinEquipButton) {
+    const skinInfo = {
 
-    if (!isSkinOwned(skin.id)) {
+        "nexus-01": {
+            type: "STANDARD TYPE",
 
-        // 未購入
-        skinEquipButton.textContent =
-            `🪙 ${skin.price.toLocaleString()} で購入`;
+            description:
+                "バランスに優れた標準型機体。\nあらゆる状況に対応できる基本機。",
 
-        skinEquipButton.onclick =
-            buySelectedSkin;
+            ability:
+                "ABILITY：標準性能"
+        },
 
-    } else if (skin.id === equippedSkin) {
+        "nexus-02": {
+            type: "SPEED TYPE",
 
-        // 現在装備中
-        skinEquipButton.textContent =
-            "✓ 装備中";
+            description:
+                "軽量化された高速機。\n高い機動力で敵の攻撃をかわす。",
 
-        skinEquipButton.onclick =
-            null;
+            ability:
+                "ABILITY：移動速度 +35%"
+        },
 
-    } else {
+        "nexus-03": {
+            type: "ATTACK TYPE",
 
-        // 購入済み・未装備
-        skinEquipButton.textContent =
-            "🚀 装備する";
+            description:
+                "攻撃性能に特化した戦闘機。\n通常機より高速で弾を発射できる。",
 
-        skinEquipButton.onclick =
-            equipSelectedSkin;
+            ability:
+                "ABILITY：連射速度 +15%"
+        },
+
+        "nexus-04": {
+            type: "BEAM TYPE",
+
+            description:
+                "特殊ビーム兵器を搭載した機体。\n広範囲を薙ぎ払う強力なビームを放つ。",
+
+            ability:
+                "ABILITY：ビーム幅 90 → 150"
+        },
+
+        "nexus-05": {
+            type: "HEAVY TYPE",
+
+            description:
+                "重装甲を採用した高耐久機。\n圧倒的な耐久力で戦線に居座る。",
+
+            ability:
+                "ABILITY：MAX HP 3 → 5"
+        }
+
+    };
+
+    const info =
+        skinInfo[skin.id];
+
+    // ========================================
+    // 基本情報
+    // ========================================
+
+    if (skinName) {
+
+        skinName.textContent =
+            skin.name;
+
     }
-}
+
+    if (skinNumber) {
+
+        skinNumber.textContent =
+            `${selectedSkinIndex + 1} / ${skins.length}`;
+
+    }
+
+    if (skinType && info) {
+
+        skinType.textContent =
+            info.type;
+
+    }
+
+    if (skinDescription && info) {
+
+        skinDescription.textContent =
+            info.description;
+
+    }
+
+    if (skinAbility && info) {
+
+        skinAbility.textContent =
+            info.ability;
+
+    }
+
+    // ========================================
+    // 所持状態
+    // ========================================
+
+    const owned =
+        isSkinOwned(skin.id);
+
+    const equipped =
+        skin.id === equippedSkin;
+
+    if (skinStatus) {
+
+        if (equipped) {
+
+            skinStatus.textContent =
+                `✓ 装備中：${skin.name}`;
+
+        }
+
+        else if (owned) {
+
+            skinStatus.textContent =
+                `✓ 所持済み：${skin.name}`;
+
+        }
+
+        else {
+
+            skinStatus.textContent =
+                `🔒 未所持：${skin.name}`;
+
+        }
+
+    }
+
+    // ========================================
+    // 購入 / 装備ボタン
+    // ========================================
+
+    if (skinEquipButton) {
+
+        if (equipped) {
+
+            skinEquipButton.textContent =
+                "✓ 装備中";
+
+            skinEquipButton.disabled =
+                true;
+
+        }
+
+        else if (owned) {
+
+            skinEquipButton.textContent =
+                "装備する";
+
+            skinEquipButton.disabled =
+                false;
+
+        }
+
+        else {
+
+            skinEquipButton.textContent =
+                `🪙 ${skin.price.toLocaleString()} COINS で購入`;
+
+            skinEquipButton.disabled =
+                false;
+
+        }
+
+    }
+
+    // ========================================
+    // コイン表示
+    // ========================================
+
+    updateCoinDisplays();
+
+    // ========================================
+    // プレビュー
+    // ========================================
 
     drawSkinPreview();
+
 }
 
 function useShield() {
@@ -934,10 +1008,17 @@ function equipSelectedSkin() {
     const skin =
         skins[selectedSkinIndex];
 
-    if (!skin) return;
+    if (!skin) {
+        return;
+    }
 
-    // 未購入なら装備できない
+    // 未所持なら装備不可
     if (!isSkinOwned(skin.id)) {
+        return;
+    }
+
+    // すでに装備中
+    if (skin.id === equippedSkin) {
         return;
     }
 
@@ -951,10 +1032,6 @@ function equipSelectedSkin() {
 
     updateGarage();
 
-    if (skinStatus) {
-        skinStatus.textContent =
-            `装備中：${skin.name}`;
-    }
 }
 
 function buySelectedSkin() {
@@ -962,37 +1039,59 @@ function buySelectedSkin() {
     const skin =
         skins[selectedSkinIndex];
 
-    if (!skin) return;
+    if (!skin) {
+        return;
+    }
 
-    // すでに購入済み
+    // すでに所持している
     if (isSkinOwned(skin.id)) {
         return;
     }
 
-    // NEXUS-01は無料
+    // ========================================
+    // 無料スキン
+    // ========================================
+
     if (skin.price <= 0) {
-        ownedSkins.push(skin.id);
+
+        ownedSkins.push(
+            skin.id
+        );
 
         saveOwnedSkins();
+
+        equippedSkin =
+            skin.id;
+
+        localStorage.setItem(
+            "nexus-equipped-skin",
+            equippedSkin
+        );
 
         updateGarage();
 
         return;
     }
 
-    // コイン不足
+    // ========================================
+    // コイン確認
+    // ========================================
+
     if (coins < skin.price) {
 
         alert(
             `コインが足りません。\n\n` +
-            `必要：🪙 ${skin.price.toLocaleString()}\n` +
-            `所持：🪙 ${coins.toLocaleString()}`
+            `必要：🪙 ${skin.price.toLocaleString()} COINS\n` +
+            `所持：🪙 ${coins.toLocaleString()} COINS`
         );
 
         return;
     }
 
+    // ========================================
     // コインを支払う
+    // ========================================
+
     coins -= skin.price;
 
     localStorage.setItem(
@@ -1000,12 +1099,20 @@ function buySelectedSkin() {
         String(coins)
     );
 
-    // 所持機体に追加
-    ownedSkins.push(skin.id);
+    // ========================================
+    // 所持スキンに追加
+    // ========================================
+
+    ownedSkins.push(
+        skin.id
+    );
 
     saveOwnedSkins();
 
-    // 購入したらそのまま装備
+    // ========================================
+    // 購入したら自動装備
+    // ========================================
+
     equippedSkin =
         skin.id;
 
@@ -1014,35 +1121,54 @@ function buySelectedSkin() {
         equippedSkin
     );
 
+    // ========================================
+    // 表示更新
+    // ========================================
+
+    updateCoinDisplays();
     updateGarage();
 
     alert(
         `${skin.name} を購入しました！ 🚀`
     );
+
 }
+
+
 
 function openGarage() {
 
-    if (!garageScreen) return;
+    if (!garageScreen) {
+        return;
+    }
 
     garageScreen.style.display =
         "flex";
 
-    updateGarage();
-}
+    updateCoinDisplays();
 
+    updateGarage();
+
+}
 
 function closeGarage() {
 
-    if (!garageScreen) return;
-
-    // GARAGEを閉じる
-    garageScreen.style.display = "none";
-
-    // スタート画面に戻る
-    if (startScreen) {
-        startScreen.style.display = "flex";
+    if (!garageScreen) {
+        return;
     }
+
+    garageScreen.style.display =
+        "none";
+
+    if (startScreen) {
+
+        startScreen.style.display =
+            "flex";
+
+    }
+
+    updateCoinDisplays();
+
 }
 
 if (garageButton) {
@@ -1078,6 +1204,35 @@ if (skinNextButton) {
         "click",
         selectNextSkin
     );
+}
+
+if (skinEquipButton) {
+
+    skinEquipButton.addEventListener(
+        "click",
+        () => {
+
+            const skin =
+                skins[selectedSkinIndex];
+
+            if (!skin) {
+                return;
+            }
+
+            // 未所持なら購入
+            if (!isSkinOwned(skin.id)) {
+
+                buySelectedSkin();
+
+                return;
+            }
+
+            // 所持済みなら装備
+            equipSelectedSkin();
+
+        }
+    );
+
 }
 
 
