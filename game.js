@@ -131,6 +131,10 @@ const shieldDuration = 8;
 let shieldCooldown = 0;
 const shieldCooldownMax = 30;
 
+// ==============================
+// SHIELD
+// ==============================
+
 
 // ================================
 // BOMB
@@ -982,10 +986,12 @@ beamTimer = 0;
 // ビームも最初からチャージ開始
 beamCooldown = beamCooldownMax;
 
+// SHIELD
 shieldActive = false;
 shieldTimer = 0;
 shieldCooldown = shieldCooldownMax;
 
+// BOMB
 bombCooldown = bombCooldownMax;
 
     player.x = width / 2;
@@ -998,6 +1004,7 @@ bombCooldown = bombCooldownMax;
     startScreen.style.display = "none";
     gameOverScreen.style.display = "none";
 
+    setItemControlsVisible(true);
     gameRunning = true;
 
     lastTime = performance.now();
@@ -1270,6 +1277,7 @@ function endGame() {
        ※画面表示を止めない
     ------------------------------------------ */
 
+    setItemControlsVisible(false);
     sendScoreToRanking();
 
 }
@@ -4710,6 +4718,20 @@ function drawShield() {
 
     ctx.restore();
 }
+
+function setItemControlsVisible(visible) {
+
+    const itemControls =
+        document.getElementById("itemControls");
+
+    if (!itemControls) return;
+
+    if (visible) {
+        itemControls.style.display = "flex";
+    } else {
+        itemControls.style.display = "none";
+    }
+}
 function updateItemButtons() {
 
     const healButton =
@@ -4726,7 +4748,7 @@ function updateItemButtons() {
     // ♡ 回復
     // ==============================
 
-    // ==============================
+   // ==============================
 // ♡ 回復
 // ==============================
 
@@ -6023,6 +6045,8 @@ function returnToStartScreen() {
     // アイテムチャージを初期化
     healCooldown = healCooldownMax;
     beamCooldown = beamCooldownMax;
+
+    setItemControlsVisible(false);
 
     // 操作を解除
     player.movingLeft = false;

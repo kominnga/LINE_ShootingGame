@@ -192,6 +192,24 @@ button {
     z-index: 15;
 }
 
+/* START画面・GAME OVER中はアイテム操作を隠す */
+#start-screen ~ #itemControls,
+#game-over-screen ~ #itemControls {
+    display: none !important;
+}
+
+#shieldButton.item-unavailable,
+#bombButton.item-unavailable {
+    opacity: 0.45;
+    filter: grayscale(0.4);
+}
+
+#shieldButton:not(.item-unavailable),
+#bombButton:not(.item-unavailable) {
+    opacity: 1;
+    filter: none;
+}
+
 #controls button {
     width: 70px;
     height: 60px;
