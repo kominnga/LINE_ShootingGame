@@ -3953,6 +3953,7 @@ function drawPlayer() {
         ctx.fill();
     }
 
+    drawLevelTransitionInvincibility();
 
     ctx.restore();
 
@@ -7159,6 +7160,11 @@ function isPlayerHit(
 
 function damagePlayer() {
 
+        // ボス撃破後のレベル移行中は完全無敵
+    if (levelClearTimer > 0) {
+        return;
+    }
+
     // ビーム中
     if (beamActive) {
         return;
@@ -7196,6 +7202,61 @@ function damagePlayer() {
     }
 }
 
+
+function drawLevelTransitionInvincibility() {
+
+    if (levelClearTimer <= 0) {
+        return;
+    }
+
+    const pulse =
+        Math.sin(performance.now() * 0.012) * 5;
+
+    const radius = 42 + pulse;
+
+    ctx.save();
+
+    // 外側のリング
+    ctx.beginPath();
+    ctx.arc(
+        player.x,
+        player.y,
+        radius,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.strokeStyle =
+        "rgba(120, 220, 255, 0.95)";
+
+    ctx.lineWidth = 3;
+
+    ctx.shadowColor =
+        "rgba(80, 200, 255, 1)";
+
+    ctx.shadowBlur = 20;
+
+    ctx.stroke();
+
+    // 内側のリング
+    ctx.beginPath();
+    ctx.arc(
+        player.x,
+        player.y,
+        radius - 8,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.strokeStyle =
+        "rgba(180, 240, 255, 0.35)";
+
+    ctx.lineWidth = 2;
+
+    ctx.stroke();
+
+    ctx.restore();
+}
 function drawShield() {
 
     if (!shieldActive) {
