@@ -8278,11 +8278,49 @@ const rankingCloseButton =
    ランキング画面を開く
 ================================================== */
 
+/* ==================================================
+   ランキング画面を開く
+================================================== */
+
 function openRanking() {
 
-    if (!rankingScreen) return;
+    if (!rankingScreen) {
+        console.error("rankingScreen が見つかりません");
+        return;
+    }
+
+
+    /* ==========================================
+       他の画面を確実に閉じる
+    ========================================== */
+
+    if (startScreen) {
+        startScreen.style.display = "none";
+    }
+
+    if (gameOverScreen) {
+        gameOverScreen.style.display = "none";
+    }
+
+    if (garageScreen) {
+        garageScreen.style.display = "none";
+    }
+
+    if (howtoScreen) {
+        howtoScreen.style.display = "none";
+    }
+
+
+    /* ==========================================
+       ランキング画面を表示
+    ========================================== */
 
     rankingScreen.style.display = "flex";
+
+
+    /* ==========================================
+       ランキングを毎回再取得
+    ========================================== */
 
     loadRanking();
 
@@ -8369,15 +8407,49 @@ function closeHowTo() {
    ランキング画面を閉じる
 ================================================== */
 
+/* ==================================================
+   ランキング画面を閉じる
+================================================== */
+
 function closeRanking() {
 
-    if (rankingScreen) {
-        rankingScreen.style.display = "none";
+    if (!rankingScreen) {
+        return;
     }
+
+
+    /* ==========================================
+       ランキングを確実に非表示
+    ========================================== */
+
+    rankingScreen.style.display = "none";
+
+
+    /* ==========================================
+       他の画面を全部閉じる
+    ========================================== */
+
+    if (gameOverScreen) {
+        gameOverScreen.style.display = "none";
+    }
+
+    if (garageScreen) {
+        garageScreen.style.display = "none";
+    }
+
+    if (howtoScreen) {
+        howtoScreen.style.display = "none";
+    }
+
+
+    /* ==========================================
+       START画面へ戻る
+    ========================================== */
 
     if (startScreen) {
         startScreen.style.display = "flex";
     }
+
 }
 
 
@@ -9066,7 +9138,14 @@ if (rankingButton) {
 
     rankingButton.addEventListener(
         "click",
-        openRanking
+        function (event) {
+
+            event.preventDefault();
+            event.stopPropagation();
+
+            openRanking();
+
+        }
     );
 
 }
@@ -9090,7 +9169,14 @@ if (rankingButtonGameOver) {
 
     rankingButtonGameOver.addEventListener(
         "click",
-        openRanking
+        function (event) {
+
+            event.preventDefault();
+            event.stopPropagation();
+
+            openRanking();
+
+        }
     );
 
 }
@@ -9100,7 +9186,14 @@ if (rankingCloseButton) {
 
     rankingCloseButton.addEventListener(
         "click",
-        closeRanking
+        function (event) {
+
+            event.preventDefault();
+            event.stopPropagation();
+
+            closeRanking();
+
+        }
     );
 
 }
