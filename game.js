@@ -130,6 +130,10 @@ function updateCoinDisplays() {
 // D1からプレイヤー情報取得
 // ========================================
 
+// ========================================
+// D1からプレイヤー情報取得
+// ========================================
+
 async function loadPlayerData() {
 
     if (
@@ -143,16 +147,13 @@ async function loadPlayerData() {
         );
 
         return;
-
     }
-
 
     try {
 
         console.log(
             "D1プレイヤーデータ取得開始"
         );
-
 
         const response =
             await fetch(
@@ -197,6 +198,10 @@ async function loadPlayerData() {
                 result.player;
 
 
+            // ========================================
+            // COINS
+            // ========================================
+
             coins =
                 Math.max(
                     0,
@@ -208,24 +213,143 @@ async function loadPlayerData() {
                 );
 
 
-            /*
-             * 今回はコインだけを
-             * D1へ移行する。
-             *
-             * 機体データは次の段階で
-             * D1管理へ移行する。
-             */
-
-
             coinsLoadedFromServer = true;
 
+
+            // ========================================
+            // 所持スキン
+            // ========================================
+
+            if (
+                Array.isArray(
+                    player.ownedSkins
+                )
+            ) {
+
+                ownedSkins =
+                    player.ownedSkins.filter(
+                        skinId =>
+                            skins.some(
+                                skin =>
+                                    skin.id === skinId
+                            )
+                    );
+
+            }
+
+
+            // ========================================
+            // NEXUS-01は必ず所持
+            // ========================================
+
+            if (
+                !ownedSkins.includes(
+                    "nexus-01"
+                )
+            ) {
+
+                ownedSkins.unshift(
+                    "nexus-01"
+                );
+
+            }
+
+
+            // ========================================
+            // 装備スキン
+            // ========================================
+
+            if (
+                typeof player.equippedSkin ===
+                "string" &&
+                skins.some(
+                    skin =>
+                        skin.id ===
+                        player.equippedSkin
+                ) &&
+                ownedSkins.includes(
+                    player.equippedSkin
+                )
+            ) {
+
+                equippedSkin =
+                    player.equippedSkin;
+
+            }
+
+
+            // ========================================
+            // ローカルキャッシュ更新
+            // ========================================
+
+            localStorage.setItem(
+                "nexus-owned-skins",
+                JSON.stringify(
+                    ownedSkins
+                )
+            );
+
+
+            localStorage.setItem(
+                "nexus-equipped-skin",
+                equippedSkin
+            );
+
+
+            // ========================================
+            // GARAGEの表示位置を装備機体に合わせる
+            // ========================================
+
+            const equippedIndex =
+                skins.findIndex(
+                    skin =>
+                        skin.id ===
+                        equippedSkin
+                );
+
+
+            if (equippedIndex >= 0) {
+
+                selectedSkinIndex =
+                    equippedIndex;
+
+            }
+
+
+            // ========================================
+            // UI更新
+            // ========================================
 
             updateCoinDisplays();
 
 
+            if (
+                typeof updateGarage ===
+                "function"
+            ) {
+
+                updateGarage();
+
+            }
+
+
+            // ========================================
+            // デバッグ
+            // ========================================
+
             console.log(
                 "🪙 D1 COINS:",
                 coins
+            );
+
+            console.log(
+                "🚀 D1 OWNED SKINS:",
+                ownedSkins
+            );
+
+            console.log(
+                "🚀 D1 EQUIPPED SKIN:",
+                equippedSkin
             );
 
         }
