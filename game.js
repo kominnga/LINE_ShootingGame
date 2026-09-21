@@ -3136,49 +3136,61 @@ function createEnemy() {
 
     let type;
 
-    /*
-        70% → 通常敵
-        20% → 高速敵
-        10% → 大型敵
-    */
+   /*
+    敵出現率
 
-    if (typeRandom < 0.70) {
+    60% → NORMAL
+    15% → FAST
+    10% → BIG
+    10% → SHOOTER
+     5% → SPLITTER
+*/
 
-        type = "normal";
+if (typeRandom < 0.60) {
 
-    } else if (typeRandom < 0.90) {
+    type = "normal";
 
-        type = "fast";
+} else if (typeRandom < 0.75) {
 
-    } else {
+    type = "fast";
 
-        type = "big";
+} else if (typeRandom < 0.85) {
 
-    }
+    type = "big";
+
+} else if (typeRandom < 0.95) {
+
+    type = "shooter";
+
+} else {
+
+    type = "splitter";
+
+}
 
 
-    let size;
-    let speed;
-    let hp;
-    let scoreValue;
+   let size;
+let speed;
+let hp;
+let scoreValue;
+let shootInterval = 0;
 
 
     /* =================================
        通常敵
     ================================= */
 
-    if (type === "normal") {
+if (type === "normal") {
 
-        size = 40;
+    size = 40;
 
-        speed =
-            enemySpeed +
-            Math.random() * 70;
+    // 普通の敵は速度固定
+    speed = 120;
 
-        hp = 1;
+        //speed =enemySpeed +Math.random() * 70;
+    hp = 1;
 
-        scoreValue = 100;
-
+    scoreValue = 100;
     }
 
 
@@ -3211,15 +3223,50 @@ function createEnemy() {
 
         size = 65;
 
-        speed =
-            enemySpeed * 0.65 +
-            Math.random() * 40;
+        speed = 80;
+        //speed =enemySpeed * 0.65 +Math.random() * 40;
 
         hp = 4;
 
         scoreValue = 500;
 
     }
+
+    /* =================================
+   SHOOTER敵
+================================= */
+
+if (type === "shooter") {
+
+    size = 38;
+
+    // 速度固定
+    speed = 105;
+
+    hp = 2;
+
+    scoreValue = 200;
+
+    shootInterval = 1.6;
+
+}
+
+/* =================================
+   SPLITTER敵
+================================= */
+
+if (type === "splitter") {
+
+    size = 46;
+
+    // 速度固定
+    speed = 95;
+
+    hp = 2;
+
+    scoreValue = 300;
+
+}
 
 
     const enemy = {
@@ -3249,18 +3296,22 @@ function createEnemy() {
         rotationSpeed:
             (Math.random() - 0.5) * 4,
 
-        hp:
-            hp,
+  hp: hp,
 
-        maxHp:
-            hp,
+maxHp:
+    hp,
 
-        type:
-            type,
+type:
+    type,
 
-        score:
-            scoreValue
+score:
+    scoreValue,
 
+shootTimer:
+    0,
+
+shootInterval:
+    shootInterval
     };
 
 
@@ -4405,6 +4456,213 @@ function drawEnemy(enemy) {
 
     }
 
+    /* =================================
+   SHOOTER
+================================= */
+
+if (enemy.type === "shooter") {
+
+    /* 本体 */
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        0,
+        -enemy.height / 2
+    );
+
+    ctx.lineTo(
+        enemy.width / 2,
+        enemy.height / 2
+    );
+
+    ctx.lineTo(
+        0,
+        enemy.height / 4
+    );
+
+    ctx.lineTo(
+        -enemy.width / 2,
+        enemy.height / 2
+    );
+
+    ctx.closePath();
+
+    ctx.fillStyle =
+        "#27d9ff";
+
+    ctx.shadowColor =
+        "#00aaff";
+
+    ctx.shadowBlur = 25;
+
+    ctx.fill();
+
+
+    /* 射撃コア */
+
+    ctx.beginPath();
+
+    ctx.arc(
+        0,
+        7,
+        6,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fillStyle =
+        "#ffffff";
+
+    ctx.shadowColor =
+        "#ffffff";
+
+    ctx.shadowBlur = 15;
+
+    ctx.fill();
+
+
+    /* 前方砲口 */
+
+    ctx.beginPath();
+
+    ctx.rect(
+        -4,
+        enemy.height / 2 - 3,
+        8,
+        9
+    );
+
+    ctx.fillStyle =
+        "#0077aa";
+
+    ctx.fill();
+
+}
+/* =================================
+   SPLITTER
+================================= */
+
+if (enemy.type === "splitter") {
+
+    /* 外側 */
+
+    ctx.beginPath();
+
+    ctx.arc(
+        0,
+        0,
+        enemy.width / 2,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fillStyle =
+        "#43ff88";
+
+    ctx.shadowColor =
+        "#00ff66";
+
+    ctx.shadowBlur = 25;
+
+    ctx.fill();
+
+
+    /* 中央の分裂ライン */
+
+    ctx.strokeStyle =
+        "#baffd0";
+
+    ctx.lineWidth = 3;
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        -enemy.width * 0.28,
+        -enemy.height * 0.28
+    );
+
+    ctx.lineTo(
+        enemy.width * 0.28,
+        enemy.height * 0.28
+    );
+
+    ctx.moveTo(
+        enemy.width * 0.28,
+        -enemy.height * 0.28
+    );
+
+    ctx.lineTo(
+        -enemy.width * 0.28,
+        enemy.height * 0.28
+    );
+
+    ctx.stroke();
+
+
+    /* コア */
+
+    ctx.beginPath();
+
+    ctx.arc(
+        0,
+        0,
+        7,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fillStyle =
+        "#ffffff";
+
+    ctx.fill();
+
+}
+
+/* =================================
+   SPLIT CHILD
+================================= */
+
+if (enemy.type === "split-child") {
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        0,
+        -enemy.height / 2
+    );
+
+    ctx.lineTo(
+        enemy.width / 2,
+        enemy.height / 2
+    );
+
+    ctx.lineTo(
+        0,
+        enemy.height / 4
+    );
+
+    ctx.lineTo(
+        -enemy.width / 2,
+        enemy.height / 2
+    );
+
+    ctx.closePath();
+
+    ctx.fillStyle =
+        "#8affb5";
+
+    ctx.shadowColor =
+        "#00ff66";
+
+    ctx.shadowBlur = 15;
+
+    ctx.fill();
+
+}
+
+
+
 
     ctx.restore();
 
@@ -4594,6 +4852,65 @@ function checkBeamCollision() {
                     i,
                     1
                 );
+
+                /* =================================
+   SPLITTER分裂
+================================= */
+
+if (enemy.type === "splitter") {
+
+    for (let s = 0; s < 2; s++) {
+
+        const childSize = 22;
+
+        enemies.push({
+
+            x:
+                enemy.x +
+                (s === 0 ? -14 : 14),
+
+            y:
+                enemy.y,
+
+            width:
+                childSize,
+
+            height:
+                childSize,
+
+            speed:
+                145,
+
+            rotation:
+                Math.random() *
+                Math.PI * 2,
+
+            rotationSpeed:
+                (Math.random() - 0.5) * 6,
+
+            hp:
+                1,
+
+            maxHp:
+                1,
+
+            type:
+                "split-child",
+
+            score:
+                50,
+
+            shootTimer:
+                0,
+
+            shootInterval:
+                0
+
+        });
+
+    }
+
+}
             }
         }
     }
@@ -5730,9 +6047,12 @@ addCoins(500 * level);
     levelTransitionText = `LEVEL ${defeatedLevel} → LEVEL ${level}`;
 
     // 次のレベルを少し難しくする
-    enemySpeed += 50;
-    enemyInterval = Math.max(220, enemyInterval - 100);
-
+    // 次のレベルでも敵速度は固定
+enemyInterval =
+    Math.max(
+        300,
+        enemyInterval - 100
+    );
     // 次のボス出現まで
     bossSpawnScore = score + 3000;
 
@@ -6088,13 +6408,11 @@ function updateEnemies(deltaTime) {
 
         difficultyTimer = 0;
 
-        enemySpeed += 15;
-
-        enemyInterval =
-            Math.max(
-                300,
-                enemyInterval - 50
-            );
+enemyInterval =
+    Math.max(
+        300,
+        enemyInterval - 50
+    );
 
     }
 
@@ -6116,6 +6434,45 @@ function updateEnemies(deltaTime) {
             enemy.rotationSpeed *
             deltaTime;
 
+            /* =================================
+   SHOOTER攻撃
+   前方向（画面下方向）のみ
+================================= */
+
+if (
+    enemy.type === "shooter" &&
+    enemy.shootInterval > 0
+) {
+
+    enemy.shootTimer += deltaTime;
+
+    if (
+        enemy.shootTimer >=
+        enemy.shootInterval
+    ) {
+
+        enemy.shootTimer = 0;
+
+        enemyBullets.push({
+
+            x: enemy.x,
+
+            y:
+                enemy.y +
+                enemy.height / 2,
+
+            // 前方向＝真下
+            vx: 0,
+
+            vy: 190,
+
+            radius: 6
+
+        });
+
+    }
+
+}
 
         /* 画面下 */
 
@@ -6541,13 +6898,19 @@ function checkCollisions() {
                     );
 
                     addCoins(
-                      enemy.type === "normal"
-                            ? 10
-                            : enemy.type === "fast"
-                            ? 15
-                            : enemy.type === "big"
-                            ? 50
-                            : 10
+    enemy.type === "normal"
+        ? 10
+        : enemy.type === "fast"
+        ? 15
+        : enemy.type === "big"
+        ? 50
+        : enemy.type === "shooter"
+        ? 25
+        : enemy.type === "splitter"
+        ? 40
+        : enemy.type === "split-child"
+        ? 5
+        : 10
 );
 
 
