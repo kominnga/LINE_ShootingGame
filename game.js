@@ -2883,16 +2883,8 @@ if (skinEquipButton) {
 
             if (!isSkinOwned(skin.id)) {
 
-                // コイン不足
-                if (coins < skin.price) {
-
-                    buySelectedSkin();
-
-                    return;
-                }
-
-                // 購入確認
-                buySelectedSkin();
+                // 購入確認画面を開く
+                openPurchaseConfirm(skin);
 
                 return;
             }
