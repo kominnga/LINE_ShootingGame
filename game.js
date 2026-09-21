@@ -63,61 +63,380 @@ let bombFlashTimer = 0;
 // コインシステム
 // ========================================
 
-let coins =
-    Number(localStorage.getItem("nexus-coins")) || 0;
+// ========================================
+// D1 COIN SYSTEM
+// ========================================
+
+let coins = 0;
+
+// 今回のプレイで獲得したコイン
+// ゲーム終了時にまとめてD1へ送信する
+let pendingCoins = 0;
+
+// D1から読み込み済みか
+let coinsLoadedFromServer = false;
 
 
-    function updateCoinDisplays() {
+// ========================================
+// コイン表示
+// ========================================
 
-        const startCoins =
-            document.getElementById("start-coins");
+function updateCoinDisplays() {
 
-        const gameoverCoins =
-            document.getElementById("gameover-coins");
+    const startCoins =
+        document.getElementById("start-coins");
 
-            const garageCoins =
-    document.getElementById("garage-coins");
+    const gameoverCoins =
+        document.getElementById("gameover-coins");
 
-        const currentCoins =
-            Number(localStorage.getItem("nexus-coins")) || 0;
+    const garageCoins =
+        document.getElementById("garage-coins");
 
-        if (startCoins) {
-            startCoins.textContent =
-                currentCoins.toLocaleString();
-        }
 
-        if (gameoverCoins) {
-            gameoverCoins.textContent =
-                currentCoins.toLocaleString();
-        }
+    const currentCoins =
+        Math.max(
+            0,
+            Math.floor(coins)
+        );
 
-        if (garageCoins) {
 
-    garageCoins.textContent =
-        currentCoins.toLocaleString();
+    if (startCoins) {
+
+        startCoins.textContent =
+            currentCoins.toLocaleString();
+
+    }
+
+
+    if (gameoverCoins) {
+
+        gameoverCoins.textContent =
+            currentCoins.toLocaleString();
+
+    }
+
+
+    if (garageCoins) {
+
+        garageCoins.textContent =
+            currentCoins.toLocaleString();
+
+    }
 
 }
-    } 
 
 
+// ========================================
+// D1からプレイヤー情報取得
+// ========================================
+
+async function loadPlayerData() {
+
+    if (
+        typeof lineProfile === "undefined" ||
+        !lineProfile ||
+        !lineProfile.userId
+    ) {
+
+        console.log(
+            "LINEプロフィールがないためD1読み込みをスキップ"
+        );
+
+        return;
+
+    }
+
+
+    try {
+
+        console.log(
+            "D1プレイヤーデータ取得開始"
+        );
+
+
+        const response =
+            await fetch(
+                RANKING_API +
+                "/player?userId=" +
+                encodeURIComponent(
+                    lineProfile.userId
+                ),
+                {
+                    method: "GET",
+                    cache: "no-store"
+                }
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "HTTP ERROR: " +
+                response.status
+            );
+
+        }
+
+
+        const result =
+            await response.json();
+
+
+        console.log(
+            "D1プレイヤーデータ:",
+            result
+        );
+
+
+        if (
+            result.success &&
+            result.player
+        ) {
+
+            const player =
+                result.player;
+
+
+            coins =
+                Math.max(
+                    0,
+                    Math.floor(
+                        Number(
+                            player.coins
+                        ) || 0
+                    )
+                );
+
+
+            /*
+             * 今回はコインだけを
+             * D1へ移行する。
+             *
+             * 機体データは次の段階で
+             * D1管理へ移行する。
+             */
+
+
+            coinsLoadedFromServer = true;
+
+
+            updateCoinDisplays();
+
+
+            console.log(
+                "🪙 D1 COINS:",
+                coins
+            );
+
+        }
+
+    }
+    catch (error) {
+
+        console.error(
+            "D1プレイヤーデータ取得エラー:",
+            error
+        );
+
+    }
+
+}
+
+
+// ========================================
 // コインを追加
+// ========================================
+
 function addCoins(amount) {
 
-    amount = Math.floor(amount);
+    amount =
+        Math.floor(
+            Number(amount) || 0
+        );
 
-    if (amount <= 0) return;
+
+    if (amount <= 0) {
+        return;
+    }
+
+
+    /*
+     * ゲーム中はローカル変数だけ変更。
+     *
+     * D1への通信はしない。
+     */
 
     coins += amount;
 
-    localStorage.setItem(
-        "nexus-coins",
-        String(coins)
-    );
+
+    pendingCoins += amount;
+
 
     updateCoinDisplays();
 
-    console.log(`🪙 +${amount} COINS`);
+
+    console.log(
+        `🪙 +${amount} COINS`
+    );
+
+
+    console.log(
+        `🪙 今回の獲得予定: +${pendingCoins}`
+    );
+
 }
+
+
+// ========================================
+// 今回獲得したコインをD1へ送信
+// ========================================
+
+async function syncPendingCoins() {
+
+    if (pendingCoins <= 0) {
+
+        console.log(
+            "今回送信するコインはありません"
+        );
+
+        return;
+
+    }
+
+
+    if (
+        typeof lineProfile === "undefined" ||
+        !lineProfile ||
+        !lineProfile.userId
+    ) {
+
+        console.log(
+            "LINEユーザーではないためコイン送信をスキップ"
+        );
+
+        return;
+
+    }
+
+
+    const amount =
+        Math.floor(
+            pendingCoins
+        );
+
+
+    try {
+
+        console.log(
+            "🪙 D1へコイン送信:",
+            amount
+        );
+
+
+        const response =
+            await fetch(
+                RANKING_API +
+                "/coins",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body:
+                        JSON.stringify({
+
+                            userId:
+                                lineProfile.userId,
+
+                            amount:
+                                amount
+
+                        })
+                }
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "HTTP ERROR: " +
+                response.status
+            );
+
+        }
+
+
+        const result =
+            await response.json();
+
+
+        console.log(
+            "🪙 コイン保存結果:",
+            result
+        );
+
+
+        if (
+            result.success
+        ) {
+
+            /*
+             * D1の値を正式な値として採用
+             */
+
+            coins =
+                Math.max(
+                    0,
+                    Math.floor(
+                        Number(
+                            result.coins
+                        ) || 0
+                    )
+                );
+
+
+            /*
+             * 同じコインを
+             * もう一度送らない
+             */
+
+            pendingCoins = 0;
+
+
+            updateCoinDisplays();
+
+
+            console.log(
+                "🪙 D1同期完了:",
+                coins
+            );
+
+        }
+
+    }
+    catch (error) {
+
+        /*
+         * 失敗した場合は
+         * pendingCoinsを残す。
+         *
+         * 次回ゲーム終了時に
+         * 再送できるようにする。
+         */
+
+        console.error(
+            "🪙 D1コイン同期エラー:",
+            error
+        );
+
+    }
+
+}
+
+
 
 let level = 1;
 
@@ -421,6 +740,7 @@ async function initLIFF() {
        
         console.log("LINEプロフィール取得成功");
 
+        await loadPlayerData();
         handleMenuScreen();
 
         console.log(
@@ -2572,8 +2892,11 @@ function endGame() {
        ※画面表示を止めない
     ------------------------------------------ */
 
-    setItemControlsVisible(false);
-    sendScoreToRanking();
+  setItemControlsVisible(false);
+
+sendScoreToRanking();
+
+syncPendingCoins();
 
 }
 
