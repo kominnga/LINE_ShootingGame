@@ -3183,7 +3183,7 @@ function createEnemy() {
         size = 40;
 
         // 速度固定
-        speed = 120;
+        speed = 150;
 
         hp = 1;
 
@@ -8490,7 +8490,9 @@ function showHowToMobile() {
 
 async function loadRanking() {
 
-    if (!rankingList) return;
+    if (!rankingList) {
+        return;
+    }
 
 
     rankingList.innerHTML = `
@@ -8502,18 +8504,60 @@ async function loadRanking() {
 
     try {
 
-        const response = await fetch(
-            RANKING_API + "/ranking",
-            {
-                method: "GET"
-            }
-        );
+        /* ==========================================
+           自分のLINE User ID
+        ========================================== */
+
+        let myUserId = "";
+
+        if (
+            typeof lineProfile !== "undefined" &&
+            lineProfile &&
+            lineProfile.userId
+        ) {
+            myUserId = lineProfile.userId;
+        }
+
+
+        /* ==========================================
+           API URL
+           
+           自分のUser IDがあれば
+           MY BESTも取得する
+        ========================================== */
+
+        let rankingUrl =
+            RANKING_API + "/ranking";
+
+        if (myUserId) {
+
+            rankingUrl +=
+                "?userId=" +
+                encodeURIComponent(myUserId);
+
+        }
+
+
+        /* ==========================================
+           ランキング取得
+        ========================================== */
+
+        const response =
+            await fetch(
+                rankingUrl,
+                {
+                    method: "GET"
+                }
+            );
 
 
         if (!response.ok) {
+
             throw new Error(
-                "HTTP ERROR: " + response.status
+                "HTTP ERROR: " +
+                response.status
             );
+
         }
 
 
@@ -8539,15 +8583,109 @@ async function loadRanking() {
         }
 
 
+        /* ==========================================
+           MY BEST表示
+        ========================================== */
+
+        const myBestScore =
+            document.getElementById(
+                "my-best-score"
+            );
+
+        const myBestLevel =
+            document.getElementById(
+                "my-best-level"
+            );
+
+        const myBestRank =
+            document.getElementById(
+                "my-best-rank"
+            );
+
+
+        if (
+            result.myBest
+        ) {
+
+            const bestScore =
+                Number(
+                    result.myBest.score
+                ) || 0;
+
+            const bestLevel =
+                Number(
+                    result.myBest.level
+                ) || 1;
+
+            const bestRank =
+                Number(
+                    result.myBest.rank
+                ) || 0;
+
+
+            if (myBestScore) {
+
+                myBestScore.textContent =
+                    bestScore.toLocaleString();
+
+            }
+
+
+            if (myBestLevel) {
+
+                myBestLevel.textContent =
+                    bestLevel;
+
+            }
+
+
+            if (myBestRank) {
+
+                myBestRank.textContent =
+                    bestRank > 0
+                        ? bestRank
+                        : "--";
+
+            }
+
+        }
+
+        else {
+
+            /* --------------------------------------
+               まだ自己ベストがない場合
+            -------------------------------------- */
+
+            if (myBestScore) {
+                myBestScore.textContent = "0";
+            }
+
+            if (myBestLevel) {
+                myBestLevel.textContent = "1";
+            }
+
+            if (myBestRank) {
+                myBestRank.textContent = "--";
+            }
+
+        }
+
+
+        /* ==========================================
+           ランキングデータ
+        ========================================== */
+
         const rankingData =
             result.ranking;
 
 
-        // =========================================
-        // ランキングがまだ存在しない場合
-        // =========================================
+        /* ==========================================
+           ランキングが空
+        ========================================== */
 
-        if (rankingData.length === 0) {
+        if (
+            rankingData.length === 0
+        ) {
 
             rankingList.innerHTML = `
                 <div class="ranking-loading">
@@ -8556,35 +8694,42 @@ async function loadRanking() {
             `;
 
             return;
+
         }
 
 
+        /* ==========================================
+           ランキング表示
+        ========================================== */
+
         rankingList.innerHTML = "";
 
-
-        // =========================================
-        // ランキング表示
-        // =========================================
 
         rankingData.forEach(
             (player, index) => {
 
                 const item =
-                    document.createElement("div");
+                    document.createElement(
+                        "div"
+                    );
 
 
                 item.className =
                     "ranking-item";
 
 
-                // 自分かどうか
+                /* ==================================
+                   自分かどうか
+                ================================== */
+
                 let isMe = false;
 
 
                 if (
                     typeof lineProfile !== "undefined" &&
                     lineProfile &&
-                    player.userId === lineProfile.userId
+                    player.userId ===
+                        lineProfile.userId
                 ) {
 
                     isMe = true;
@@ -8601,30 +8746,41 @@ async function loadRanking() {
                 }
 
 
-                // 順位
+                /* ==================================
+                   順位
+                ================================== */
+
                 const rank =
                     index + 1;
 
 
-                // メダル
                 let rankDisplay =
                     String(rank);
 
 
                 if (rank === 1) {
+
                     rankDisplay = "🥇";
+
                 }
 
                 else if (rank === 2) {
+
                     rankDisplay = "🥈";
+
                 }
 
                 else if (rank === 3) {
+
                     rankDisplay = "🥉";
+
                 }
 
 
-                // 名前
+                /* ==================================
+                   名前
+                ================================== */
+
                 const name =
                     escapeRankingText(
                         player.displayName ||
@@ -8632,20 +8788,26 @@ async function loadRanking() {
                     );
 
 
-                // スコア
+                /* ==================================
+                   スコア
+                ================================== */
+
                 const playerScore =
-                    Number(player.score) || 0;
+                    Number(
+                        player.score
+                    ) || 0;
 
 
-                // =================================
-                // HTML生成
-                // =================================
+                /* ==================================
+                   HTML生成
+                ================================== */
 
                 item.innerHTML = `
 
                     <div class="ranking-number">
                         ${rankDisplay}
                     </div>
+
 
                     ${
                         player.pictureUrl
@@ -8671,6 +8833,7 @@ async function loadRanking() {
                         `
                     }
 
+
                     <div class="ranking-name">
 
                         ${name}
@@ -8695,6 +8858,7 @@ async function loadRanking() {
 
                     </div>
 
+
                     <div class="ranking-score">
                         ${playerScore.toLocaleString()}
                     </div>
@@ -8710,13 +8874,52 @@ async function loadRanking() {
         );
 
 
-    } catch (error) {
+    }
+
+    catch (error) {
 
         console.error(
             "ランキング取得エラー:",
             error
         );
 
+
+        /* ==========================================
+           MY BESTもエラー表示
+        ========================================== */
+
+        const myBestScore =
+            document.getElementById(
+                "my-best-score"
+            );
+
+        const myBestLevel =
+            document.getElementById(
+                "my-best-level"
+            );
+
+        const myBestRank =
+            document.getElementById(
+                "my-best-rank"
+            );
+
+
+        if (myBestScore) {
+            myBestScore.textContent = "--";
+        }
+
+        if (myBestLevel) {
+            myBestLevel.textContent = "--";
+        }
+
+        if (myBestRank) {
+            myBestRank.textContent = "--";
+        }
+
+
+        /* ==========================================
+           エラー画面
+        ========================================== */
 
         rankingList.innerHTML = `
 
