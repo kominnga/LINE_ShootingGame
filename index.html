@@ -141,370 +141,890 @@
     </div>
 
 </div>
-<!-- HOW TO SCREEN -->
-<!-- =========================
-     HOW TO SCREEN
-========================== -->
+<!-- HOW TO PLAY -->
 <div id="howto-screen">
 
     <div id="howto-panel">
 
+        <!-- HEADER -->
         <div class="howto-header">
+
             <div class="howto-title">
                 HOW TO PLAY
             </div>
 
             <div class="howto-subtitle">
-                NEXUS SHOOTER
+                NEXUS SHOOTER // MANUAL
             </div>
+
         </div>
 
 
-        <div class="howto-content">
+        <!-- PC / MOBILE切り替え -->
+        <div class="howto-tabs">
 
-            <!-- =========================
-                 OPERATION
-            ========================== -->
-            <div class="howto-section">
+            <button
+                id="howto-pc-button"
+                class="howto-tab active"
+                type="button">
+                💻 PC
+            </button>
 
-                <div class="howto-section-title">
-                    🎮 BASIC OPERATION
-                </div>
+            <button
+                id="howto-mobile-button"
+                class="howto-tab"
+                type="button">
+                📱 MOBILE
+            </button>
 
-                <div class="howto-tabs">
-
-                    <button
-                        id="howto-pc-tab"
-                        class="howto-tab active"
-                        type="button">
-                        PC
-                    </button>
-
-                    <button
-                        id="howto-mobile-tab"
-                        class="howto-tab"
-                        type="button">
-                        MOBILE
-                    </button>
-
-                </div>
+        </div>
 
 
-                <!-- PC操作 -->
-                <div id="howto-pc-controls">
+        <!-- ==========================================
+             BASIC OPERATION
+        =========================================== -->
 
-                    <div class="howto-row">
+        <section class="howto-section">
+
+            <div class="howto-section-title">
+                🎮 BASIC OPERATION
+            </div>
+
+
+            <!-- PC -->
+            <div id="howto-pc-content">
+
+                <div class="howto-card">
+
+                    <div class="howto-card-title">
+                        MOVEMENT
+                    </div>
+
+                    <div class="howto-control-row">
                         <span class="howto-key">←</span>
-                        <span>左へ移動</span>
-                    </div>
-
-                    <div class="howto-row">
                         <span class="howto-key">→</span>
-                        <span>右へ移動</span>
+                        <span class="howto-description">
+                            ロケットを左右に移動
+                        </span>
                     </div>
 
-                    <div class="howto-row">
-                        <span class="howto-key">SPACE</span>
-                        <span>ショット</span>
-                    </div>
-
-                    <div class="howto-row">
-                        <span class="howto-key">1</span>
-                        <span>HP回復</span>
-                    </div>
-
-                    <div class="howto-row">
-                        <span class="howto-key">2</span>
-                        <span>レインボービーム</span>
+                    <div class="howto-control-row">
+                        <span class="howto-key">A</span>
+                        <span class="howto-key">D</span>
+                        <span class="howto-description">
+                            左右に移動
+                        </span>
                     </div>
 
                 </div>
 
 
-                <!-- スマホ操作 -->
-                <div id="howto-mobile-controls"
-                     style="display:none;">
+                <div class="howto-card">
 
-                    <div class="howto-row">
-                        <span class="howto-key">◀</span>
-                        <span>左へ移動</span>
+                    <div class="howto-card-title">
+                        WEAPON
                     </div>
 
-                    <div class="howto-row">
-                        <span class="howto-key">▶</span>
-                        <span>右へ移動</span>
-                    </div>
+                    <div class="howto-control-row">
 
-                    <div class="howto-row">
-                        <span class="howto-key">🔥</span>
-                        <span>ショット</span>
-                    </div>
+                        <span class="howto-key wide">
+                            SPACE
+                        </span>
 
-                    <div class="howto-row">
-                        <span class="howto-key">♡</span>
-                        <span>HP回復</span>
-                    </div>
+                        <span class="howto-description">
+                            ロケットを発射
+                        </span>
 
-                    <div class="howto-row">
-                        <span class="howto-key">🌈</span>
-                        <span>レインボービーム</span>
                     </div>
 
                 </div>
 
-            </div>
 
+                <div class="howto-card">
 
-            <!-- =========================
-                 BATTLE
-            ========================== -->
-            <div class="howto-section">
+                    <div class="howto-card-title">
+                        ITEMS
+                    </div>
 
-                <div class="howto-section-title">
-                    ⚔️ BATTLE SYSTEM
-                </div>
+                    <div class="howto-control-grid">
 
-                <div class="howto-text">
+                        <div>
+                            <span class="howto-key">1</span>
+                            <small>HEAL</small>
+                        </div>
 
-                    敵を撃破するとSCOREを獲得できます。
+                        <div>
+                            <span class="howto-key">2</span>
+                            <small>BEAM</small>
+                        </div>
 
-                    <br>
+                        <div>
+                            <span class="howto-key">3</span>
+                            <small>SHIELD</small>
+                        </div>
 
-                    敵や敵の弾に接触すると
-                    <strong>HPが減少</strong>します。
+                        <div>
+                            <span class="howto-key">4</span>
+                            <small>BOMB</small>
+                        </div>
 
-                    <br>
-
-                    HPが0になるとGAME OVERです。
+                    </div>
 
                 </div>
 
             </div>
 
 
-            <!-- =========================
-                 ENEMIES
-            ========================== -->
-            <div class="howto-section">
+            <!-- MOBILE -->
+            <div
+                id="howto-mobile-content"
+                style="display:none;">
 
-                <div class="howto-section-title">
-                    👾 ENEMY DATABASE
+                <div class="howto-card">
+
+                    <div class="howto-card-title">
+                        MOVEMENT
+                    </div>
+
+                    <div class="howto-mobile-control">
+
+                        <span class="howto-mobile-button">
+                            ◀
+                        </span>
+
+                        <span>
+                            左へ移動
+                        </span>
+
+                    </div>
+
+                    <div class="howto-mobile-control">
+
+                        <span class="howto-mobile-button">
+                            ▶
+                        </span>
+
+                        <span>
+                            右へ移動
+                        </span>
+
+                    </div>
+
                 </div>
 
-                <div class="enemy-card">
 
-                    <div class="enemy-icon enemy-normal">
+                <div class="howto-card">
+
+                    <div class="howto-card-title">
+                        WEAPON
+                    </div>
+
+                    <div class="howto-mobile-control">
+
+                        <span class="howto-mobile-button fire">
+                            🔥
+                        </span>
+
+                        <span>
+                            ロケットを発射
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="howto-card">
+
+                    <div class="howto-card-title">
+                        ITEMS
+                    </div>
+
+                    <div class="howto-mobile-item-grid">
+
+                        <div>
+                            <span>♡</span>
+                            <small>HEAL</small>
+                        </div>
+
+                        <div>
+                            <span>🌈</span>
+                            <small>BEAM</small>
+                        </div>
+
+                        <div>
+                            <span>🛡️</span>
+                            <small>SHIELD</small>
+                        </div>
+
+                        <div>
+                            <span>💣</span>
+                            <small>BOMB</small>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ==========================================
+             BATTLE SYSTEM
+        =========================================== -->
+
+        <section class="howto-section">
+
+            <div class="howto-section-title">
+                ⚔️ BATTLE SYSTEM
+            </div>
+
+
+            <div class="howto-card">
+
+                <div class="howto-info-row">
+
+                    <span class="howto-info-icon">
+                        ❤️
+                    </span>
+
+                    <div>
+                        <strong>HP</strong>
+                        <p>
+                            敵や敵弾に接触するとHPが減少します。
+                        </p>
+                    </div>
+
+                </div>
+
+
+                <div class="howto-info-row">
+
+                    <span class="howto-info-icon">
+                        🎯
+                    </span>
+
+                    <div>
+                        <strong>SCORE</strong>
+                        <p>
+                            敵を倒すとスコアを獲得します。
+                            高いスコアを目指しましょう。
+                        </p>
+                    </div>
+
+                </div>
+
+
+                <div class="howto-info-row">
+
+                    <span class="howto-info-icon">
+                        🪙
+                    </span>
+
+                    <div>
+                        <strong>COIN</strong>
+                        <p>
+                            敵を倒すことでCOINを獲得できます。
+                            GARAGEで機体を購入できます。
+                        </p>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ==========================================
+             ENEMY DATABASE
+        =========================================== -->
+
+        <section class="howto-section">
+
+            <div class="howto-section-title">
+                👾 ENEMY DATABASE
+            </div>
+
+
+            <div class="howto-enemy-grid">
+
+                <div class="howto-enemy-card">
+
+                    <div class="enemy-icon">
                         N
                     </div>
 
-                    <div class="enemy-card-info">
-                        <strong>NORMAL</strong>
-                        <span>標準型の敵</span>
-                        <small>SCORE +100</small>
-                    </div>
+                    <strong>
+                        NORMAL
+                    </strong>
+
+                    <span>
+                        標準型
+                    </span>
+
+                    <small>
+                        SCORE +100
+                    </small>
 
                 </div>
 
 
-                <div class="enemy-card">
+                <div class="howto-enemy-card">
 
-                    <div class="enemy-icon enemy-fast">
+                    <div class="enemy-icon">
                         F
                     </div>
 
-                    <div class="enemy-card-info">
-                        <strong>FAST</strong>
-                        <span>高速で移動する敵</span>
-                        <small>SCORE +150</small>
-                    </div>
+                    <strong>
+                        FAST
+                    </strong>
+
+                    <span>
+                        高速型
+                    </span>
+
+                    <small>
+                        SCORE +150
+                    </small>
 
                 </div>
 
 
-                <div class="enemy-card">
+                <div class="howto-enemy-card">
 
-                    <div class="enemy-icon enemy-big">
+                    <div class="enemy-icon">
                         B
                     </div>
 
-                    <div class="enemy-card-info">
-                        <strong>BIG</strong>
-                        <span>耐久力の高い大型敵</span>
-                        <small>SCORE +500</small>
+                    <strong>
+                        BIG
+                    </strong>
+
+                    <span>
+                        高耐久型
+                    </span>
+
+                    <small>
+                        SCORE +500
+                    </small>
+
+                </div>
+
+
+                <div class="howto-enemy-card">
+
+                    <div class="enemy-icon">
+                        S
+                    </div>
+
+                    <strong>
+                        SHOOTER
+                    </strong>
+
+                    <span>
+                        射撃型
+                    </span>
+
+                    <small>
+                        SCORE +200
+                    </small>
+
+                </div>
+
+
+                <div class="howto-enemy-card">
+
+                    <div class="enemy-icon">
+                        SP
+                    </div>
+
+                    <strong>
+                        SPLITTER
+                    </strong>
+
+                    <span>
+                        分裂型
+                    </span>
+
+                    <small>
+                        SCORE +300
+                    </small>
+
+                </div>
+
+
+                <div class="howto-enemy-card">
+
+                    <div class="enemy-icon">
+                        •
+                    </div>
+
+                    <strong>
+                        SPLIT-CHILD
+                    </strong>
+
+                    <span>
+                        分裂後
+                    </span>
+
+                    <small>
+                        SCORE +50
+                    </small>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ==========================================
+             BOSS
+        =========================================== -->
+
+        <section class="howto-section">
+
+            <div class="howto-section-title">
+                👑 BOSS SYSTEM
+            </div>
+
+
+            <div class="howto-card">
+
+                <div class="howto-info-row">
+
+                    <span class="howto-info-icon">
+                        👑
+                    </span>
+
+                    <div>
+
+                        <strong>
+                            BOSS BATTLE
+                        </strong>
+
+                        <p>
+                            各LEVELの最後には強力なBOSSが登場します。
+                            HPバーを確認しながら攻撃しましょう。
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="howto-info-row">
+
+                    <span class="howto-info-icon">
+                        ⚠️
+                    </span>
+
+                    <div>
+
+                        <strong>
+                            BOSS ATTACK
+                        </strong>
+
+                        <p>
+                            BOSSは通常の敵より強力な攻撃を行います。
+                            敵弾にも注意してください。
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="howto-info-row">
+
+                    <span class="howto-info-icon">
+                        ⬆️
+                    </span>
+
+                    <div>
+
+                        <strong>
+                            LEVEL UP
+                        </strong>
+
+                        <p>
+                            BOSSを撃破すると次のLEVELへ進みます。
+                            LEVELが上がるほど戦闘は激しくなります。
+                        </p>
+
                     </div>
 
                 </div>
 
             </div>
 
+        </section>
 
-            <!-- =========================
-                 BOSS
-            ========================== -->
-            <div class="howto-section boss-howto">
 
-                <div class="howto-section-title">
-                    👑 BOSS SYSTEM
-                </div>
+        <!-- ==========================================
+             SPECIAL ITEMS
+        =========================================== -->
 
-                <div class="howto-text">
+        <section class="howto-section">
 
-                    一定のSCOREに到達すると
-                    <strong>BOSS</strong>が出現します。
-
-                    <br><br>
-
-                    BOSSには通常の敵よりも
-                    <strong>高いHP</strong>があります。
-
-                    <br>
-
-                    さらに大量の弾を発射してきます。
-
-                    <br><br>
-
-                    BOSSを撃破すると
-
-                    <strong class="level-up-text">
-                        LEVEL UP!
-                    </strong>
-
-                    <br>
-
-                    次のステージへ進みます。
-
-                </div>
-
+            <div class="howto-section-title">
+                ⚡ SPECIAL ITEMS
             </div>
 
 
-            <!-- =========================
-                 ITEMS
-            ========================== -->
-            <div class="howto-section">
+            <div class="howto-item-grid">
 
-                <div class="howto-section-title">
-                    ⚡ SPECIAL ITEMS
-                </div>
+                <!-- HEAL -->
+                <div class="howto-special-card">
 
-                <div class="item-card">
-
-                    <div class="item-icon">
+                    <div class="special-icon">
                         ♡
                     </div>
 
-                    <div>
-                        <strong>HEAL</strong>
-                        <span>HPを1回復</span>
-                        <small>クールタイム：60秒</small>
-                    </div>
+                    <strong>
+                        HEAL
+                    </strong>
+
+                    <span>
+                        HPを1回復
+                    </span>
+
+                    <small>
+                        COOLDOWN 60 SEC
+                    </small>
 
                 </div>
 
 
-                <div class="item-card">
+                <!-- BEAM -->
+                <div class="howto-special-card">
 
-                    <div class="item-icon beam-icon">
+                    <div class="special-icon">
                         🌈
                     </div>
 
+                    <strong>
+                        RAINBOW BEAM
+                    </strong>
+
+                    <span>
+                        前方の敵をまとめて攻撃
+                    </span>
+
+                    <small>
+                        COOLDOWN 30 SEC
+                    </small>
+
+                </div>
+
+
+                <!-- SHIELD -->
+                <div class="howto-special-card">
+
+                    <div class="special-icon">
+                        🛡️
+                    </div>
+
+                    <strong>
+                        SHIELD
+                    </strong>
+
+                    <span>
+                        一定時間ダメージを無効化
+                    </span>
+
+                    <small>
+                        8 SEC / 30 SEC CD
+                    </small>
+
+                </div>
+
+
+                <!-- BOMB -->
+                <div class="howto-special-card">
+
+                    <div class="special-icon">
+                        💣
+                    </div>
+
+                    <strong>
+                        BOMB
+                    </strong>
+
+                    <span>
+                        敵を一掃する強力な攻撃
+                    </span>
+
+                    <small>
+                        20 SEC CD
+                    </small>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ==========================================
+             GARAGE
+        =========================================== -->
+
+        <section class="howto-section">
+
+            <div class="howto-section-title">
+                🚀 NEXUS GARAGE
+            </div>
+
+
+            <div class="howto-card">
+
+                <div class="howto-garage-row">
+
+                    <div class="garage-mini">
+                        01
+                    </div>
+
                     <div>
-                        <strong>RAINBOW BEAM</strong>
-                        <span>強力なビームを発射</span>
-                        <small>発動中はダメージを受けない</small>
+                        <strong>
+                            NEXUS-01
+                        </strong>
+
+                        <p>
+                            STANDARD TYPE
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="howto-garage-row">
+
+                    <div class="garage-mini">
+                        02
+                    </div>
+
+                    <div>
+                        <strong>
+                            NEXUS-02
+                        </strong>
+
+                        <p>
+                            SPEED TYPE
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="howto-garage-row">
+
+                    <div class="garage-mini">
+                        03
+                    </div>
+
+                    <div>
+                        <strong>
+                            NEXUS-03
+                        </strong>
+
+                        <p>
+                            ATTACK TYPE
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="howto-garage-row">
+
+                    <div class="garage-mini">
+                        04
+                    </div>
+
+                    <div>
+                        <strong>
+                            NEXUS-04
+                        </strong>
+
+                        <p>
+                            BEAM TYPE
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="howto-garage-row">
+
+                    <div class="garage-mini">
+                        05
+                    </div>
+
+                    <div>
+                        <strong>
+                            NEXUS-05
+                        </strong>
+
+                        <p>
+                            HEAVY TYPE
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <p class="howto-note">
+                    COINを使って新しい機体を購入できます。
+                    購入した機体はGARAGEから装備できます。
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- ==========================================
+             RANKING
+        =========================================== -->
+
+        <section class="howto-section">
+
+            <div class="howto-section-title">
+                🏆 RANKING
+            </div>
+
+
+            <div class="howto-card">
+
+                <div class="howto-info-row">
+
+                    <span class="howto-info-icon">
+                        🌎
+                    </span>
+
+                    <div>
+
+                        <strong>
+                            GLOBAL RANKING
+                        </strong>
+
+                        <p>
+                            プレイヤー全体のスコアランキングを確認できます。
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="howto-info-row">
+
+                    <span class="howto-info-icon">
+                        ⭐
+                    </span>
+
+                    <div>
+
+                        <strong>
+                            MY BEST
+                        </strong>
+
+                        <p>
+                            自分の最高スコア・到達LEVEL・現在の順位を確認できます。
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="howto-info-row">
+
+                    <span class="howto-info-icon">
+                        🔒
+                    </span>
+
+                    <div>
+
+                        <strong>
+                            PERSONAL BEST
+                        </strong>
+
+                        <p>
+                            自己ベストを更新したときだけ記録が更新されます。
+                        </p>
+
                     </div>
 
                 </div>
 
             </div>
 
+        </section>
 
-            <!-- =========================
-                 GARAGE
-            ========================== -->
-            <div class="howto-section">
 
-                <div class="howto-section-title">
-                    🚀 NEXUS GARAGE
-                </div>
+        <!-- ==========================================
+             TIPS
+        =========================================== -->
 
-                <div class="skin-howto-grid">
+        <section class="howto-section">
 
-                    <div class="skin-howto-card">
-                        <strong>NEXUS-01</strong>
-                        <span>STANDARD</span>
-                        <small>標準性能</small>
-                    </div>
-
-                    <div class="skin-howto-card">
-                        <strong>NEXUS-02</strong>
-                        <span>SPEED</span>
-                        <small>移動速度 +35%</small>
-                    </div>
-
-                    <div class="skin-howto-card">
-                        <strong>NEXUS-03</strong>
-                        <span>ATTACK</span>
-                        <small>攻撃速度UP</small>
-                    </div>
-
-                    <div class="skin-howto-card">
-                        <strong>NEXUS-04</strong>
-                        <span>BEAM</span>
-                        <small>ビーム強化</small>
-                    </div>
-
-                    <div class="skin-howto-card">
-                        <strong>NEXUS-05</strong>
-                        <span>HEAVY</span>
-                        <small>HP 5</small>
-                    </div>
-
-                </div>
-
+            <div class="howto-section-title">
+                💡 TIPS
             </div>
 
 
-            <!-- =========================
-                 TIPS
-            ========================== -->
-            <div class="howto-section tips-section">
+            <div class="howto-card tips-card">
 
-                <div class="howto-section-title">
-                    💡 TIPS
-                </div>
+                <p>
+                    ・敵の種類によって動き方が違います。
+                </p>
 
-                <div class="howto-tip">
-                    01　敵の動きをよく見て回避しよう。
-                </div>
+                <p>
+                    ・SHOOTERやBOSSの敵弾には注意しましょう。
+                </p>
 
-                <div class="howto-tip">
-                    02　FASTは速度が速いので注意。
-                </div>
+                <p>
+                    ・SPLITTERを倒すと小型の敵に分裂します。
+                </p>
 
-                <div class="howto-tip">
-                    03　BIGは複数回攻撃する必要があります。
-                </div>
+                <p>
+                    ・BEAMやBOMBは使うタイミングが重要です。
+                </p>
 
-                <div class="howto-tip">
-                    04　BOSS戦では敵の弾にも注意。
-                </div>
+                <p>
+                    ・SHIELDは危険な場面まで温存するのも有効です。
+                </p>
 
-                <div class="howto-tip">
-                    05　ビーム中は無敵状態になります。
-                </div>
+                <p>
+                    ・COINを集めて機体を強化しましょう。
+                </p>
+
+                <p>
+                    ・自己ベスト更新を目指してLEVELを進めましょう。
+                </p>
 
             </div>
 
-        </div>
+        </section>
 
 
-        <!-- 戻るボタン -->
+        <!-- CLOSE -->
         <button
             id="howto-close-button"
-            class="howto-close-button"
             type="button">
-            ← 戻る
+
+            ← BACK
+
         </button>
 
     </div>
