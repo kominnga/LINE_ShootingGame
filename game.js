@@ -2393,17 +2393,37 @@ function playGaragePreviewAnimation(
 // 購入確定
 // ==================================================
 
-function confirmPurchase() {
+// ==================================================
+// 購入確定
+// D1対応版
+// ==================================================
+
+let purchaseProcessing = false;
+
+async function confirmPurchase() {
 
     const skin =
         purchaseTargetSkin;
+
 
     if (!skin) {
         return;
     }
 
 
-    // 二重購入防止
+    // ========================================
+    // 二重購入・二重送信防止
+    // ========================================
+
+    if (purchaseProcessing) {
+        return;
+    }
+
+
+    // ========================================
+    // すでに所持している
+    // ========================================
+
     if (isSkinOwned(skin.id)) {
 
         closePurchaseConfirm();
@@ -2434,8 +2454,303 @@ function confirmPurchase() {
 
 
     // ========================================
-    // コイン消費
+    // LINEユーザーか確認
     // ========================================
+
+    const isLineUser =
+        typeof lineProfile !== "undefined" &&
+        lineProfile &&
+        lineProfile.userId;
+
+
+    // ========================================
+    // D1購入処理
+    // ========================================
+
+    if (isLineUser) {
+
+        purchaseProcessing = true;
+
+
+        // ボタンを一時的に操作不能にする
+        if (skinEquipButton) {
+
+            skinEquipButton.disabled =
+                true;
+
+        }
+
+
+        console.log(
+            "🚀 D1購入処理開始:",
+            skin.id
+        );
+
+
+        try {
+
+            const response =
+                await fetch(
+                    RANKING_API +
+                    "/skin/purchase",
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body: JSON.stringify({
+
+                            userId:
+                                lineProfile.userId,
+
+                            skinId:
+                                skin.id
+
+                        })
+                    }
+                );
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "HTTP ERROR: " +
+                    response.status
+                );
+
+            }
+
+
+            const result =
+                await response.json();
+
+
+            console.log(
+                "🚀 D1購入結果:",
+                result
+            );
+
+
+            // ========================================
+            // D1購入失敗
+            // ========================================
+
+            if (!result.success) {
+
+                // コイン不足
+                if (
+                    result.error ===
+                    "INSUFFICIENT_COINS"
+                ) {
+
+                    closePurchaseConfirm();
+
+                    showCoinsNotEnough(
+                        skin
+                    );
+
+                    return;
+                }
+
+
+                // すでに購入済み
+                if (
+                    result.error ===
+                    "ALREADY_OWNED"
+                ) {
+
+                    closePurchaseConfirm();
+
+                    // D1の最新情報を再取得
+                    await loadPlayerData();
+
+                    updateGarage();
+
+                    return;
+                }
+
+
+                alert(
+                    "購入に失敗しました。\n\n" +
+                    (
+                        result.message ||
+                        "サーバーで購入処理を完了できませんでした。"
+                    )
+                );
+
+                return;
+            }
+
+
+            // ========================================
+            // D1購入成功
+            // ========================================
+
+            coins =
+                Math.max(
+                    0,
+                    Math.floor(
+                        Number(
+                            result.coins
+                        ) || 0
+                    )
+                );
+
+
+            // D1から返ってきた所持スキンを使用
+            if (
+                Array.isArray(
+                    result.ownedSkins
+                )
+            ) {
+
+                ownedSkins =
+                    result.ownedSkins.filter(
+                        skinId =>
+                            skins.some(
+                                skin =>
+                                    skin.id === skinId
+                            )
+                    );
+
+            }
+
+
+            // NEXUS-01は必ず所持
+            if (
+                !ownedSkins.includes(
+                    "nexus-01"
+                )
+            ) {
+
+                ownedSkins.unshift(
+                    "nexus-01"
+                );
+
+            }
+
+
+            // D1から返ってきた装備機体
+            if (
+                typeof result.equippedSkin ===
+                "string"
+            ) {
+
+                equippedSkin =
+                    result.equippedSkin;
+
+            }
+
+
+            // ========================================
+            // ローカルキャッシュ更新
+            // ========================================
+
+            localStorage.setItem(
+                "nexus-coins",
+                String(coins)
+            );
+
+
+            saveOwnedSkins();
+
+
+            localStorage.setItem(
+                "nexus-equipped-skin",
+                equippedSkin
+            );
+
+
+            // ========================================
+            // 選択位置を装備機体へ
+            // ========================================
+
+            const equippedIndex =
+                skins.findIndex(
+                    skin =>
+                        skin.id ===
+                        equippedSkin
+                );
+
+
+            if (equippedIndex >= 0) {
+
+                selectedSkinIndex =
+                    equippedIndex;
+
+            }
+
+
+            // ========================================
+            // UI更新
+            // ========================================
+
+            closePurchaseConfirm();
+
+            updateCoinDisplays();
+
+            updateGarage();
+
+
+            // ========================================
+            // 購入成功演出
+            // ========================================
+
+            playPurchaseAnimation(
+                skin
+            );
+
+
+            console.log(
+                "🚀 D1購入完了:",
+                skin.name
+            );
+
+        }
+        catch (error) {
+
+            console.error(
+                "D1スキン購入エラー:",
+                error
+            );
+
+
+            alert(
+                "購入処理中に通信エラーが発生しました。\n\n" +
+                "コインはまだゲーム側では消費していません。"
+            );
+
+        }
+        finally {
+
+            purchaseProcessing =
+                false;
+
+
+            // GARAGEの状態を再計算
+            updateGarage();
+
+        }
+
+
+        return;
+    }
+
+
+    // ========================================
+    // LINEではない場合
+    // ========================================
+    // 今までのローカル保存方式を維持
+    // ========================================
+
+    console.log(
+        "LOCAL購入処理:",
+        skin.id
+    );
+
 
     coins -=
         skin.price;
@@ -2447,21 +2762,15 @@ function confirmPurchase() {
     );
 
 
-    // ========================================
-    // 所持登録
-    // ========================================
-
     ownedSkins.push(
         skin.id
     );
 
+
     saveOwnedSkins();
 
 
-    // ========================================
-    // 自動装備
-    // ========================================
-
+    // 購入したら自動装備
     equippedSkin =
         skin.id;
 
@@ -2490,6 +2799,7 @@ function confirmPurchase() {
     playPurchaseAnimation(
         skin
     );
+
 }
 
 // ==================================================
