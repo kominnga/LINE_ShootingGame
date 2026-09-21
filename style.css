@@ -4183,3 +4183,426 @@ button {
 
     transform: none;
 }
+
+/* ==================================================
+   MY BEST + RANKING FINAL DESIGN
+================================================== */
+
+/* ランキング全体 */
+#ranking-screen {
+    position: absolute;
+
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    display: none;
+
+    flex-direction: column;
+
+    justify-content: center;
+    align-items: center;
+
+    gap: 14px;
+
+    box-sizing: border-box;
+
+    padding: 20px;
+
+    margin: 0;
+
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    background:
+        rgba(0, 0, 20, 0.92);
+
+    z-index: 1000;
+}
+
+
+/* ==================================================
+   MY BEST
+================================================== */
+
+#my-best-panel {
+
+    position: relative;
+
+    display: block;
+
+    width: min(90%, 420px);
+
+    max-width: 420px;
+
+    min-height: 145px;
+
+    margin: 0 auto;
+
+    padding: 18px 20px;
+
+    box-sizing: border-box;
+
+    flex-shrink: 0;
+
+    text-align: center;
+
+    border-radius: 16px;
+
+    border:
+        1px solid
+        rgba(0, 220, 255, 0.40);
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(15, 35, 65, 0.98),
+            rgba(5, 15, 32, 0.98)
+        );
+
+    box-shadow:
+        0 0 22px
+        rgba(0, 220, 255, 0.12);
+
+    z-index: 1100;
+}
+
+
+/* MY BESTタイトル */
+
+.my-best-title {
+
+    color:
+        rgba(120, 225, 255, 0.85);
+
+    font-size:
+        12px;
+
+    font-weight:
+        bold;
+
+    letter-spacing:
+        4px;
+
+    margin-bottom:
+        5px;
+}
+
+
+/* 自己ベストスコア */
+
+.my-best-score {
+
+    display:
+        flex;
+
+    justify-content:
+        center;
+
+    align-items:
+        baseline;
+
+    gap:
+        6px;
+
+    color:
+        white;
+
+    font-size:
+        30px;
+
+    font-weight:
+        bold;
+
+    line-height:
+        1.1;
+
+    text-shadow:
+        0 0 12px
+        rgba(0, 220, 255, 0.45);
+}
+
+
+/* PTS */
+
+.my-best-score span:last-child {
+
+    color:
+        rgba(255,255,255,0.55);
+
+    font-size:
+        11px;
+
+    letter-spacing:
+        1px;
+}
+
+
+/* LEVEL / RANK */
+
+.my-best-info {
+
+    display:
+        flex;
+
+    justify-content:
+        center;
+
+    align-items:
+        center;
+
+    gap:
+        60px;
+
+    margin-top:
+        12px;
+}
+
+
+/* LEVEL / RANK 個別 */
+
+.my-best-info > div {
+
+    display:
+        flex;
+
+    flex-direction:
+        column;
+
+    align-items:
+        center;
+
+    min-width:
+        55px;
+}
+
+
+/* ラベル */
+
+.my-best-info span {
+
+    color:
+        rgba(255,255,255,0.45);
+
+    font-size:
+        10px;
+
+    letter-spacing:
+        2px;
+}
+
+
+/* 数値 */
+
+.my-best-info strong {
+
+    margin-top:
+        2px;
+
+    color:
+        white;
+
+    font-size:
+        18px;
+
+    font-weight:
+        bold;
+
+    text-shadow:
+        0 0 8px
+        rgba(255,255,255,0.2);
+}
+
+
+/* ==================================================
+   RANKING PANEL
+================================================== */
+
+#ranking-panel {
+
+    position: relative;
+
+    width: min(90%, 420px);
+
+    max-width: 420px;
+
+    max-height: 70%;
+
+    margin: 0 auto;
+
+    padding: 25px 20px;
+
+    box-sizing: border-box;
+
+    flex-shrink: 0;
+
+    border-radius: 18px;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(15, 30, 55, 0.98),
+            rgba(5, 12, 25, 0.98)
+        );
+
+    border:
+        1px solid
+        rgba(0, 220, 255, 0.35);
+
+    box-shadow:
+        0 0 30px
+        rgba(0, 220, 255, 0.15);
+
+    text-align:
+        center;
+
+    overflow:
+        hidden;
+
+    z-index:
+        1100;
+}
+
+
+/* ==================================================
+   RANKING TITLE
+================================================== */
+
+#ranking-panel h1 {
+
+    margin:
+        0 0 20px;
+
+    color:
+        white;
+
+    font-size:
+        28px;
+
+    letter-spacing:
+        2px;
+}
+
+
+/* ==================================================
+   RANKING LIST
+================================================== */
+
+#ranking-list {
+
+    width:
+        100%;
+
+    max-height:
+        45vh;
+
+    overflow-y:
+        auto;
+
+    overflow-x:
+        hidden;
+
+    text-align:
+        left;
+
+    box-sizing:
+        border-box;
+}
+
+
+/* ==================================================
+   RANKING ITEM
+================================================== */
+
+.ranking-item {
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    width:
+        100%;
+
+    min-height:
+        55px;
+
+    margin-bottom:
+        8px;
+
+    padding:
+        8px 10px;
+
+    box-sizing:
+        border-box;
+
+    border-radius:
+        10px;
+
+    background:
+        rgba(255,255,255,0.05);
+
+    border:
+        1px solid
+        rgba(255,255,255,0.06);
+}
+
+
+/* ==================================================
+   YOU
+================================================== */
+
+.ranking-you {
+
+    color:
+        #00dcff;
+
+    font-size:
+        11px;
+
+    font-weight:
+        bold;
+
+    margin-left:
+        5px;
+}
+
+
+/* ==================================================
+   CLOSE
+================================================== */
+
+#ranking-close-button {
+
+    width:
+        180px;
+
+    margin-top:
+        20px;
+
+    padding:
+        12px;
+
+    border:
+        none;
+
+    border-radius:
+        10px;
+
+    background:
+        rgba(255,255,255,0.12);
+
+    color:
+        white;
+
+    font-size:
+        16px;
+
+    font-weight:
+        bold;
+
+    cursor:
+        pointer;
+}
