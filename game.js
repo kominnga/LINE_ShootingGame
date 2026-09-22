@@ -491,45 +491,65 @@ async function syncPendingMachineExp() {
             }
         );
 
-        console.log(
-            "🚀 MACHINE EXP HTTP:",
-            response.status
-        );
+    console.log(
+    "🚀 MACHINE EXP HTTP:",
+    response.status
+);
 
-        if (!response.ok) {
-            throw new Error(
-                "HTTP ERROR: " + response.status
-            );
-        }
+// ========================================
+// Workerの生レスポンスを取得
+// ========================================
 
-       
+const responseText = await response.text();
 
-        let result;
+console.log(
+    "🚀 MACHINE EXP RAW RESPONSE:",
+    responseText
+);
+
+// ========================================
+// JSON解析
+// ========================================
+
+let result;
 
 try {
+
     result = JSON.parse(responseText);
+
 } catch (error) {
+
     console.error(
         "❌ MACHINE EXP JSON解析失敗:",
         responseText
     );
+
     throw error;
 }
 
+console.log(
+    "🚀 MACHINE EXP RESULT:",
+    result
+);
 
-
-        console.log(
-            "🚀 MACHINE EXP RESULT:",
-            result
-        );
-
-        if (!response.ok) {
+if (!response.ok) {
 
     throw new Error(
         "HTTP ERROR: " + response.status
     );
 
 }
+
+if (!result.success) {
+
+    throw new Error(
+        result.message ||
+        "機体EXP同期に失敗しました"
+    );
+
+}
+
+
 
 
         if (!result.success) {
