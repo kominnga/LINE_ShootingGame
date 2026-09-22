@@ -86,6 +86,46 @@ let machineExpSyncing = false;
 let coinsLoadedFromServer = false;
 
 
+// ==================================================
+// 機体レベル・EXP
+// ==================================================
+
+let machineProgress = {};
+
+// 現在選択中の機体のレベル情報
+function getMachineProgress(skinId = getEquippedSkin()) {
+
+    if (
+        !machineProgress ||
+        !machineProgress[skinId]
+    ) {
+        return {
+            level: 1,
+            exp: 0
+        };
+    }
+
+    return {
+        level:
+            Math.max(
+                1,
+                Math.min(
+                    99,
+                    Number(
+                        machineProgress[skinId].level
+                    ) || 1
+                )
+            ),
+
+        exp:
+            Math.max(
+                0,
+                Number(
+                    machineProgress[skinId].exp
+                ) || 0
+            )
+    };
+}
 // ========================================
 // コイン表示
 // ========================================
@@ -360,6 +400,88 @@ async function loadPlayerData() {
 
         console.error(
             "D1プレイヤーデータ取得エラー:",
+            error
+        );
+
+    }
+
+}
+
+// ==================================================
+// D1から機体レベル・EXPを取得
+// ==================================================
+
+async function loadMachineProgress() {
+
+    if (
+        typeof lineProfile === "undefined" ||
+        !lineProfile ||
+        !lineProfile.userId
+    ) {
+
+        console.log(
+            "LINEプロフィールがないため機体データ取得をスキップ"
+        );
+
+        return;
+    }
+
+    try {
+
+        console.log(
+            "🚀 機体レベルデータ取得開始"
+        );
+
+        const response =
+            await fetch(
+                RANKING_API +
+                "/machine?userId=" +
+                encodeURIComponent(
+                    lineProfile.userId
+                )
+            );
+
+        console.log(
+            "🚀 MACHINE GET HTTP:",
+            response.status
+        );
+
+        const result =
+            await response.json();
+
+        console.log(
+            "🚀 MACHINE GET RESULT:",
+            result
+        );
+
+        if (
+            !response.ok ||
+            !result.success
+        ) {
+
+            throw new Error(
+                result.message ||
+                "機体データ取得失敗"
+            );
+
+        }
+
+        machineProgress =
+            result.machines || {};
+
+        console.log(
+            "✅ 機体レベルデータ読み込み成功:",
+            machineProgress
+        );
+
+        // ガレージ表示を更新
+        updateGarage();
+
+    }
+    catch (error) {
+
+        console.error(
+            "❌ 機体レベルデータ取得エラー:",
             error
         );
 
@@ -1051,6 +1173,8 @@ async function initLIFF() {
         console.log("LINEプロフィール取得成功");
 
         await loadPlayerData();
+
+        await loadMachineProgress();
         handleMenuScreen();
 
         console.log(
@@ -1136,6 +1260,108 @@ function updateGarage() {
 
     const info =
         skinInfo[skin.id];
+
+        // ========================================
+// 機体 LEVEL / EXP
+// ========================================
+
+const machine =
+    getMachineProgress(
+        skin.id
+    );
+
+const machineLevel =
+    machine.level;
+
+const machineExp =
+    machine.exp;
+
+const nextExp =
+    machineLevel >= 99
+        ? 0
+        : machineLevel * 500;
+
+const expRatio =
+    machineLevel >= 99
+        ? 1
+        : nextExp > 0
+            ? Math.min(
+                1,
+                machineExp / nextExp
+            )
+            : 0;
+
+
+            const machineLevelValue =
+    document.getElementById(
+        "machine-level-value"
+    );
+
+const machineExpText =
+    document.getElementById(
+        "machine-exp-text"
+    );
+
+const machineExpFill =
+    document.getElementById(
+        "machine-exp-fill"
+    );
+
+const machineLevelBonus =
+    document.getElementById(
+        "machine-level-bonus"
+    );
+
+if (machineLevelValue) {
+
+    machineLevelValue.textContent =
+        `LEVEL ${machineLevel}`;
+
+}
+
+if (machineExpText) {
+
+    if (machineLevel >= 99) {
+
+        machineExpText.textContent =
+            "MAX LEVEL";
+
+    }
+    else {
+
+        machineExpText.textContent =
+            `EXP ${machineExp.toLocaleString()} / ${nextExp.toLocaleString()}`;
+
+    }
+
+}
+
+if (machineExpFill) {
+
+    machineExpFill.style.width =
+        `${expRatio * 100}%`;
+
+}
+
+if (machineLevelBonus) {
+
+    const bonus =
+        Math.min(
+            49,
+            (machineLevel - 1) * 0.5
+        );
+
+    machineLevelBonus.textContent =
+        `LEVEL BONUS：+${bonus.toFixed(1)}%`;
+
+}
+console.log(
+    "🚀 GARAGE MACHINE:",
+    skin.id,
+    machineLevel,
+    machineExp,
+    nextExp
+);
 
     // ========================================
     // 基本情報
@@ -3687,55 +3913,112 @@ function getEquippedSkin() {
 
 }
 
+// ==================================================
+// MACHINE LEVEL BONUS
+// ==================================================
+
+function getMachineLevelBonus() {
+
+    const machine =
+        getMachineProgress();
+
+    if (
+        machine.level >= 99
+    ) {
+        return 0.49;
+    }
+
+    return Math.min(
+        0.49,
+        (machine.level - 1) * 0.005
+    );
+
+}
+
 
 function getMaxHP() {
 
-    const skin = getEquippedSkin();
+    const skin =
+        getEquippedSkin();
+
+    const machine =
+        getMachineProgress();
 
     if (skin === "nexus-05") {
-        return 5;
+
+        return Math.min(
+            8,
+            5 +
+            Math.floor(
+                (machine.level - 1) / 20
+            )
+        );
+
     }
 
     return 3;
 }
 
 
-// 移動速度
 function getPlayerSpeed() {
 
-    const skin = getEquippedSkin();
+    const skin =
+        getEquippedSkin();
 
-    // NEXUS-02 SPEED TYPE
+    const levelBonus =
+        getMachineLevelBonus();
+
     if (skin === "nexus-02") {
-        return 330 * 1.35;
+
+        return (
+            330 *
+            1.35 *
+            (1 + levelBonus)
+        );
+
     }
 
     return 330;
 }
 
 
-// 弾の発射間隔
 function getFireInterval() {
 
-    const skin = getEquippedSkin();
+    const skin =
+        getEquippedSkin();
 
-    // NEXUS-03 ATTACK TYPE
+    const levelBonus =
+        getMachineLevelBonus();
+
     if (skin === "nexus-03") {
-        return 0.11;
+
+        return Math.max(
+            0.055,
+            0.11 *
+            (1 - levelBonus)
+        );
+
     }
 
     return 0.13;
 }
 
-
 // ビーム幅
 function getBeamWidth() {
 
-    const skin = getEquippedSkin();
+    const skin =
+        getEquippedSkin();
 
-    // NEXUS-04 BEAM TYPE
+    const levelBonus =
+        getMachineLevelBonus();
+
     if (skin === "nexus-04") {
-        return 150;
+
+        return (
+            150 +
+            levelBonus * 50
+        );
+
     }
 
     return 90;
