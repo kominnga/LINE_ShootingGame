@@ -7228,6 +7228,8 @@ function drawPlayer() {
         GARAGEで装備したスキンを取得
     */
 
+        drawLevelTransitionInvincibility();
+
           ctx.save();
 
     const currentSkin =
@@ -7243,7 +7245,7 @@ function drawPlayer() {
     );
 
 
-    drawLevelTransitionInvincibility();
+    
     //drawMachineLevelAura(currentSkin);
 
     /* ==================================================
