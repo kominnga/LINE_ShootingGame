@@ -502,12 +502,35 @@ async function syncPendingMachineExp() {
             );
         }
 
-        const result = await response.json();
+       
+
+        let result;
+
+try {
+    result = JSON.parse(responseText);
+} catch (error) {
+    console.error(
+        "❌ MACHINE EXP JSON解析失敗:",
+        responseText
+    );
+    throw error;
+}
+
+
 
         console.log(
             "🚀 MACHINE EXP RESULT:",
             result
         );
+
+        if (!response.ok) {
+
+    throw new Error(
+        "HTTP ERROR: " + response.status
+    );
+
+}
+
 
         if (!result.success) {
             throw new Error(
