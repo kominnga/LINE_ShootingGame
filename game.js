@@ -7229,7 +7229,7 @@ function drawPlayer() {
     */
 
         drawLevelTransitionInvincibility();
-        drawMachineEvolution(currentSkin);
+        
 
           ctx.save();
 
@@ -7749,6 +7749,7 @@ function drawPlayer() {
 
     drawLevelTransitionInvincibility();
 
+    drawMachineEvolution(currentSkin);
     ctx.restore();
 
 }
