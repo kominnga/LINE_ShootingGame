@@ -18470,3 +18470,2616 @@ console.log(
     "◆ CURRENT SP:",
     skillPoints
 );
+
+/* ==================================================
+   NEXUS SKILL GRID
+   実際のゲーム性能への反映
+   追加パッチ
+================================================== */
+
+/*
+    このシステムは既存のゲーム処理を変更せず、
+    「現在のスキル状態」を取得するだけ。
+*/
+
+/* --------------------------------------------------
+   スキル所持確認
+-------------------------------------------------- */
+
+function hasNexusSkill(skillId) {
+    try {
+        const skills = JSON.parse(
+            localStorage.getItem("nexus-unlocked-skills") || "[]"
+        );
+
+        return Array.isArray(skills) && skills.includes(skillId);
+    } catch (error) {
+        console.error("SKILL CHECK ERROR:", error);
+        return false;
+    }
+}
+
+
+/* --------------------------------------------------
+   現在装備中の機体が持っているスキル
+-------------------------------------------------- */
+
+function hasCurrentMachineSkill(skillId) {
+    const skin = getEquippedSkin();
+
+    /*
+        skillIdの先頭3文字で機体を判定
+        n01 / n02 / n03 / n04 / n05
+    */
+
+    const machineMap = {
+        "n01": "nexus-01",
+        "n02": "nexus-02",
+        "n03": "nexus-03",
+        "n04": "nexus-04",
+        "n05": "nexus-05"
+    };
+
+    const prefix = String(skillId).substring(0, 3);
+
+    if (machineMap[prefix] !== skin) {
+        return false;
+    }
+
+    return hasNexusSkill(skillId);
+}
+
+
+/* ==================================================
+   NEXUS-01
+   ADAPT / BALANCE
+================================================== */
+
+/*
+    102 POWER
+    103 DEFENSE
+    104 SPEED
+    105 ENERGY
+*/
+
+function getSkillAttackMultiplier() {
+
+    const skin = getEquippedSkin();
+
+    let multiplier = 1;
+
+    if (skin === "nexus-01") {
+
+        if (hasNexusSkill("n01-power")) {
+            multiplier += 0.10;
+        }
+
+        if (hasNexusSkill("n01-energy")) {
+            multiplier += 0.05;
+        }
+    }
+
+    return multiplier;
+}
+
+
+function getSkillDefenseMultiplier() {
+
+    const skin = getEquippedSkin();
+
+    let multiplier = 1;
+
+    if (skin === "nexus-01") {
+
+        if (hasNexusSkill("n01-defense")) {
+            multiplier += 0.10;
+        }
+    }
+
+    return multiplier;
+}
+
+
+function getSkillSpeedMultiplier() {
+
+    const skin = getEquippedSkin();
+
+    let multiplier = 1;
+
+    if (skin === "nexus-01") {
+
+        if (hasNexusSkill("n01-speed")) {
+            multiplier += 0.08;
+        }
+    }
+
+    return multiplier;
+}
+
+
+/* ==================================================
+   NEXUS-02
+   SPEED / EVASION
+================================================== */
+
+function hasPhaseShiftSkill() {
+
+    return (
+        getEquippedSkin() === "nexus-02" &&
+        hasNexusSkill("n02-phase")
+    );
+}
+
+
+function getNexus02SpeedMultiplier() {
+
+    if (getEquippedSkin() !== "nexus-02") {
+        return 1;
+    }
+
+    let multiplier = 1;
+
+    if (hasNexusSkill("n02-speed")) {
+        multiplier += 0.10;
+    }
+
+    if (hasNexusSkill("n02-dash")) {
+        multiplier += 0.08;
+    }
+
+    return multiplier;
+}
+
+
+/* ==================================================
+   NEXUS-03
+   DUAL FIRE
+================================================== */
+
+function hasDualFireSkill() {
+
+    return (
+        getEquippedSkin() === "nexus-03" &&
+        hasNexusSkill("n03-dual")
+    );
+}
+
+
+function getNexus03FireDelayMultiplier() {
+
+    if (getEquippedSkin() !== "nexus-03") {
+        return 1;
+    }
+
+    /*
+        DUAL FIREは「速くする」のではなく、
+        現在の仕様どおり少し遅め。
+    */
+
+    if (hasDualFireSkill()) {
+        return 1.08;
+    }
+
+    return 1;
+}
+
+
+function getNexus03BulletSpread() {
+
+    if (!hasDualFireSkill()) {
+        return 0;
+    }
+
+    return 7;
+}
+
+
+/* ==================================================
+   NEXUS-04
+   BEAM
+================================================== */
+
+function getSkillBeamMultiplier() {
+
+    if (getEquippedSkin() !== "nexus-04") {
+        return 1;
+    }
+
+    let multiplier = 1;
+
+    if (hasNexusSkill("n04-beam")) {
+        multiplier += 0.10;
+    }
+
+    if (hasNexusSkill("n04-wide")) {
+        multiplier += 0.15;
+    }
+
+    if (hasNexusSkill("n04-power")) {
+        multiplier += 0.20;
+    }
+
+    if (hasNexusSkill("n04-nexus")) {
+        multiplier += 0.35;
+    }
+
+    return multiplier;
+}
+
+
+/* ==================================================
+   NEXUS-05
+   HEAVY / VOID
+================================================== */
+
+function getSkillHPBonus() {
+
+    if (getEquippedSkin() !== "nexus-05") {
+        return 0;
+    }
+
+    let bonus = 0;
+
+    if (hasNexusSkill("n05-armor")) {
+        bonus += 1;
+    }
+
+    if (hasNexusSkill("n05-hull")) {
+        bonus += 1;
+    }
+
+    return bonus;
+}
+
+
+function hasVoidSkill() {
+
+    return (
+        getEquippedSkin() === "nexus-05" &&
+        hasNexusSkill("n05-void")
+    );
+}
+
+
+function hasVoidCollapseSkill() {
+
+    return (
+        getEquippedSkin() === "nexus-05" &&
+        hasNexusSkill("n05-collapse")
+    );
+}
+
+
+/* ==================================================
+   SKILL STATUS DEBUG
+================================================== */
+
+function debugNexusSkills() {
+
+    console.log(
+        "=============================="
+    );
+
+    console.log(
+        "NEXUS SKILL STATUS"
+    );
+
+    console.log(
+        "MACHINE:",
+        getEquippedSkin()
+    );
+
+    console.log(
+        "ATTACK:",
+        getSkillAttackMultiplier()
+    );
+
+    console.log(
+        "DEFENSE:",
+        getSkillDefenseMultiplier()
+    );
+
+    console.log(
+        "SPEED:",
+        getSkillSpeedMultiplier()
+    );
+
+    console.log(
+        "BEAM:",
+        getSkillBeamMultiplier()
+    );
+
+    console.log(
+        "DUAL FIRE:",
+        hasDualFireSkill()
+    );
+
+    console.log(
+        "PHASE SHIFT:",
+        hasPhaseShiftSkill()
+    );
+
+    console.log(
+        "VOID:",
+        hasVoidSkill()
+    );
+
+    console.log(
+        "VOID COLLAPSE:",
+        hasVoidCollapseSkill()
+    );
+
+    console.log(
+        "HP BONUS:",
+        getSkillHPBonus()
+    );
+
+    console.log(
+        "=============================="
+    );
+}
+
+
+/* ==================================================
+   TEST
+================================================== */
+
+console.log(
+    "✅ NEXUS SKILL EFFECT SYSTEM LOADED"
+);
+
+/* ==================================================
+   NEXUS-03
+   DUAL FIRE SKILL EFFECT
+   実戦接続
+================================================== */
+
+function getNexus03SkillFireInterval() {
+
+    const skin = getEquippedSkin();
+
+    if (skin !== "nexus-03") {
+        return null;
+    }
+
+    /*
+        DUAL FIRE未取得
+        → 現在の通常NEXUS-03
+    */
+    if (!hasNexusSkill("n03-dual")) {
+        return null;
+    }
+
+    /*
+        DUAL FIRE取得後
+        → 2発同時発射を維持
+        → 発射間隔は少しだけ短縮
+           ※NEXUS-03自体は他機体より遅め
+    */
+
+    return 0.145;
+}
+
+
+/* ==================================================
+   NEXUS-03 弾の横方向オフセット
+================================================== */
+
+function getNexus03SkillBulletOffset() {
+
+    if (
+        getEquippedSkin() !== "nexus-03" ||
+        !hasNexusSkill("n03-dual")
+    ) {
+        return 5;
+    }
+
+    /*
+        DUAL FIRE強化
+        2発の間隔を少し広げる
+    */
+
+    if (hasNexusSkill("n03-spread")) {
+        return 11;
+    }
+
+    return 7;
+}
+
+
+/* ==================================================
+   NEXUS-03 弾サイズ
+================================================== */
+
+function getNexus03SkillBulletScale() {
+
+    if (getEquippedSkin() !== "nexus-03") {
+        return 1;
+    }
+
+    let scale = 1;
+
+    /*
+        BURST
+    */
+
+    if (hasNexusSkill("n03-burst")) {
+        scale += 0.20;
+    }
+
+    /*
+        OVERDRIVE
+    */
+
+    if (hasNexusSkill("n03-overdrive")) {
+        scale += 0.25;
+    }
+
+    return scale;
+}
+
+
+/* ==================================================
+   NEXUS-03 攻撃力補正
+================================================== */
+
+function getNexus03SkillDamageMultiplier() {
+
+    if (getEquippedSkin() !== "nexus-03") {
+        return 1;
+    }
+
+    let multiplier = 1;
+
+    /*
+        DUAL FIRE
+    */
+
+    if (hasNexusSkill("n03-dual")) {
+        multiplier += 0.05;
+    }
+
+    /*
+        BURST
+    */
+
+    if (hasNexusSkill("n03-burst")) {
+        multiplier += 0.10;
+    }
+
+    /*
+        OVERDRIVE
+    */
+
+    if (hasNexusSkill("n03-overdrive")) {
+        multiplier += 0.20;
+    }
+
+    return multiplier;
+}
+
+
+/* ==================================================
+   NEXUS-03 スキル情報
+================================================== */
+
+function getNexus03SkillStatus() {
+
+    if (getEquippedSkin() !== "nexus-03") {
+        return {
+            active: false,
+            dual: false,
+            spread: false,
+            burst: false,
+            overdrive: false
+        };
+    }
+
+    return {
+        active: true,
+
+        dual:
+            hasNexusSkill("n03-dual"),
+
+        spread:
+            hasNexusSkill("n03-spread"),
+
+        burst:
+            hasNexusSkill("n03-burst"),
+
+        overdrive:
+            hasNexusSkill("n03-overdrive")
+    };
+}
+
+
+/* ==================================================
+   DEBUG
+================================================== */
+
+console.log(
+    "⚡ NEXUS-03 DUAL FIRE SYSTEM READY"
+);
+
+/* ==================================================
+   NEXUS-03
+   SKILL GRID → DUAL FIRE 実戦接続
+   既存の発射処理は変更しない
+================================================== */
+
+(function setupNexus03DualFireSkill() {
+
+    if (
+        typeof fireBullet !== "function" ||
+        typeof hasNexusSkill !== "function"
+    ) {
+        console.warn(
+            "⚠️ NEXUS-03 SKILL PATCH: 必要な関数が見つかりません"
+        );
+        return;
+    }
+
+    /*
+        既存 fireBullet を保存
+        ↓
+        元の2発同時発射はそのまま使用
+        ↓
+        スキル取得時だけ追加強化
+    */
+
+    const originalFireBullet =
+        fireBullet;
+
+    fireBullet = function () {
+
+        if (
+            getEquippedSkin() !== "nexus-03" ||
+            !hasNexusSkill("n03-dual")
+        ) {
+
+            originalFireBullet();
+
+            return;
+        }
+
+        /*
+            発射前の弾数を記録
+        */
+
+        const beforeCount =
+            bullets.length;
+
+        /*
+            既存のNEXUS-03発射処理
+            → 2発同時発射
+        */
+
+        originalFireBullet();
+
+        /*
+            今回追加された弾だけ取得
+        */
+
+        const newBullets =
+            bullets.slice(beforeCount);
+
+        /*
+            DUAL FIRE
+            弾の左右間隔
+        */
+
+        const offset =
+            typeof getNexus03SkillBulletOffset === "function"
+                ? getNexus03SkillBulletOffset()
+                : 7;
+
+        /*
+            BURST / OVERDRIVE
+            弾サイズ
+        */
+
+        const scale =
+            typeof getNexus03SkillBulletScale === "function"
+                ? getNexus03SkillBulletScale()
+                : 1;
+
+        /*
+            新しく発射された弾を強化
+        */
+
+        if (
+            newBullets.length >= 2
+        ) {
+
+            newBullets[0].x =
+                player.x - offset;
+
+            newBullets[1].x =
+                player.x + offset;
+
+            for (
+                const bullet of newBullets
+            ) {
+
+                bullet.width =
+                    5 * scale;
+
+                bullet.height =
+                    22 * scale;
+
+            }
+
+        }
+
+        /*
+            発射間隔
+            NEXUS-03は「速射」ではなく、
+            2発同時だが少し遅め。
+
+            スキル取得後：
+            0.19秒
+
+            その後、機体レベルによる
+            Fire Rate補正が必要な場合は
+            getMachineFireRate()側で調整可能。
+        */
+
+        const skillDelay =
+            0.19;
+
+        player.fireCooldown =
+            skillDelay;
+
+    };
+
+    console.log(
+        "⚡ NEXUS-03 DUAL FIRE SKILL CONNECTED"
+    );
+
+})();
+
+/* ==================================================
+   NEXUS-03
+   BURST / OVERDRIVE
+   実際の敵ダメージへ接続
+   追加形式・既存処理を削除しない
+================================================== */
+
+(function setupNexus03DamageSkill() {
+
+    if (
+        typeof checkCollisions !== "function" ||
+        typeof hasNexusSkill !== "function"
+    ) {
+        console.warn(
+            "⚠️ NEXUS-03 DAMAGE SKILL: 必要な関数が見つかりません"
+        );
+        return;
+    }
+
+    const originalCheckCollisions =
+        checkCollisions;
+
+    checkCollisions = function () {
+
+        /*
+            NEXUS-03以外
+            → 完全に既存処理
+        */
+
+        if (
+            getEquippedSkin() !== "nexus-03"
+        ) {
+            originalCheckCollisions();
+            return;
+        }
+
+        /*
+            現在のNEXUS-03スキルによる
+            追加ダメージ倍率
+        */
+
+        let multiplier = 1;
+
+        if (
+            hasNexusSkill("n03-dual")
+        ) {
+            multiplier += 0.05;
+        }
+
+        if (
+            hasNexusSkill("n03-burst")
+        ) {
+            multiplier += 0.10;
+        }
+
+        if (
+            hasNexusSkill("n03-overdrive")
+        ) {
+            multiplier += 0.20;
+        }
+
+        /*
+            既存処理が最後に1ダメージ入れるため、
+
+            1.00 → 通常
+            1.05 → DUAL FIRE
+            1.15 → DUAL + BURST
+            1.35 → DUAL + BURST + OVERDRIVE
+
+            となるよう、
+            「倍率 - 1」の分だけ先に追加する。
+        */
+
+        const extraDamage =
+            Math.max(
+                0,
+                multiplier - 1
+            );
+
+        if (
+            extraDamage > 0 &&
+            typeof enemies !== "undefined" &&
+            typeof bullets !== "undefined"
+        ) {
+
+            /*
+                今フレームに衝突する弾だけ確認。
+
+                既存のcheckCollisions()は
+                後で同じ弾を処理するので、
+                ここでは弾を消さない。
+            */
+
+            for (
+                let i = enemies.length - 1;
+                i >= 0;
+                i--
+            ) {
+
+                const enemy =
+                    enemies[i];
+
+                if (!enemy) {
+                    continue;
+                }
+
+                for (
+                    let j = bullets.length - 1;
+                    j >= 0;
+                    j--
+                ) {
+
+                    const bullet =
+                        bullets[j];
+
+                    if (!bullet) {
+                        continue;
+                    }
+
+                    if (
+                        typeof isColliding === "function" &&
+                        isColliding(
+                            bullet,
+                            enemy
+                        )
+                    ) {
+
+                        /*
+                            追加ダメージ
+
+                            既存処理：
+                            1
+
+                            ここ：
+                            0.05 / 0.15 / 0.35
+                        */
+
+                        enemy.hp -=
+                            extraDamage;
+                    }
+                }
+            }
+        }
+
+        /*
+            最後に既存の当たり判定を実行。
+
+            ここで元々の
+
+                enemy.hp--;
+
+            が実行されるため、
+            合計ダメージが完成する。
+        */
+
+        originalCheckCollisions();
+    };
+
+    console.log(
+        "⚡ NEXUS-03 DAMAGE SKILL CONNECTED"
+    );
+
+})();
+
+/* ==================================================
+   NEXUS-04
+   BEAM / WIDE / POWER / NEXUS
+   SKILL GRID 実戦接続
+   既存ビーム処理は削除しない
+================================================== */
+
+
+/* ==================================================
+   ビーム威力倍率
+================================================== */
+
+function getNexus04SkillDamageMultiplier() {
+
+    if (
+        getEquippedSkin() !== "nexus-04"
+    ) {
+        return 1;
+    }
+
+    let multiplier = 1;
+
+    /*
+        BEAM
+        基本威力 +15%
+    */
+
+    if (
+        hasNexusSkill("n04-beam")
+    ) {
+        multiplier += 0.15;
+    }
+
+
+    /*
+        POWER
+        さらに +25%
+    */
+
+    if (
+        hasNexusSkill("n04-power")
+    ) {
+        multiplier += 0.25;
+    }
+
+
+    /*
+        NEXUS
+        最終威力 +50%
+    */
+
+    if (
+        hasNexusSkill("n04-nexus")
+    ) {
+        multiplier += 0.50;
+    }
+
+
+    return multiplier;
+}
+
+
+/* ==================================================
+   ビーム幅倍率
+================================================== */
+
+function getNexus04SkillWidthMultiplier() {
+
+    if (
+        getEquippedSkin() !== "nexus-04"
+    ) {
+        return 1;
+    }
+
+    let multiplier = 1;
+
+
+    /*
+        WIDE
+        ビーム幅 +30%
+    */
+
+    if (
+        hasNexusSkill("n04-wide")
+    ) {
+        multiplier += 0.30;
+    }
+
+
+    /*
+        NEXUS
+        最終幅 +40%
+    */
+
+    if (
+        hasNexusSkill("n04-nexus")
+    ) {
+        multiplier += 0.40;
+    }
+
+
+    return multiplier;
+}
+
+
+/* ==================================================
+   実際のビーム幅を取得
+   既存 getBeamWidth() は変更しない
+================================================== */
+
+function getNexus04ActualBeamWidth() {
+
+    const baseWidth =
+        getBeamWidth();
+
+    const skillMultiplier =
+        getNexus04SkillWidthMultiplier();
+
+    return (
+        baseWidth *
+        skillMultiplier
+    );
+}
+
+
+/* ==================================================
+   実際のビーム威力を取得
+================================================== */
+
+function getNexus04ActualBeamDamage() {
+
+    const baseDamage =
+        beamDamage;
+
+    const skillMultiplier =
+        getNexus04SkillDamageMultiplier();
+
+    return (
+        baseDamage *
+        skillMultiplier
+    );
+}
+
+
+/* ==================================================
+   BEAM / WIDE / POWER / NEXUS
+   状態確認
+================================================== */
+
+function getNexus04SkillStatus() {
+
+    if (
+        getEquippedSkin() !== "nexus-04"
+    ) {
+        return {
+            active: false,
+            beam: false,
+            wide: false,
+            power: false,
+            nexus: false
+        };
+    }
+
+
+    return {
+
+        active: true,
+
+        beam:
+            hasNexusSkill(
+                "n04-beam"
+            ),
+
+        wide:
+            hasNexusSkill(
+                "n04-wide"
+            ),
+
+        power:
+            hasNexusSkill(
+                "n04-power"
+            ),
+
+        nexus:
+            hasNexusSkill(
+                "n04-nexus"
+            )
+    };
+}
+
+
+/* ==================================================
+   ビーム実戦接続
+   checkBeamCollision をラップ
+================================================== */
+
+(function setupNexus04BeamSkill() {
+
+    if (
+        typeof checkBeamCollision !==
+        "function"
+    ) {
+
+        console.warn(
+            "⚠️ NEXUS-04 BEAM SKILL: checkBeamCollision がありません"
+        );
+
+        return;
+    }
+
+
+    const originalCheckBeamCollision =
+        checkBeamCollision;
+
+
+    checkBeamCollision = function () {
+
+        /*
+            NEXUS-04以外
+
+            → 完全に元処理
+        */
+
+        if (
+            getEquippedSkin() !==
+            "nexus-04"
+        ) {
+
+            originalCheckBeamCollision();
+
+            return;
+        }
+
+
+        /*
+            スキル取得状況
+        */
+
+        const damageMultiplier =
+            getNexus04SkillDamageMultiplier();
+
+        const widthMultiplier =
+            getNexus04SkillWidthMultiplier();
+
+
+        /*
+            デバッグ情報
+            必要なときに確認できる
+        */
+
+        /*
+        console.log(
+            "NEXUS-04 BEAM:",
+            "damage x",
+            damageMultiplier,
+            "width x",
+            widthMultiplier
+        );
+        */
+
+
+        /*
+            既存の checkBeamCollision() は
+
+                beamDamage * 0.016
+
+            を使用している。
+
+            そのため、ここでは一時的に
+            beamDamage 相当の値を差し替える
+            のではなく、
+
+            実際に衝突する範囲を
+            追加チェックする。
+        */
+
+
+        /*
+            まず元のビーム処理。
+
+            Lvによる既存のビーム幅・
+            既存ダメージはそのまま。
+        */
+
+        originalCheckBeamCollision();
+
+
+        /*
+            WIDE / NEXUS の
+            「追加幅」の部分を処理する。
+
+            元の getBeamWidth() より
+            広くなった左右だけを追加判定。
+        */
+
+        const baseWidth =
+            getBeamWidth();
+
+        const actualWidth =
+            getNexus04ActualBeamWidth();
+
+        const extraWidth =
+            Math.max(
+                0,
+                actualWidth -
+                baseWidth
+            );
+
+
+        /*
+            追加幅がない場合は終了。
+        */
+
+        if (
+            extraWidth <= 0
+        ) {
+            return;
+        }
+
+
+        const beamX =
+            player.x;
+
+
+        const extraLeft =
+            beamX -
+            actualWidth / 2;
+
+
+        const extraRight =
+            beamX +
+            actualWidth / 2;
+
+
+        const baseLeft =
+            beamX -
+            baseWidth / 2;
+
+
+        const baseRight =
+            beamX +
+            baseWidth / 2;
+
+
+        /*
+            追加幅部分だけ判定
+
+            これによって
+            元のビームが二重に
+            ダメージを与えることを防ぐ。
+        */
+
+        for (
+            let i =
+                enemies.length - 1;
+            i >= 0;
+            i--
+        ) {
+
+            const enemy =
+                enemies[i];
+
+            if (!enemy) {
+                continue;
+            }
+
+
+            const enemyLeft =
+                enemy.x -
+                enemy.width / 2;
+
+            const enemyRight =
+                enemy.x +
+                enemy.width / 2;
+
+
+            /*
+                元のビーム範囲内なら
+                ここでは追加ダメージしない。
+            */
+
+            const insideBase =
+                enemyRight >
+                    baseLeft &&
+                enemyLeft <
+                    baseRight;
+
+
+            if (
+                insideBase
+            ) {
+                continue;
+            }
+
+
+            /*
+                拡張されたビーム範囲
+            */
+
+            const insideActual =
+                enemyRight >
+                    extraLeft &&
+                enemyLeft <
+                    extraRight;
+
+
+            if (
+                !insideActual
+            ) {
+                continue;
+            }
+
+
+            /*
+                POWER / NEXUS
+                の威力を反映
+
+                元ビームと同じ
+                毎フレーム方式。
+            */
+
+            enemy.hp -=
+                getNexus04ActualBeamDamage() *
+                0.016;
+
+
+            /*
+                ヒット位置
+            */
+
+            beamHitX =
+                enemy.x;
+
+            beamHitY =
+                enemy.y;
+
+            beamImpactPower =
+                1;
+
+            beamHitEffectTimer =
+                hasNexusSkill(
+                    "n04-nexus"
+                )
+                    ? 0.22
+                    : 0.16;
+
+
+            /*
+                撃破
+            */
+
+            if (
+                enemy.hp <= 0
+            ) {
+
+                const defeatedType =
+                    enemy.type;
+
+                const defeatedX =
+                    enemy.x;
+
+                const defeatedY =
+                    enemy.y;
+
+
+                enemies.splice(
+                    i,
+                    1
+                );
+
+
+                addScore(
+                    enemy.score ||
+                    100
+                );
+
+
+                /*
+                    コイン
+                */
+
+                if (
+                    defeatedType ===
+                    "normal"
+                ) {
+
+                    addCoins(10);
+
+                } else if (
+                    defeatedType ===
+                    "fast"
+                ) {
+
+                    addCoins(15);
+
+                } else if (
+                    defeatedType ===
+                    "big"
+                ) {
+
+                    addCoins(50);
+
+                } else if (
+                    defeatedType ===
+                    "shooter"
+                ) {
+
+                    addCoins(25);
+
+                } else if (
+                    defeatedType ===
+                    "splitter"
+                ) {
+
+                    addCoins(40);
+
+                } else {
+
+                    addCoins(10);
+                }
+
+
+                /*
+                    EXP
+                */
+
+                if (
+                    typeof addMachineExp ===
+                    "function"
+                ) {
+
+                    addMachineExp(
+                        defeatedType ===
+                        "big"
+                            ? 50
+                            : defeatedType ===
+                              "splitter"
+                                ? 40
+                                : defeatedType ===
+                                  "fast"
+                                    ? 15
+                                    : 10
+                    );
+                }
+
+
+                /*
+                    爆発
+                */
+
+                createExplosion(
+                    defeatedX,
+                    defeatedY,
+                    hasNexusSkill(
+                        "n04-nexus"
+                    )
+                        ? 40
+                        : 25
+                );
+            }
+        }
+    };
+
+
+    console.log(
+        "⚡ NEXUS-04 BEAM SKILL CONNECTED"
+    );
+
+})();
+
+/* ==================================================
+   NEXUS-04
+   SKILL GRID → BEAM SYSTEM 実戦接続
+   BEAM / WIDE / POWER / NEXUS
+   追加形式・既存処理を削除しない
+================================================== */
+
+(function setupNexus04SkillSystem() {
+
+    if (
+        typeof getBeamWidth !== "function" ||
+        typeof checkBeamCollision !== "function" ||
+        typeof hasNexusSkill !== "function"
+    ) {
+        console.warn(
+            "⚠️ NEXUS-04 SKILL SYSTEM: 必要な関数が見つかりません"
+        );
+        return;
+    }
+
+
+    /* ==================================================
+       ① ビーム幅
+       既存Lv成長 + スキル効果
+    ================================================== */
+
+    const originalGetBeamWidth =
+        getBeamWidth;
+
+    getBeamWidth = function () {
+
+        const baseWidth =
+            originalGetBeamWidth();
+
+        /*
+            NEXUS-04以外
+            → 完全に既存処理
+        */
+
+        if (
+            getEquippedSkin() !== "nexus-04"
+        ) {
+            return baseWidth;
+        }
+
+
+        let widthMultiplier = 1;
+
+
+        /*
+            BEAM
+            基本ビーム出力強化
+            → 幅 +10%
+        */
+
+        if (
+            hasNexusSkill("n04-beam")
+        ) {
+            widthMultiplier += 0.10;
+        }
+
+
+        /*
+            WIDE
+            ビームをさらに拡張
+            → +15%
+        */
+
+        if (
+            hasNexusSkill("n04-wide")
+        ) {
+            widthMultiplier += 0.15;
+        }
+
+
+        /*
+            POWER
+            出力上昇によってビームも少し太くなる
+            → +20%
+        */
+
+        if (
+            hasNexusSkill("n04-power")
+        ) {
+            widthMultiplier += 0.20;
+        }
+
+
+        /*
+            NEXUS
+            最終形態
+            → +35%
+        */
+
+        if (
+            hasNexusSkill("n04-nexus")
+        ) {
+            widthMultiplier += 0.35;
+        }
+
+
+        return Math.round(
+            baseWidth *
+            widthMultiplier
+        );
+    };
+
+
+    /* ==================================================
+       ② ビーム威力倍率
+    ================================================== */
+
+    function getNexus04ActualBeamMultiplier() {
+
+        if (
+            getEquippedSkin() !== "nexus-04"
+        ) {
+            return 1;
+        }
+
+
+        let multiplier = 1;
+
+
+        /*
+            BEAM
+            +10%
+        */
+
+        if (
+            hasNexusSkill("n04-beam")
+        ) {
+            multiplier += 0.10;
+        }
+
+
+        /*
+            WIDE
+            幅特化なので
+            威力は追加しない
+        */
+
+
+        /*
+            POWER
+            +20%
+        */
+
+        if (
+            hasNexusSkill("n04-power")
+        ) {
+            multiplier += 0.20;
+        }
+
+
+        /*
+            NEXUS
+            最終出力 +35%
+        */
+
+        if (
+            hasNexusSkill("n04-nexus")
+        ) {
+            multiplier += 0.35;
+        }
+
+
+        return multiplier;
+    }
+
+
+    /* ==================================================
+       ③ ビーム衝突処理
+       既存処理の後に追加ダメージだけ入れる
+    ================================================== */
+
+    const originalCheckBeamCollision =
+        checkBeamCollision;
+
+
+    checkBeamCollision = function () {
+
+        /*
+            NEXUS-04以外
+            → 完全に既存処理
+        */
+
+        if (
+            getEquippedSkin() !== "nexus-04"
+        ) {
+            originalCheckBeamCollision();
+            return;
+        }
+
+
+        /*
+            スキルなしなら
+            → 完全に既存処理
+        */
+
+        const beamMultiplier =
+            getNexus04ActualBeamMultiplier();
+
+
+        if (
+            beamMultiplier <= 1
+        ) {
+            originalCheckBeamCollision();
+            return;
+        }
+
+
+        /*
+            既存処理を実行。
+
+            元々の
+
+                beamDamage * 0.016
+
+            がまず適用される。
+        */
+
+        originalCheckBeamCollision();
+
+
+        /*
+            追加ダメージ
+
+            beamDamage = 35
+
+            例：
+
+            BEAM
+            35 × 10% = +3.5
+
+            POWER
+            35 × 20% = +7
+
+            NEXUS
+            35 × 35% = +12.25
+        */
+
+        const extraDamage =
+            35 *
+            (beamMultiplier - 1) *
+            0.016;
+
+
+        if (
+            extraDamage <= 0
+        ) {
+            return;
+        }
+
+
+        const beamX =
+            player.x;
+
+        const beamWidth =
+            getBeamWidth();
+
+
+        /*
+            通常敵への追加ダメージ
+        */
+
+        for (
+            let i = enemies.length - 1;
+            i >= 0;
+            i--
+        ) {
+
+            const enemy =
+                enemies[i];
+
+            if (!enemy) {
+                continue;
+            }
+
+
+            const insideBeam =
+                enemy.x +
+                    enemy.width / 2 >
+                    beamX -
+                    beamWidth / 2
+                &&
+                enemy.x -
+                    enemy.width / 2 <
+                    beamX +
+                    beamWidth / 2;
+
+
+            if (
+                insideBeam &&
+                enemy.hp > 0
+            ) {
+
+                /*
+                    元処理の後なので、
+                    ここでは追加分だけ。
+                */
+
+                enemy.hp -=
+                    extraDamage;
+
+            }
+
+        }
+
+
+        /*
+            ボスへの追加ダメージ
+
+            すでに通常ビーム処理で
+            消滅している場合は触らない。
+        */
+
+        if (
+            boss &&
+            bossActive &&
+            bossWarningTimer <= 0 &&
+            boss.hp > 0
+        ) {
+
+            const bossInsideBeam =
+                boss.x +
+                    boss.width / 2 >
+                    beamX -
+                    beamWidth / 2
+                &&
+                boss.x -
+                    boss.width / 2 <
+                    beamX +
+                    beamWidth / 2;
+
+
+            if (
+                bossInsideBeam
+            ) {
+
+                boss.hp -=
+                    extraDamage;
+
+            }
+
+        }
+
+    };
+
+
+    /* ==================================================
+       ④ デバッグ
+    ================================================== */
+
+    window.getNexus04SkillStatus =
+        function () {
+
+            return {
+
+                machine:
+                    getEquippedSkin(),
+
+                width:
+                    getBeamWidth(),
+
+                multiplier:
+                    getNexus04ActualBeamMultiplier(),
+
+                beam:
+                    hasNexusSkill(
+                        "n04-beam"
+                    ),
+
+                wide:
+                    hasNexusSkill(
+                        "n04-wide"
+                    ),
+
+                power:
+                    hasNexusSkill(
+                        "n04-power"
+                    ),
+
+                nexus:
+                    hasNexusSkill(
+                        "n04-nexus"
+                    )
+
+            };
+
+        };
+
+
+    console.log(
+        "⚡ NEXUS-04 BEAM SKILL SYSTEM CONNECTED"
+    );
+
+})();
+ /* ==================================================
+    NEXUS-04 SKILL GRID
+    BEAM / WIDE / POWER / NEXUS
+    実戦接続・最終パッチ
+    ※既存コードを削除しない
+ ================================================== */
+
+
+/* ==================================================
+   ① ビーム幅
+================================================== */
+
+(function setupNexus04BeamWidthSkill() {
+
+    if (
+        typeof getBeamWidth !== "function" ||
+        typeof hasNexusSkill !== "function"
+    ) {
+        console.warn(
+            "⚠️ NEXUS-04 WIDTH SKILL: 必要な関数がありません"
+        );
+        return;
+    }
+
+    const originalGetBeamWidth =
+        getBeamWidth;
+
+    getBeamWidth = function () {
+
+        const baseWidth =
+            originalGetBeamWidth();
+
+        if (
+            getEquippedSkin() !==
+            "nexus-04"
+        ) {
+            return baseWidth;
+        }
+
+        let width =
+            baseWidth;
+
+
+        /*
+            BEAM
+            基本ビーム強化
+            +10%
+        */
+
+        if (
+            hasNexusSkill("n04-beam")
+        ) {
+            width *= 1.10;
+        }
+
+
+        /*
+            WIDE
+            ビームを大幅拡張
+            +25%
+        */
+
+        if (
+            hasNexusSkill("n04-wide")
+        ) {
+            width *= 1.25;
+        }
+
+
+        /*
+            NEXUS
+            最終形態
+            さらに超広範囲化
+            +50%
+        */
+
+        if (
+            hasNexusSkill("n04-nexus")
+        ) {
+            width *= 1.50;
+        }
+
+
+        return Math.round(width);
+    };
+
+
+    console.log(
+        "⚡ NEXUS-04 BEAM WIDTH SKILL CONNECTED"
+    );
+
+})();
+
+
+
+/* ==================================================
+   ② ビーム威力
+================================================== */
+
+(function setupNexus04BeamDamageSkill() {
+
+    if (
+        typeof checkBeamCollision !== "function" ||
+        typeof hasNexusSkill !== "function"
+    ) {
+        console.warn(
+            "⚠️ NEXUS-04 DAMAGE SKILL: 必要な関数がありません"
+        );
+        return;
+    }
+
+    const originalCheckBeamCollision =
+        checkBeamCollision;
+
+
+    checkBeamCollision = function () {
+
+        /*
+            ビームOFFなら
+            元処理だけ
+        */
+
+        if (!beamActive) {
+            originalCheckBeamCollision();
+            return;
+        }
+
+
+        /*
+            NEXUS-04以外
+        */
+
+        if (
+            getEquippedSkin() !==
+            "nexus-04"
+        ) {
+            originalCheckBeamCollision();
+            return;
+        }
+
+
+        /*
+            スキルによる追加倍率
+
+            BEAM      +10%
+            POWER     +20%
+            NEXUS     +35%
+
+            合計最大
+            1.65倍
+        */
+
+        let multiplier = 1;
+
+
+        if (
+            hasNexusSkill("n04-beam")
+        ) {
+            multiplier += 0.10;
+        }
+
+
+        if (
+            hasNexusSkill("n04-power")
+        ) {
+            multiplier += 0.20;
+        }
+
+
+        if (
+            hasNexusSkill("n04-nexus")
+        ) {
+            multiplier += 0.35;
+        }
+
+
+        /*
+            元のcheckBeamCollision()が
+
+                enemy.hp -=
+                    beamDamage * 0.016;
+
+            を行う。
+
+            その前に追加分だけ入れる。
+        */
+
+        const extraMultiplier =
+            Math.max(
+                0,
+                multiplier - 1
+            );
+
+
+        if (
+            extraMultiplier > 0 &&
+            typeof enemies !== "undefined"
+        ) {
+
+            const beamX =
+                player.x;
+
+            const beamWidth =
+                getBeamWidth();
+
+
+            for (
+                let i =
+                    enemies.length - 1;
+                i >= 0;
+                i--
+            ) {
+
+                const enemy =
+                    enemies[i];
+
+                if (!enemy) {
+                    continue;
+                }
+
+
+                /*
+                    ビームの範囲内か確認
+                */
+
+                if (
+                    enemy.x +
+                        enemy.width / 2 >
+                        beamX -
+                        beamWidth / 2 &&
+
+                    enemy.x -
+                        enemy.width / 2 <
+                        beamX +
+                        beamWidth / 2
+                ) {
+
+                    /*
+                        追加ダメージ
+
+                        元：
+                        beamDamage × 0.016
+
+                        追加：
+                        beamDamage × 0.016 ×
+                        extraMultiplier
+                    */
+
+                    enemy.hp -=
+                        beamDamage *
+                        0.016 *
+                        extraMultiplier;
+                }
+            }
+        }
+
+
+        /*
+            最後に既存処理。
+
+            元のダメージが必ず入るため、
+
+            通常      = 1.00倍
+            BEAM      = 1.10倍
+            POWER     = 1.30倍
+            BEAM+POWER= 1.30倍
+
+            NEXUS取得時
+            = 最大1.65倍
+
+            となる。
+        */
+
+        originalCheckBeamCollision();
+    };
+
+
+    console.log(
+        "⚡ NEXUS-04 BEAM POWER SKILL CONNECTED"
+    );
+
+})();
+
+
+
+/* ==================================================
+   ③ 現在のNEXUS-04スキル状態確認
+================================================== */
+
+function debugNexus04Skills() {
+
+    if (
+        getEquippedSkin() !==
+        "nexus-04"
+    ) {
+
+        console.log(
+            "NEXUS-04ではありません"
+        );
+
+        return;
+    }
+
+
+    const width =
+        typeof getBeamWidth === "function"
+            ? getBeamWidth()
+            : 0;
+
+
+    let damageMultiplier = 1;
+
+
+    if (
+        hasNexusSkill("n04-beam")
+    ) {
+        damageMultiplier += 0.10;
+    }
+
+    if (
+        hasNexusSkill("n04-power")
+    ) {
+        damageMultiplier += 0.20;
+    }
+
+    if (
+        hasNexusSkill("n04-nexus")
+    ) {
+        damageMultiplier += 0.35;
+    }
+
+
+    console.log(
+        "=============================="
+    );
+
+    console.log(
+        "NEXUS-04 SKILL STATUS"
+    );
+
+    console.log(
+        "BEAM:",
+        hasNexusSkill("n04-beam")
+    );
+
+    console.log(
+        "WIDE:",
+        hasNexusSkill("n04-wide")
+    );
+
+    console.log(
+        "POWER:",
+        hasNexusSkill("n04-power")
+    );
+
+    console.log(
+        "NEXUS:",
+        hasNexusSkill("n04-nexus")
+    );
+
+    console.log(
+        "BEAM WIDTH:",
+        width
+    );
+
+    console.log(
+        "DAMAGE MULTIPLIER:",
+        damageMultiplier
+    );
+
+    console.log(
+        "=============================="
+    );
+}
+
+
+console.log(
+    "🚀 NEXUS-04 FINAL SKILL SYSTEM READY"
+);
+
+/* ==================================================
+   NEXUS-04
+   BEAM / WIDE / POWER / NEXUS
+   SKILL GRID 実戦接続
+
+   ※既存コード削除なし
+   ※既存のビーム処理をそのまま利用
+================================================== */
+
+(function setupNexus04SkillSystem() {
+
+    /* -----------------------------------------------
+       必要な関数チェック
+    ----------------------------------------------- */
+
+    if (
+        typeof getBeamWidth !== "function" ||
+        typeof checkBeamCollision !== "function" ||
+        typeof hasNexusSkill !== "function"
+    ) {
+
+        console.warn(
+            "⚠️ NEXUS-04 SKILL SYSTEM: 必要な関数が見つかりません"
+        );
+
+        return;
+    }
+
+
+    /* -----------------------------------------------
+       二重接続防止
+    ----------------------------------------------- */
+
+    if (
+        window.__nexus04SkillSystemConnected
+    ) {
+
+        console.log(
+            "ℹ️ NEXUS-04 SKILL SYSTEM: already connected"
+        );
+
+        return;
+    }
+
+    window.__nexus04SkillSystemConnected =
+        true;
+
+
+    /* ==================================================
+       BEAM SKILL DAMAGE
+    ================================================== */
+
+    function getNexus04SkillDamageMultiplier() {
+
+        if (
+            getEquippedSkin() !==
+            "nexus-04"
+        ) {
+            return 1;
+        }
+
+
+        let multiplier = 1;
+
+
+        /*
+            BEAM
+
+            基本ビーム出力強化
+            +10%
+        */
+
+        if (
+            hasNexusSkill(
+                "n04-beam"
+            )
+        ) {
+
+            multiplier += 0.10;
+
+        }
+
+
+        /*
+            POWER
+
+            ビーム出力強化
+            +20%
+        */
+
+        if (
+            hasNexusSkill(
+                "n04-power"
+            )
+        ) {
+
+            multiplier += 0.20;
+
+        }
+
+
+        /*
+            NEXUS BEAM
+
+            最終出力強化
+            +35%
+        */
+
+        if (
+            hasNexusSkill(
+                "n04-nexus"
+            )
+        ) {
+
+            multiplier += 0.35;
+
+        }
+
+
+        return multiplier;
+    }
+
+
+    /* ==================================================
+       BEAM WIDTH
+    ================================================== */
+
+    function getNexus04SkillWidthMultiplier() {
+
+        if (
+            getEquippedSkin() !==
+            "nexus-04"
+        ) {
+            return 1;
+        }
+
+
+        let multiplier = 1;
+
+
+        /*
+            WIDE BEAM
+
+            ビーム幅 +30%
+        */
+
+        if (
+            hasNexusSkill(
+                "n04-wide"
+            )
+        ) {
+
+            multiplier += 0.30;
+
+        }
+
+
+        /*
+            NEXUS BEAM
+
+            最終ビーム制御
+
+            幅 +25%
+        */
+
+        if (
+            hasNexusSkill(
+                "n04-nexus"
+            )
+        ) {
+
+            multiplier += 0.25;
+
+        }
+
+
+        return multiplier;
+    }
+
+
+    /* ==================================================
+       getBeamWidth を拡張
+       
+       既存のLv1～99成長はそのまま。
+       その後にSKILL GRIDの幅補正を追加。
+    ================================================== */
+
+    const originalGetBeamWidth =
+        getBeamWidth;
+
+
+    getBeamWidth = function () {
+
+        const baseWidth =
+            originalGetBeamWidth();
+
+
+        if (
+            getEquippedSkin() !==
+            "nexus-04"
+        ) {
+
+            return baseWidth;
+
+        }
+
+
+        const skillMultiplier =
+            getNexus04SkillWidthMultiplier();
+
+
+        const finalWidth =
+            baseWidth *
+            skillMultiplier;
+
+
+        /*
+            極端な値にならないよう安全制限
+        */
+
+        return Math.min(
+            520,
+            Math.max(
+                90,
+                finalWidth
+            )
+        );
+    };
+
+
+    /* ==================================================
+       checkBeamCollision を拡張
+
+       元の処理：
+
+           enemy.hp -=
+               beamDamage *
+               0.016;
+
+       をそのまま利用し、
+       beamDamageを一時的にスキル倍率分だけ強化する。
+    ================================================== */
+
+    const originalCheckBeamCollision =
+        checkBeamCollision;
+
+
+    checkBeamCollision =
+        function () {
+
+            /*
+                NEXUS-04以外
+                → 完全に元の処理
+            */
+
+            if (
+                getEquippedSkin() !==
+                "nexus-04"
+            ) {
+
+                originalCheckBeamCollision();
+
+                return;
+            }
+
+
+            /*
+                元のbeamDamageを保存
+            */
+
+            const originalBeamDamage =
+                beamDamage;
+
+
+            /*
+                スキル倍率
+            */
+
+            const damageMultiplier =
+                getNexus04SkillDamageMultiplier();
+
+
+            /*
+                一時的に強化
+            */
+
+            beamDamage =
+                originalBeamDamage *
+                damageMultiplier;
+
+
+            try {
+
+                /*
+                    元のビーム当たり判定を実行
+                */
+
+                originalCheckBeamCollision();
+
+            }
+            finally {
+
+                /*
+                    必ず元に戻す。
+
+                    これが重要。
+                    次のフレームで倍率が
+                    永久に掛け算され続けるのを防ぐ。
+                */
+
+                beamDamage =
+                    originalBeamDamage;
+            }
+
+        };
+
+
+    /* ==================================================
+       デバッグ
+    ================================================== */
+
+    window.getNexus04SkillStatus =
+        function () {
+
+            const skin =
+                getEquippedSkin();
+
+
+            if (
+                skin !==
+                "nexus-04"
+            ) {
+
+                return {
+                    active: false,
+                    damageMultiplier: 1,
+                    widthMultiplier: 1,
+                    beamWidth:
+                        typeof originalGetBeamWidth ===
+                        "function"
+                            ? originalGetBeamWidth()
+                            : 0
+                };
+
+            }
+
+
+            return {
+
+                active: true,
+
+                beam:
+                    hasNexusSkill(
+                        "n04-beam"
+                    ),
+
+                wide:
+                    hasNexusSkill(
+                        "n04-wide"
+                    ),
+
+                power:
+                    hasNexusSkill(
+                        "n04-power"
+                    ),
+
+                nexus:
+                    hasNexusSkill(
+                        "n04-nexus"
+                    ),
+
+                damageMultiplier:
+                    getNexus04SkillDamageMultiplier(),
+
+                widthMultiplier:
+                    getNexus04SkillWidthMultiplier(),
+
+                beamWidth:
+                    getBeamWidth()
+
+            };
+
+        };
+
+
+    console.log(
+        "===================================="
+    );
+
+    console.log(
+        "⚡ NEXUS-04 SKILL SYSTEM CONNECTED"
+    );
+
+    console.log(
+        "BEAM:",
+        hasNexusSkill("n04-beam")
+    );
+
+    console.log(
+        "WIDE:",
+        hasNexusSkill("n04-wide")
+    );
+
+    console.log(
+        "POWER:",
+        hasNexusSkill("n04-power")
+    );
+
+    console.log(
+        "NEXUS:",
+        hasNexusSkill("n04-nexus")
+    );
+
+    console.log(
+        "DAMAGE ×:",
+        getNexus04SkillDamageMultiplier()
+    );
+
+    console.log(
+        "WIDTH ×:",
+        getNexus04SkillWidthMultiplier()
+    );
+
+    console.log(
+        "FINAL WIDTH:",
+        getBeamWidth()
+    );
+
+    console.log(
+        "===================================="
+    );
+
+})();
