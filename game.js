@@ -5222,244 +5222,672 @@ function createExplosion(
 // 機体レベルに応じたオーラ
 // ========================================
 
-function drawMachineLevelAura() {
+// ==================================================
+// 🌌 MACHINE LEVEL AURA
+// 機体がエネルギーを「まとっている」演出
+// ==================================================
 
-    // 現在の機体レベル
-    const machine = getMachineProgress();
+function drawMachineLevelAura(currentSkin) {
 
-    const level = Math.max(
-        1,
-        Math.min(
-            99,
-            Number(machine.level) || 1
-        )
-    );
+    const machine =
+        getMachineProgress();
 
-    // Lv10未満はオーラなし
+    const level =
+        Math.max(
+            1,
+            Math.min(
+                99,
+                Number(machine.level) || 1
+            )
+        );
+
+    // Lv10未満は通常状態
     if (level < 10) {
         return;
     }
 
-    // ----------------------------------------
-    // レベルによるオーラ強度
-    // ----------------------------------------
 
-    let auraLevel = 0;
+    // ==================================================
+    // オーラ段階
+    // ==================================================
+
+    let auraPower = 0;
 
     if (level >= 99) {
-        auraLevel = 5;
-    } else if (level >= 75) {
-        auraLevel = 4;
-    } else if (level >= 50) {
-        auraLevel = 3;
-    } else if (level >= 25) {
-        auraLevel = 2;
-    } else {
-        auraLevel = 1;
+        auraPower = 5;
     }
 
-    // ----------------------------------------
-    // オーラサイズ
-    // ----------------------------------------
-
-    const baseSize =
-        player.size || 20;
-
-    const auraSize =
-        baseSize +
-        12 +
-        auraLevel * 7;
-
-    // ----------------------------------------
-    // 時間による脈動
-    // ----------------------------------------
-
-    const pulse =
-        Math.sin(performance.now() * 0.004);
-
-    const pulseSize =
-        pulse * (2 + auraLevel);
-
-    // ----------------------------------------
-    // スキンによる色
-    // ----------------------------------------
-
-    const skin = getEquippedSkin();
-
-    let auraColor = "#00d9ff";
-
-    if (skin === "nexus-02") {
-        auraColor = "#39ff88";
+    else if (level >= 75) {
+        auraPower = 4;
     }
 
-    if (skin === "nexus-03") {
-        auraColor = "#ff4d6d";
+    else if (level >= 50) {
+        auraPower = 3;
     }
 
-    if (skin === "nexus-04") {
-        auraColor = "#b56cff";
+    else if (level >= 25) {
+        auraPower = 2;
     }
 
-    if (skin === "nexus-05") {
-        auraColor = "#ffb347";
+    else {
+        auraPower = 1;
     }
 
-    // ----------------------------------------
-    // 外側グロー
-    // ----------------------------------------
+
+    // ==================================================
+    // スキンごとのエネルギーカラー
+    // ==================================================
+
+    let auraRGB = "39, 234, 255";
+
+    if (currentSkin === "nexus-02") {
+        auraRGB = "57, 255, 136";
+    }
+
+    else if (currentSkin === "nexus-03") {
+        auraRGB = "255, 157, 50";
+    }
+
+    else if (currentSkin === "nexus-04") {
+        auraRGB = "190, 92, 255";
+    }
+
+    else if (currentSkin === "nexus-05") {
+        auraRGB = "155, 92, 255";
+    }
+
+
+    // ==================================================
+    // アニメーション時間
+    // ==================================================
+
+    const time =
+        performance.now() * 0.001;
+
+
+    // ==================================================
+    // 機体サイズ
+    // ==================================================
+
+    const coreSize =
+        28 +
+        auraPower * 3;
+
 
     ctx.save();
 
-    ctx.globalCompositeOperation = "lighter";
+    ctx.globalCompositeOperation =
+        "lighter";
 
-    const outerRadius =
-        auraSize +
-        pulseSize;
 
-    const gradient =
+    // ==================================================
+    // ① 機体を包む「内側のエネルギー」
+    // ==================================================
+
+    const corePulse =
+        1 +
+        Math.sin(time * 4.0) *
+        (0.035 + auraPower * 0.008);
+
+
+    const coreGradient =
         ctx.createRadialGradient(
-            player.x,
-            player.y,
-            baseSize * 0.2,
-            player.x,
-            player.y,
-            outerRadius
+            0,
+            -5,
+            4,
+            0,
+            -5,
+            coreSize * corePulse
         );
 
-    const alpha =
-        0.08 +
-        auraLevel * 0.025;
 
-    gradient.addColorStop(
+    coreGradient.addColorStop(
         0,
-        auraColor.replace(")", `, ${Math.min(0.22, alpha + 0.08)})`)
+        `rgba(${auraRGB}, ${0.20 + auraPower * 0.035})`
     );
 
-    gradient.addColorStop(
+    coreGradient.addColorStop(
         0.35,
-        auraColor.replace(")", `, ${alpha})`)
+        `rgba(${auraRGB}, ${0.11 + auraPower * 0.018})`
     );
 
-    gradient.addColorStop(
+    coreGradient.addColorStop(
+        0.7,
+        `rgba(${auraRGB}, ${0.045 + auraPower * 0.008})`
+    );
+
+    coreGradient.addColorStop(
         1,
-        auraColor.replace(")", ", 0)")
+        `rgba(${auraRGB}, 0)`
     );
 
-    ctx.fillStyle = gradient;
+
+    ctx.fillStyle =
+        coreGradient;
 
     ctx.beginPath();
 
     ctx.arc(
-        player.x,
-        player.y,
-        outerRadius,
+        0,
+        -5,
+        coreSize * corePulse,
         0,
         Math.PI * 2
     );
 
     ctx.fill();
 
-    ctx.restore();
 
-    // ----------------------------------------
-    // エネルギーリング
-    // ----------------------------------------
+    // ==================================================
+    // ② 機体の左右から立ち上るオーラ
+    // ==================================================
 
-    ctx.save();
+    const auraHeight =
+        38 +
+        auraPower * 13;
 
-    ctx.globalCompositeOperation = "lighter";
 
-    for (let i = 0; i < auraLevel; i++) {
+    const auraWidth =
+        18 +
+        auraPower * 5;
 
-        const ringRadius =
-            baseSize +
-            10 +
-            i * 7 +
-            pulseSize * (i + 1) * 0.25;
 
-        const rotation =
-            performance.now() *
-            0.0005 *
-            (i % 2 === 0 ? 1 : -1);
+    for (
+        let side = -1;
+        side <= 1;
+        side += 2
+    ) {
 
-        ctx.globalAlpha =
+        for (
+            let i = 0;
+            i < auraPower;
+            i++
+        ) {
+
+            const seed =
+                side * 17 +
+                i * 31;
+
+
+            const wave =
+                Math.sin(
+                    time * (2.0 + i * 0.18) +
+                    seed
+                );
+
+
+            const wave2 =
+                Math.sin(
+                    time * 1.35 +
+                    seed * 0.73
+                );
+
+
+            const x =
+                side *
+                (
+                    10 +
+                    i * 4 +
+                    wave * (3 + auraPower)
+                );
+
+
+            const y =
+                8 -
+                (
+                    (time *
+                    (18 + auraPower * 3) +
+                    i * 23 +
+                    seed * 4)
+                    %
+                    auraHeight
+                );
+
+
+            const width =
+                auraWidth -
+                i * 2;
+
+
+            const alpha =
+                (
+                    0.045 +
+                    auraPower * 0.014
+                ) *
+                (
+                    1 -
+                    i / (auraPower + 1)
+                );
+
+
+            // ------------------------------------------
+            // エネルギーの芯
+            // ------------------------------------------
+
+            ctx.beginPath();
+
+            ctx.moveTo(
+                x,
+                y + 18
+            );
+
+            ctx.bezierCurveTo(
+                x - width * 0.8,
+                y + 8,
+                x + wave2 * 7,
+                y - 8,
+                x + wave * 5,
+                y - 24
+            );
+
+            ctx.bezierCurveTo(
+                x + width * 0.4,
+                y - 12,
+                x + width * 0.8,
+                y + 8,
+                x,
+                y + 18
+            );
+
+            ctx.closePath();
+
+
+            const auraGradient =
+                ctx.createLinearGradient(
+                    x,
+                    y + 20,
+                    x,
+                    y - 25
+                );
+
+
+            auraGradient.addColorStop(
+                0,
+                `rgba(${auraRGB}, ${alpha})`
+            );
+
+            auraGradient.addColorStop(
+                0.45,
+                `rgba(${auraRGB}, ${alpha * 1.5})`
+            );
+
+            auraGradient.addColorStop(
+                1,
+                `rgba(${auraRGB}, 0)`
+            );
+
+
+            ctx.fillStyle =
+                auraGradient;
+
+            ctx.shadowColor =
+                `rgba(${auraRGB}, ${0.35 + auraPower * 0.04})`;
+
+            ctx.shadowBlur =
+                8 +
+                auraPower * 3;
+
+            ctx.fill();
+        }
+    }
+
+
+    // ==================================================
+    // ③ 機体の上から立ち上るエネルギー
+    // ==================================================
+
+    for (
+        let i = 0;
+        i < auraPower + 1;
+        i++
+    ) {
+
+        const seed =
+            i * 19.37;
+
+
+        const wave =
+            Math.sin(
+                time * 2.4 +
+                seed
+            );
+
+
+        const x =
+            wave *
+            (4 + auraPower * 1.5) +
+            Math.sin(seed) * 4;
+
+
+        const y =
+            -18 -
+            (
+                (
+                    time *
+                    (20 + auraPower * 2) +
+                    seed * 5
+                )
+                %
+                (auraHeight + 20)
+            );
+
+
+        const size =
+            3 +
+            auraPower * 0.7;
+
+
+        const alpha =
             0.10 +
-            auraLevel * 0.025 -
-            i * 0.012;
+            auraPower * 0.025;
 
-        ctx.strokeStyle = auraColor;
 
-        ctx.lineWidth =
-            1.5 +
-            auraLevel * 0.25;
-
+        // エネルギーの粒
         ctx.beginPath();
 
         ctx.arc(
-            player.x,
-            player.y,
-            ringRadius,
-            rotation,
-            rotation + Math.PI * 1.45
+            x,
+            y,
+            size,
+            0,
+            Math.PI * 2
+        );
+
+        ctx.fillStyle =
+            `rgba(${auraRGB}, ${alpha})`;
+
+        ctx.shadowColor =
+            `rgba(${auraRGB}, 0.8)`;
+
+        ctx.shadowBlur =
+            10 +
+            auraPower * 2;
+
+        ctx.fill();
+    }
+
+
+    // ==================================================
+    // ④ Lv50以上：機体の輪郭に沿うエネルギー
+    // 「輪っか」ではなく輪郭の発光
+    // ==================================================
+
+    if (level >= 50) {
+
+        const outlineAlpha =
+            level >= 75
+                ? 0.25
+                : 0.15;
+
+
+        ctx.strokeStyle =
+            `rgba(${auraRGB}, ${outlineAlpha})`;
+
+        ctx.lineWidth =
+            level >= 75
+                ? 5
+                : 3;
+
+
+        ctx.shadowColor =
+            `rgba(${auraRGB}, 0.8)`;
+
+        ctx.shadowBlur =
+            14 +
+            auraPower * 3;
+
+
+        // 機体を包むような不定形のエネルギー
+        ctx.beginPath();
+
+        ctx.moveTo(
+            0,
+            -38 - auraPower * 2
+        );
+
+        ctx.bezierCurveTo(
+            -10 - auraPower * 2,
+            -30,
+            -24 - auraPower * 2,
+            -5,
+            -30 - auraPower * 3,
+            18
+        );
+
+        ctx.bezierCurveTo(
+            -18,
+            15,
+            -12,
+            25,
+            0,
+            31 + auraPower * 2
+        );
+
+        ctx.bezierCurveTo(
+            12,
+            25,
+            18,
+            15,
+            30 + auraPower * 3,
+            18
+        );
+
+        ctx.bezierCurveTo(
+            24 + auraPower * 2,
+            -5,
+            10 + auraPower * 2,
+            -30,
+            0,
+            -38 - auraPower * 2
         );
 
         ctx.stroke();
     }
 
-    ctx.restore();
 
-    // ----------------------------------------
-    // Lv99専用コアオーラ
-    // ----------------------------------------
+    // ==================================================
+    // ⑤ Lv75以上：強いエネルギーの揺らぎ
+    // ==================================================
+
+    if (level >= 75) {
+
+        for (
+            let i = 0;
+            i < 3;
+            i++
+        ) {
+
+            const phase =
+                time * (1.7 + i * 0.3) +
+                i * 2.1;
+
+
+            const leftX =
+                -22 -
+                Math.sin(phase) * 5;
+
+
+            const rightX =
+                22 +
+                Math.sin(phase + 1.8) * 5;
+
+
+            const topY =
+                -12 +
+                Math.cos(phase) * 7;
+
+
+            ctx.strokeStyle =
+                `rgba(${auraRGB}, ${0.08 + auraPower * 0.015})`;
+
+            ctx.lineWidth =
+                2 +
+                i * 0.7;
+
+            ctx.shadowColor =
+                `rgba(${auraRGB}, 0.6)`;
+
+            ctx.shadowBlur =
+                12;
+
+
+            // 左側の揺らぎ
+            ctx.beginPath();
+
+            ctx.moveTo(
+                leftX,
+                22
+            );
+
+            ctx.bezierCurveTo(
+                leftX - 10,
+                5,
+                leftX + 7,
+                -8,
+                leftX + 2,
+                topY
+            );
+
+            ctx.stroke();
+
+
+            // 右側の揺らぎ
+            ctx.beginPath();
+
+            ctx.moveTo(
+                rightX,
+                22
+            );
+
+            ctx.bezierCurveTo(
+                rightX + 10,
+                5,
+                rightX - 7,
+                -8,
+                rightX - 2,
+                topY
+            );
+
+            ctx.stroke();
+        }
+    }
+
+
+    // ==================================================
+    // ⑥ Lv99：NEXUS FORM
+    // ==================================================
 
     if (level >= 99) {
 
-        ctx.save();
-
-        ctx.globalCompositeOperation = "lighter";
-
         const maxPulse =
             1 +
-            Math.sin(
-                performance.now() * 0.008
-            ) * 0.15;
+            Math.sin(time * 5.5) * 0.08;
 
-        ctx.globalAlpha = 0.45;
 
-        ctx.strokeStyle = auraColor;
+        // 中心から強く漏れるエネルギー
+        const maxGradient =
+            ctx.createRadialGradient(
+                0,
+                -8,
+                4,
+                0,
+                -8,
+                58 * maxPulse
+            );
 
-        ctx.lineWidth = 2.5;
+
+        maxGradient.addColorStop(
+            0,
+            `rgba(${auraRGB}, 0.18)`
+        );
+
+        maxGradient.addColorStop(
+            0.35,
+            `rgba(${auraRGB}, 0.10)`
+        );
+
+        maxGradient.addColorStop(
+            0.75,
+            `rgba(${auraRGB}, 0.035)`
+        );
+
+        maxGradient.addColorStop(
+            1,
+            `rgba(${auraRGB}, 0)`
+        );
+
+
+        ctx.fillStyle =
+            maxGradient;
+
 
         ctx.beginPath();
 
         ctx.arc(
-            player.x,
-            player.y,
-            (baseSize + 34) * maxPulse,
+            0,
+            -8,
+            58 * maxPulse,
             0,
             Math.PI * 2
         );
 
-        ctx.stroke();
+        ctx.fill();
 
-        ctx.globalAlpha = 0.18;
 
-        ctx.lineWidth = 5;
+        // 上方向へ流れる強いエネルギー
+        for (
+            let i = 0;
+            i < 7;
+            i++
+        ) {
 
-        ctx.beginPath();
+            const phase =
+                time * 2.8 +
+                i * 0.9;
 
-        ctx.arc(
-            player.x,
-            player.y,
-            (baseSize + 42) * maxPulse,
-            0,
-            Math.PI * 2
-        );
 
-        ctx.stroke();
+            const x =
+                Math.sin(phase) *
+                (8 + i * 1.5);
 
-        ctx.restore();
+
+            const y =
+                -25 -
+                (
+                    (
+                        time * 35 +
+                        i * 18
+                    )
+                    %
+                    55
+                );
+
+
+            ctx.beginPath();
+
+            ctx.arc(
+                x,
+                y,
+                1.5 + (i % 3),
+                0,
+                Math.PI * 2
+            );
+
+            ctx.fillStyle =
+                `rgba(${auraRGB}, ${0.18 + i * 0.02})`;
+
+            ctx.shadowColor =
+                `rgba(${auraRGB}, 1)`;
+
+            ctx.shadowBlur =
+                15;
+
+            ctx.fill();
+        }
     }
+
+
+    ctx.restore();
 }
 
 
@@ -5474,7 +5902,7 @@ function drawMachineLevelAura() {
 
 function drawPlayer() {
 
-    drawMachineLevelAura();
+    
 
     player.engineTime += 0.15;
 
@@ -5485,18 +5913,22 @@ function drawPlayer() {
     /*
         GARAGEで装備したスキンを取得
     */
+
+          ctx.save();
+
     const currentSkin =
         localStorage.getItem("nexus-equipped-skin")
         || "nexus-01";
 
 
-    ctx.save();
+  
 
     ctx.translate(
         player.x,
         player.y
     );
 
+    drawMachineLevelAura(currentSkin);
 
     /* ==================================================
        エンジン炎
