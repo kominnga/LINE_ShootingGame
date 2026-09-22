@@ -5055,107 +5055,100 @@ if (typeRandom < 0.55) {
        NORMAL
     ================================= */
 
-    if (type === "normal") {
+if (type === "normal") {
 
-        size = 40;
+    size = 40;
 
-        // 速度固定
-        speed = 150;
+    speed = 180;
 
-        hp = 1;
+    hp = 2;
 
-        scoreValue = 100;
+    scoreValue = 120;
 
-    }
+}
 
 
     /* =================================
        FAST
     ================================= */
 
-    if (type === "fast") {
+if (type === "fast") {
 
-        size = 28;
+    size = 30;
 
-        // 速度固定
-        speed = 350;
+    speed = 420;
 
-        hp = 1;
+    hp = 2;
 
-        scoreValue = 150;
+    scoreValue = 200;
 
-    }
+}
 
 
     /* =================================
        BIG
     ================================= */
 
-    if (type === "big") {
+if (type === "big") {
 
-        size = 65;
+    size = 68;
 
-        // 速度固定
-        speed = 80;
+    speed = 95;
 
-        hp = 3;
+    hp = 6;
 
-        scoreValue = 500;
+    scoreValue = 650;
 
-    }
-
+}
 
     /* =================================
        SHOOTER
     ================================= */
 
-    if (type === "shooter") {
+if (type === "shooter") {
 
-        size = 38;
+    size = 40;
 
-        speed = 105;
+    speed = 120;
 
-        hp = 2;
+    hp = 3;
 
-        scoreValue = 200;
+    scoreValue = 300;
 
-        shootInterval = 1.6;
+    shootInterval = 1.2;
 
-    }
+}
 
 
     /* =================================
        SPLITTER
     ================================= */
 
-    if (type === "splitter") {
+ if (type === "splitter") {
 
-        size = 46;
+    size = 48;
 
-        speed = 95;
+    speed = 110;
 
-        hp = 2;
+    hp = 4;
 
-        scoreValue = 300;
+    scoreValue = 400;
 
-    }
-
+}
     /* =================================
    ZIGZAG
 ================================= */
-
 if (type === "zigzag") {
 
-    size = 36;
+    size = 38;
 
-    speed = 150;
+    speed = 175;
 
-    hp = 1;
+    hp = 2;
 
-    scoreValue = 180;
+    scoreValue = 250;
 
 }
-
 
 const enemyStartX =
     Math.random() *
