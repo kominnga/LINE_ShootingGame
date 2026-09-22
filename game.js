@@ -6388,10 +6388,1397 @@ function drawMachineEvolution(currentSkin) {
         );
     }
 
+        // ========================================
+    // 各機体専用進化システム
+    // ※既存の描画は一切削除しない
+    // ========================================
+
+    const machineData = getMachineProgress(currentSkin);
+
+    const evolutionLevel =
+        Math.max(
+            1,
+            Math.min(
+                99,
+                Number(machineData.level) || 1
+            )
+        );
+
+    const evolutionTime =
+        performance.now() * 0.001;
+
+
+    // ========================================
+    // NEXUS-01
+    // STANDARD → HIGH OUTPUT
+    // ========================================
+
+    if (currentSkin === "nexus-01") {
+
+        drawNexus01Evolution(
+            evolutionLevel,
+            evolutionTime
+        );
+    }
+
+
+    // ========================================
+    // NEXUS-02
+    // SPEED → HYPER SPEED
+    // ========================================
+
+    else if (currentSkin === "nexus-02") {
+
+        drawNexus02Evolution(
+            evolutionLevel,
+            evolutionTime
+        );
+    }
+
+
+    // ========================================
+    // NEXUS-03
+    // HEAVY → OVER ARMOR
+    // ========================================
+
+    else if (currentSkin === "nexus-03") {
+
+        drawNexus03Evolution(
+            evolutionLevel,
+            evolutionTime
+        );
+    }
+
+
+    // ========================================
+    // NEXUS-04
+    // BEAM → BEAM OVERDRIVE
+    // ========================================
+
+    else if (currentSkin === "nexus-04") {
+
+        drawNexus04Evolution(
+            evolutionLevel,
+            evolutionTime
+        );
+    }
+
+
 
     ctx.restore();
 }
 
+// ============================================================
+// NEXUS-01 専用進化
+// STANDARD → HIGH OUTPUT
+// ============================================================
+
+function drawNexus01Evolution(level, time) {
+
+    if (level < 10) {
+        return;
+    }
+
+
+    // --------------------------------------------------------
+    // Lv10～
+    // エンジン出力強化
+    // --------------------------------------------------------
+
+    if (level >= 10) {
+
+        ctx.save();
+
+        const pulse =
+            0.65 +
+            Math.sin(time * 5) * 0.2;
+
+        ctx.globalAlpha =
+            pulse;
+
+        ctx.shadowColor =
+            "#00eaff";
+
+        ctx.shadowBlur =
+            18;
+
+        ctx.fillStyle =
+            "#54f5ff";
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            -5,
+            19
+        );
+
+        ctx.lineTo(
+            -1,
+            34
+        );
+
+        ctx.lineTo(
+            0,
+            27
+        );
+
+        ctx.lineTo(
+            1,
+            34
+        );
+
+        ctx.lineTo(
+            5,
+            19
+        );
+
+        ctx.closePath();
+
+        ctx.fill();
+
+        ctx.restore();
+    }
+
+
+    // --------------------------------------------------------
+    // Lv25～
+    // 翼先端エネルギー
+    // --------------------------------------------------------
+
+    if (level >= 25) {
+
+        ctx.save();
+
+        ctx.globalAlpha =
+            0.75 +
+            Math.sin(time * 4) * 0.2;
+
+        ctx.strokeStyle =
+            "#39eaff";
+
+        ctx.shadowColor =
+            "#00eaff";
+
+        ctx.shadowBlur =
+            14;
+
+        ctx.lineWidth =
+            2;
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            -17,
+            17
+        );
+
+        ctx.lineTo(
+            -34,
+            25
+        );
+
+        ctx.moveTo(
+            17,
+            17
+        );
+
+        ctx.lineTo(
+            34,
+            25
+        );
+
+        ctx.stroke();
+
+        ctx.restore();
+    }
+
+
+    // --------------------------------------------------------
+    // Lv50～
+    // コア強化
+    // --------------------------------------------------------
+
+    if (level >= 50) {
+
+        ctx.save();
+
+        const corePulse =
+            7 +
+            Math.sin(time * 6) * 2;
+
+        ctx.shadowColor =
+            "#00ffff";
+
+        ctx.shadowBlur =
+            25;
+
+        ctx.fillStyle =
+            "#dfffff";
+
+        ctx.beginPath();
+
+        ctx.arc(
+            0,
+            -8,
+            corePulse,
+            0,
+            Math.PI * 2
+        );
+
+        ctx.fill();
+
+        ctx.restore();
+    }
+
+
+    // --------------------------------------------------------
+    // Lv75～
+    // 翼拡張
+    // --------------------------------------------------------
+
+    if (level >= 75) {
+
+        ctx.save();
+
+        ctx.globalAlpha =
+            0.7;
+
+        ctx.fillStyle =
+            "#27dfff";
+
+        ctx.shadowColor =
+            "#00cfff";
+
+        ctx.shadowBlur =
+            20;
+
+        // 左翼追加
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            -20,
+            8
+        );
+
+        ctx.lineTo(
+            -43,
+            23
+        );
+
+        ctx.lineTo(
+            -27,
+            20
+        );
+
+        ctx.closePath();
+
+        ctx.fill();
+
+
+        // 右翼追加
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            20,
+            8
+        );
+
+        ctx.lineTo(
+            43,
+            23
+        );
+
+        ctx.lineTo(
+            27,
+            20
+        );
+
+        ctx.closePath();
+
+        ctx.fill();
+
+        ctx.restore();
+    }
+
+
+    // --------------------------------------------------------
+    // Lv99
+    // HIGH OUTPUT FORM
+    // --------------------------------------------------------
+
+    if (level >= 99) {
+
+        drawNexus01FinalForm(time);
+    }
+}
+
+
+// ============================================================
+// NEXUS-01 FINAL FORM
+// HIGH OUTPUT
+// ============================================================
+
+function drawNexus01FinalForm(time) {
+
+    ctx.save();
+
+    const pulse =
+        0.8 +
+        Math.sin(time * 4) * 0.2;
+
+
+    // 大型エネルギー翼
+
+    ctx.globalAlpha =
+        0.85 * pulse;
+
+    ctx.fillStyle =
+        "#39eaff";
+
+    ctx.shadowColor =
+        "#00ffff";
+
+    ctx.shadowBlur =
+        35;
+
+
+    // 左
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        -15,
+        2
+    );
+
+    ctx.lineTo(
+        -52,
+        27
+    );
+
+    ctx.lineTo(
+        -29,
+        18
+    );
+
+    ctx.lineTo(
+        -40,
+        36
+    );
+
+    ctx.lineTo(
+        -12,
+        20
+    );
+
+    ctx.closePath();
+
+    ctx.fill();
+
+
+    // 右
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        15,
+        2
+    );
+
+    ctx.lineTo(
+        52,
+        27
+    );
+
+    ctx.lineTo(
+        29,
+        18
+    );
+
+    ctx.lineTo(
+        40,
+        36
+    );
+
+    ctx.lineTo(
+        12,
+        20
+    );
+
+    ctx.closePath();
+
+    ctx.fill();
+
+
+    // 中央大型コア
+
+    ctx.globalAlpha =
+        1;
+
+    ctx.fillStyle =
+        "#ffffff";
+
+    ctx.shadowColor =
+        "#8fffff";
+
+    ctx.shadowBlur =
+        35;
+
+    ctx.beginPath();
+
+    ctx.arc(
+        0,
+        -9,
+        11,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fill();
+
+
+    // 上部エネルギーライン
+
+    ctx.strokeStyle =
+        "#bfffff";
+
+    ctx.lineWidth =
+        3;
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        0,
+        -35
+    );
+
+    ctx.lineTo(
+        0,
+        -50
+    );
+
+    ctx.stroke();
+
+
+    ctx.restore();
+}
+
+// ============================================================
+// NEXUS-02 専用進化
+// SPEED → HYPER SPEED
+// ============================================================
+
+function drawNexus02Evolution(level, time) {
+
+    if (level < 10) {
+        return;
+    }
+
+
+    // Lv10～ 推進器強化
+
+    if (level >= 10) {
+
+        ctx.save();
+
+        ctx.globalAlpha =
+            0.7 +
+            Math.sin(time * 8) * 0.2;
+
+        ctx.fillStyle =
+            "#39f6ff";
+
+        ctx.shadowColor =
+            "#00ffff";
+
+        ctx.shadowBlur =
+            20;
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            -4,
+            20
+        );
+
+        ctx.lineTo(
+            0,
+            43
+        );
+
+        ctx.lineTo(
+            4,
+            20
+        );
+
+        ctx.closePath();
+
+        ctx.fill();
+
+        ctx.restore();
+    }
+
+
+    // Lv25～ 高速翼
+
+    if (level >= 25) {
+
+        ctx.save();
+
+        ctx.strokeStyle =
+            "#5cffff";
+
+        ctx.shadowColor =
+            "#00ffff";
+
+        ctx.shadowBlur =
+            16;
+
+        ctx.lineWidth =
+            2;
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            -10,
+            8
+        );
+
+        ctx.lineTo(
+            -45,
+            31
+        );
+
+        ctx.moveTo(
+            10,
+            8
+        );
+
+        ctx.lineTo(
+            45,
+            31
+        );
+
+        ctx.stroke();
+
+        ctx.restore();
+    }
+
+
+    // Lv50～ 推進器追加
+
+    if (level >= 50) {
+
+        ctx.save();
+
+        ctx.fillStyle =
+            "#19dff0";
+
+        ctx.shadowColor =
+            "#00ffff";
+
+        ctx.shadowBlur =
+            18;
+
+        ctx.fillRect(
+            -14,
+            14,
+            5,
+            15
+        );
+
+        ctx.fillRect(
+            9,
+            14,
+            5,
+            15
+        );
+
+        ctx.restore();
+    }
+
+
+    // Lv75～ 超高速翼
+
+    if (level >= 75) {
+
+        ctx.save();
+
+        ctx.globalAlpha =
+            0.75;
+
+        ctx.strokeStyle =
+            "#8fffff";
+
+        ctx.shadowColor =
+            "#00ffff";
+
+        ctx.shadowBlur =
+            25;
+
+        ctx.lineWidth =
+            3;
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            -15,
+            2
+        );
+
+        ctx.lineTo(
+            -58,
+            34
+        );
+
+        ctx.moveTo(
+            15,
+            2
+        );
+
+        ctx.lineTo(
+            58,
+            34
+        );
+
+        ctx.stroke();
+
+        ctx.restore();
+    }
+
+
+    // Lv99
+
+    if (level >= 99) {
+
+        drawNexus02FinalForm(time);
+    }
+}
+
+
+// ============================================================
+// NEXUS-02 FINAL FORM
+// HYPER SPEED
+// ============================================================
+
+function drawNexus02FinalForm(time) {
+
+    ctx.save();
+
+    const pulse =
+        0.75 +
+        Math.sin(time * 10) * 0.25;
+
+
+    // 超高速翼
+
+    ctx.globalAlpha =
+        pulse;
+
+    ctx.strokeStyle =
+        "#5cffff";
+
+    ctx.shadowColor =
+        "#00ffff";
+
+    ctx.shadowBlur =
+        30;
+
+    ctx.lineWidth =
+        4;
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        -8,
+        0
+    );
+
+    ctx.lineTo(
+        -65,
+        38
+    );
+
+    ctx.lineTo(
+        -42,
+        22
+    );
+
+    ctx.moveTo(
+        8,
+        0
+    );
+
+    ctx.lineTo(
+        65,
+        38
+    );
+
+    ctx.lineTo(
+        42,
+        22
+    );
+
+    ctx.stroke();
+
+
+    // 高速コア
+
+    ctx.fillStyle =
+        "#ffffff";
+
+    ctx.shadowColor =
+        "#39ffff";
+
+    ctx.shadowBlur =
+        35;
+
+    ctx.beginPath();
+
+    ctx.arc(
+        0,
+        -13,
+        10,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fill();
+
+
+    // 後方推進エネルギー
+
+    ctx.fillStyle =
+        "#00ffff";
+
+    ctx.globalAlpha =
+        0.8;
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        -8,
+        20
+    );
+
+    ctx.lineTo(
+        0,
+        55
+    );
+
+    ctx.lineTo(
+        8,
+        20
+    );
+
+    ctx.closePath();
+
+    ctx.fill();
+
+    ctx.restore();
+}
+
+// ============================================================
+// NEXUS-03 専用進化
+// HEAVY → OVER ARMOR
+// ============================================================
+
+function drawNexus03Evolution(level, time) {
+
+    if (level < 10) {
+        return;
+    }
+
+
+    // Lv10～ 装甲エネルギー
+
+    if (level >= 10) {
+
+        ctx.save();
+
+        ctx.strokeStyle =
+            "#ffb52e";
+
+        ctx.shadowColor =
+            "#ff8c00";
+
+        ctx.shadowBlur =
+            15;
+
+        ctx.lineWidth =
+            2;
+
+        ctx.strokeRect(
+            -34,
+            -1,
+            68,
+            27
+        );
+
+        ctx.restore();
+    }
+
+
+    // Lv25～ 武装エネルギー
+
+    if (level >= 25) {
+
+        ctx.save();
+
+        ctx.fillStyle =
+            "#ffb52e";
+
+        ctx.shadowColor =
+            "#ff7a00";
+
+        ctx.shadowBlur =
+            18;
+
+        ctx.fillRect(
+            -38,
+            4,
+            7,
+            18
+        );
+
+        ctx.fillRect(
+            31,
+            4,
+            7,
+            18
+        );
+
+        ctx.restore();
+    }
+
+
+    // Lv50～ 装甲追加
+
+    if (level >= 50) {
+
+        ctx.save();
+
+        ctx.fillStyle =
+            "#a96520";
+
+        ctx.shadowColor =
+            "#ff9d32";
+
+        ctx.shadowBlur =
+            14;
+
+
+        ctx.fillRect(
+            -40,
+            -4,
+            10,
+            32
+        );
+
+        ctx.fillRect(
+            30,
+            -4,
+            10,
+            32
+        );
+
+        ctx.restore();
+    }
+
+
+    // Lv75～ 大型装甲
+
+    if (level >= 75) {
+
+        ctx.save();
+
+        ctx.fillStyle =
+            "#d88925";
+
+        ctx.shadowColor =
+            "#ff8c00";
+
+        ctx.shadowBlur =
+            22;
+
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            -30,
+            -10
+        );
+
+        ctx.lineTo(
+            -47,
+            5
+        );
+
+        ctx.lineTo(
+            -45,
+            28
+        );
+
+        ctx.lineTo(
+            -28,
+            24
+        );
+
+        ctx.closePath();
+
+        ctx.fill();
+
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            30,
+            -10
+        );
+
+        ctx.lineTo(
+            47,
+            5
+        );
+
+        ctx.lineTo(
+            45,
+            28
+        );
+
+        ctx.lineTo(
+            28,
+            24
+        );
+
+        ctx.closePath();
+
+        ctx.fill();
+
+        ctx.restore();
+    }
+
+
+    // Lv99
+
+    if (level >= 99) {
+
+        drawNexus03FinalForm(time);
+    }
+}
+
+
+// ============================================================
+// NEXUS-03 FINAL FORM
+// OVER ARMOR
+// ============================================================
+
+function drawNexus03FinalForm(time) {
+
+    ctx.save();
+
+
+    // 巨大装甲
+
+    ctx.fillStyle =
+        "#9e5a18";
+
+    ctx.shadowColor =
+        "#ff8c00";
+
+    ctx.shadowBlur =
+        30;
+
+
+    // 左装甲
+
+    ctx.fillRect(
+        -48,
+        -5,
+        14,
+        38
+    );
+
+
+    // 右装甲
+
+    ctx.fillRect(
+        34,
+        -5,
+        14,
+        38
+    );
+
+
+    // 中央コア
+
+    const pulse =
+        10 +
+        Math.sin(time * 5) * 2;
+
+    ctx.fillStyle =
+        "#fff3b0";
+
+    ctx.shadowColor =
+        "#ffb52e";
+
+    ctx.shadowBlur =
+        40;
+
+    ctx.beginPath();
+
+    ctx.arc(
+        0,
+        -8,
+        pulse,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fill();
+
+
+    // 重装砲口
+
+    ctx.fillStyle =
+        "#ff9d32";
+
+    ctx.shadowBlur =
+        18;
+
+    ctx.fillRect(
+        -40,
+        10,
+        7,
+        16
+    );
+
+    ctx.fillRect(
+        33,
+        10,
+        7,
+        16
+    );
+
+
+    ctx.restore();
+}
+
+// ============================================================
+// NEXUS-04 専用進化
+// BEAM → BEAM OVERDRIVE
+// ============================================================
+
+function drawNexus04Evolution(level, time) {
+
+    if (level < 10) {
+        return;
+    }
+
+
+    // Lv10～ コア強化
+
+    if (level >= 10) {
+
+        ctx.save();
+
+        const pulse =
+            9 +
+            Math.sin(time * 7) * 3;
+
+        ctx.fillStyle =
+            "#ffffff";
+
+        ctx.shadowColor =
+            "#ff5cff";
+
+        ctx.shadowBlur =
+            25;
+
+        ctx.beginPath();
+
+        ctx.arc(
+            0,
+            -9,
+            pulse,
+            0,
+            Math.PI * 2
+        );
+
+        ctx.fill();
+
+        ctx.restore();
+    }
+
+
+    // Lv25～ ビームライン
+
+    if (level >= 25) {
+
+        ctx.save();
+
+        ctx.strokeStyle =
+            "#ffffff";
+
+        ctx.shadowColor =
+            "#c85cff";
+
+        ctx.shadowBlur =
+            20;
+
+        ctx.lineWidth =
+            2;
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            -10,
+            -5
+        );
+
+        ctx.lineTo(
+            -40,
+            20
+        );
+
+        ctx.moveTo(
+            10,
+            -5
+        );
+
+        ctx.lineTo(
+            40,
+            20
+        );
+
+        ctx.stroke();
+
+        ctx.restore();
+    }
+
+
+    // Lv50～ ビームユニット
+
+    if (level >= 50) {
+
+        ctx.save();
+
+        ctx.strokeStyle =
+            "#8fffff";
+
+        ctx.shadowColor =
+            "#5cffff";
+
+        ctx.shadowBlur =
+            25;
+
+        ctx.lineWidth =
+            4;
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            0,
+            -20
+        );
+
+        ctx.lineTo(
+            0,
+            -42
+        );
+
+        ctx.stroke();
+
+        ctx.restore();
+    }
+
+
+    // Lv75～ 大型ビームコア
+
+    if (level >= 75) {
+
+        ctx.save();
+
+        ctx.strokeStyle =
+            "#ffffff";
+
+        ctx.shadowColor =
+            "#d95cff";
+
+        ctx.shadowBlur =
+            30;
+
+        ctx.lineWidth =
+            5;
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            -15,
+            -10
+        );
+
+        ctx.lineTo(
+            -48,
+            23
+        );
+
+        ctx.moveTo(
+            15,
+            -10
+        );
+
+        ctx.lineTo(
+            48,
+            23
+        );
+
+        ctx.stroke();
+
+        ctx.restore();
+    }
+
+
+    // Lv99
+
+    if (level >= 99) {
+
+        drawNexus04FinalForm(time);
+    }
+}
+
+
+// ============================================================
+// NEXUS-04 FINAL FORM
+// BEAM OVERDRIVE
+// ============================================================
+
+function drawNexus04FinalForm(time) {
+
+    ctx.save();
+
+
+    const pulse =
+        0.8 +
+        Math.sin(time * 8) * 0.2;
+
+
+    // 巨大ビームコア
+
+    ctx.globalAlpha =
+        pulse;
+
+    ctx.fillStyle =
+        "#ffffff";
+
+    ctx.shadowColor =
+        "#d95cff";
+
+    ctx.shadowBlur =
+        45;
+
+    ctx.beginPath();
+
+    ctx.arc(
+        0,
+        -10,
+        14,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fill();
+
+
+    // ビーム発射ユニット
+
+    ctx.fillStyle =
+        "#8a5cff";
+
+    ctx.shadowColor =
+        "#ff5cff";
+
+    ctx.shadowBlur =
+        25;
+
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        -12,
+        -18
+    );
+
+    ctx.lineTo(
+        -20,
+        -52
+    );
+
+    ctx.lineTo(
+        -5,
+        -32
+    );
+
+    ctx.closePath();
+
+    ctx.fill();
+
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        12,
+        -18
+    );
+
+    ctx.lineTo(
+        20,
+        -52
+    );
+
+    ctx.lineTo(
+        5,
+        -32
+    );
+
+    ctx.closePath();
+
+    ctx.fill();
+
+
+    // 中央ビームエミッター
+
+    ctx.strokeStyle =
+        "#ffffff";
+
+    ctx.shadowColor =
+        "#ffffff";
+
+    ctx.shadowBlur =
+        35;
+
+    ctx.lineWidth =
+        4;
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        0,
+        -25
+    );
+
+    ctx.lineTo(
+        0,
+        -65
+    );
+
+    ctx.stroke();
+
+
+    ctx.restore();
+}
 /* ==================================================
    NEXUS FORM
    Lv99専用最終形態
@@ -7746,11 +9133,13 @@ function drawPlayer() {
 
         ctx.fill();
     }
-
-    
+    drawLevelTransitionInvincibility();
 
     drawMachineEvolution(currentSkin);
+
     ctx.restore();
+
+
 
 }
 
