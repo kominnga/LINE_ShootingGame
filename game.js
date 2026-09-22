@@ -4584,7 +4584,7 @@ function getFireInterval() {
 
     // NEXUS-03 ATTACK
     if (skin === "nexus-03") {
-        baseInterval = 0.11;
+        baseInterval = 0.16;
     }
 
     // レベルが高いほど発射間隔が短くなる
