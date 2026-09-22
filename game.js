@@ -4331,8 +4331,27 @@ function getMachineSpeedRate() {
 
 
 // 射撃速度倍率
+// ========================================
+// 🔫 MACHINE FIRE RATE GROWTH
+// 射撃速度の成長を少し抑える
+// ========================================
+
 function getMachineFireRate() {
-    return getMachinePowerRate();
+    const powerRate = getMachinePowerRate();
+
+    /*
+        攻撃力などはしっかり成長させるが、
+        射撃速度だけは成長を抑える。
+
+        Lv1   = 100%
+        Lv10  = 103%
+        Lv25  = 108%
+        Lv50  = 115%
+        Lv75  = 123%
+        Lv99  = 130%
+    */
+
+    return 1 + (powerRate - 1) * 0.30;
 }
 
 
@@ -5198,6 +5217,250 @@ function createExplosion(
     screenShake = 5;
 
 }
+// ========================================
+// 🌌 MACHINE LEVEL AURA
+// 機体レベルに応じたオーラ
+// ========================================
+
+function drawMachineLevelAura() {
+
+    // 現在の機体レベル
+    const machine = getMachineProgress();
+
+    const level = Math.max(
+        1,
+        Math.min(
+            99,
+            Number(machine.level) || 1
+        )
+    );
+
+    // Lv10未満はオーラなし
+    if (level < 10) {
+        return;
+    }
+
+    // ----------------------------------------
+    // レベルによるオーラ強度
+    // ----------------------------------------
+
+    let auraLevel = 0;
+
+    if (level >= 99) {
+        auraLevel = 5;
+    } else if (level >= 75) {
+        auraLevel = 4;
+    } else if (level >= 50) {
+        auraLevel = 3;
+    } else if (level >= 25) {
+        auraLevel = 2;
+    } else {
+        auraLevel = 1;
+    }
+
+    // ----------------------------------------
+    // オーラサイズ
+    // ----------------------------------------
+
+    const baseSize =
+        player.size || 20;
+
+    const auraSize =
+        baseSize +
+        12 +
+        auraLevel * 7;
+
+    // ----------------------------------------
+    // 時間による脈動
+    // ----------------------------------------
+
+    const pulse =
+        Math.sin(performance.now() * 0.004);
+
+    const pulseSize =
+        pulse * (2 + auraLevel);
+
+    // ----------------------------------------
+    // スキンによる色
+    // ----------------------------------------
+
+    const skin = getEquippedSkin();
+
+    let auraColor = "#00d9ff";
+
+    if (skin === "nexus-02") {
+        auraColor = "#39ff88";
+    }
+
+    if (skin === "nexus-03") {
+        auraColor = "#ff4d6d";
+    }
+
+    if (skin === "nexus-04") {
+        auraColor = "#b56cff";
+    }
+
+    if (skin === "nexus-05") {
+        auraColor = "#ffb347";
+    }
+
+    // ----------------------------------------
+    // 外側グロー
+    // ----------------------------------------
+
+    ctx.save();
+
+    ctx.globalCompositeOperation = "lighter";
+
+    const outerRadius =
+        auraSize +
+        pulseSize;
+
+    const gradient =
+        ctx.createRadialGradient(
+            player.x,
+            player.y,
+            baseSize * 0.2,
+            player.x,
+            player.y,
+            outerRadius
+        );
+
+    const alpha =
+        0.08 +
+        auraLevel * 0.025;
+
+    gradient.addColorStop(
+        0,
+        auraColor.replace(")", `, ${Math.min(0.22, alpha + 0.08)})`)
+    );
+
+    gradient.addColorStop(
+        0.35,
+        auraColor.replace(")", `, ${alpha})`)
+    );
+
+    gradient.addColorStop(
+        1,
+        auraColor.replace(")", ", 0)")
+    );
+
+    ctx.fillStyle = gradient;
+
+    ctx.beginPath();
+
+    ctx.arc(
+        player.x,
+        player.y,
+        outerRadius,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fill();
+
+    ctx.restore();
+
+    // ----------------------------------------
+    // エネルギーリング
+    // ----------------------------------------
+
+    ctx.save();
+
+    ctx.globalCompositeOperation = "lighter";
+
+    for (let i = 0; i < auraLevel; i++) {
+
+        const ringRadius =
+            baseSize +
+            10 +
+            i * 7 +
+            pulseSize * (i + 1) * 0.25;
+
+        const rotation =
+            performance.now() *
+            0.0005 *
+            (i % 2 === 0 ? 1 : -1);
+
+        ctx.globalAlpha =
+            0.10 +
+            auraLevel * 0.025 -
+            i * 0.012;
+
+        ctx.strokeStyle = auraColor;
+
+        ctx.lineWidth =
+            1.5 +
+            auraLevel * 0.25;
+
+        ctx.beginPath();
+
+        ctx.arc(
+            player.x,
+            player.y,
+            ringRadius,
+            rotation,
+            rotation + Math.PI * 1.45
+        );
+
+        ctx.stroke();
+    }
+
+    ctx.restore();
+
+    // ----------------------------------------
+    // Lv99専用コアオーラ
+    // ----------------------------------------
+
+    if (level >= 99) {
+
+        ctx.save();
+
+        ctx.globalCompositeOperation = "lighter";
+
+        const maxPulse =
+            1 +
+            Math.sin(
+                performance.now() * 0.008
+            ) * 0.15;
+
+        ctx.globalAlpha = 0.45;
+
+        ctx.strokeStyle = auraColor;
+
+        ctx.lineWidth = 2.5;
+
+        ctx.beginPath();
+
+        ctx.arc(
+            player.x,
+            player.y,
+            (baseSize + 34) * maxPulse,
+            0,
+            Math.PI * 2
+        );
+
+        ctx.stroke();
+
+        ctx.globalAlpha = 0.18;
+
+        ctx.lineWidth = 5;
+
+        ctx.beginPath();
+
+        ctx.arc(
+            player.x,
+            player.y,
+            (baseSize + 42) * maxPulse,
+            0,
+            Math.PI * 2
+        );
+
+        ctx.stroke();
+
+        ctx.restore();
+    }
+}
 
 
 /* ==================================================
@@ -5210,6 +5473,8 @@ function createExplosion(
 ================================================== */
 
 function drawPlayer() {
+
+    drawMachineLevelAura();
 
     player.engineTime += 0.15;
 
