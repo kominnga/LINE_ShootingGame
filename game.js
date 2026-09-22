@@ -4709,6 +4709,10 @@ function useHealItem() {
    弾発射
 ================================================== */
 
+/* ==================================================
+   弾発射
+================================================== */
+
 function fireBullet() {
 
     if (!gameRunning) {
@@ -4719,22 +4723,83 @@ function fireBullet() {
         return;
     }
 
-    bullets.push({
+    const skin = getEquippedSkin();
 
-        x: player.x,
+    /* =================================
+       NEXUS-03 DUAL FIRE
+       2発同時発射
+    ================================= */
 
-        y: player.y - player.height / 2,
+    if (skin === "nexus-03") {
 
-        width: 5,
+        // 左弾
+        bullets.push({
 
-        height: 22,
+            x:
+                player.x - 9,
 
-        speed: 700
+            y:
+                player.y -
+                player.height / 2,
 
-    });
+            width: 5,
+
+            height: 22,
+
+            speed: 700
+
+        });
+
+        // 右弾
+        bullets.push({
+
+            x:
+                player.x + 9,
+
+            y:
+                player.y -
+                player.height / 2,
+
+            width: 5,
+
+            height: 22,
+
+            speed: 700
+
+        });
+
+    } else {
+
+        /* =================================
+           通常機体
+           1発
+        ================================= */
+
+        bullets.push({
+
+            x:
+                player.x,
+
+            y:
+                player.y -
+                player.height / 2,
+
+            width: 5,
+
+            height: 22,
+
+            speed: 700
+
+        });
+
+    }
+
+    /* =================================
+       発射間隔
+    ================================= */
 
     player.fireCooldown =
-    getFireInterval();
+        getFireInterval();
 
 }
 function drawHealEffect() {
