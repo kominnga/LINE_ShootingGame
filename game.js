@@ -3317,7 +3317,7 @@ async function sendScoreToRanking() {
    ゲームオーバー
 ================================================== */
 
-function endGame() {
+async function endGame() {
 
     /* ------------------------------------------
        ゲーム停止
@@ -3417,10 +3417,10 @@ function endGame() {
 
   setItemControlsVisible(false);
 
-sendScoreToRanking();
+await sendScoreToRanking();
 
-syncPendingCoins();
-syncPendingMachineExp();
+await syncPendingCoins();
+await syncPendingMachineExp();
 }
 
 /* ==================================================
