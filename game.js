@@ -5006,27 +5006,42 @@ function createEnemy() {
          5% → SPLITTER
     */
 
-    if (typeRandom < 0.60) {
+/*
+    敵出現率
 
-        type = "normal";
+    55% → NORMAL
+    14% → FAST
+    10% → BIG
+    9%  → SHOOTER
+    5%  → SPLITTER
+    7%  → ZIGZAG
+*/
 
-    } else if (typeRandom < 0.75) {
+if (typeRandom < 0.55) {
 
-        type = "fast";
+    type = "normal";
 
-    } else if (typeRandom < 0.85) {
+} else if (typeRandom < 0.69) {
 
-        type = "big";
+    type = "fast";
 
-    } else if (typeRandom < 0.95) {
+} else if (typeRandom < 0.79) {
 
-        type = "shooter";
+    type = "big";
 
-    } else {
+} else if (typeRandom < 0.88) {
 
-        type = "splitter";
+    type = "shooter";
 
-    }
+} else if (typeRandom < 0.93) {
+
+    type = "splitter";
+
+} else {
+
+    type = "zigzag";
+
+}
 
 
     let size;
@@ -5125,16 +5140,35 @@ function createEnemy() {
 
     }
 
+    /* =================================
+   ZIGZAG
+================================= */
 
-    const enemy = {
+if (type === "zigzag") {
 
-        x:
-            Math.random() *
-            (width - size) +
-            size / 2,
+    size = 36;
 
-        y:
-            -size,
+    speed = 150;
+
+    hp = 1;
+
+    scoreValue = 180;
+
+}
+
+
+const enemyStartX =
+    Math.random() *
+    (width - size) +
+    size / 2;
+
+const enemy = {
+
+    x:
+        enemyStartX,
+
+    y:
+        -size,
 
         width:
             size,
@@ -5169,7 +5203,24 @@ function createEnemy() {
             0,
 
         shootInterval:
-            shootInterval
+            shootInterval,
+
+            // ZIGZAG用
+        baseX:
+            enemyStartX,
+
+        zigzagTime:
+            Math.random() *
+            Math.PI *
+            2,
+
+        zigzagAmplitude:
+            70 +
+            Math.random() * 35,
+
+        zigzagFrequency:
+            2.5 +
+            Math.random() * 0.8
 
     };
 
@@ -11088,6 +11139,98 @@ if (enemy.type === "splitter") {
 }
 
 /* =================================
+   ZIGZAG
+================================= */
+
+if (enemy.type === "zigzag") {
+
+    /* 外側 */
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        0,
+        -enemy.height / 2
+    );
+
+    ctx.lineTo(
+        enemy.width / 2,
+        0
+    );
+
+    ctx.lineTo(
+        0,
+        enemy.height / 2
+    );
+
+    ctx.lineTo(
+        -enemy.width / 2,
+        0
+    );
+
+    ctx.closePath();
+
+    ctx.fillStyle =
+        "#ffe14a";
+
+    ctx.shadowColor =
+        "#ffb300";
+
+    ctx.shadowBlur =
+        22;
+
+    ctx.fill();
+
+
+    /* 中央コア */
+
+    ctx.beginPath();
+
+    ctx.arc(
+        0,
+        0,
+        enemy.width * 0.18,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fillStyle =
+        "#ffffff";
+
+    ctx.shadowColor =
+        "#ffffff";
+
+    ctx.shadowBlur =
+        14;
+
+    ctx.fill();
+
+
+    /* 横方向のライン */
+
+    ctx.strokeStyle =
+        "#fff3a3";
+
+    ctx.lineWidth =
+        2;
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        -enemy.width * 0.28,
+        0
+    );
+
+    ctx.lineTo(
+        enemy.width * 0.28,
+        0
+    );
+
+    ctx.stroke();
+
+}
+
+/* =================================
    SPLIT CHILD
 ================================= */
 
@@ -12902,7 +13045,35 @@ enemyInterval =
         enemy.rotation +=
             enemy.rotationSpeed *
             deltaTime;
+/* =================================
+   ZIGZAG移動
+================================= */
 
+if (enemy.type === "zigzag") {
+
+    enemy.zigzagTime +=
+        deltaTime *
+        enemy.zigzagFrequency;
+
+    enemy.x =
+        enemy.baseX +
+        Math.sin(enemy.zigzagTime) *
+        enemy.zigzagAmplitude;
+
+    // 画面外へ飛び出さないようにする
+    const margin =
+        enemy.width / 2;
+
+    enemy.x =
+        Math.max(
+            margin,
+            Math.min(
+                width - margin,
+                enemy.x
+            )
+        );
+
+}
             /* =================================
    SHOOTER攻撃
    前方向（画面下方向）のみ
@@ -13370,11 +13541,12 @@ function checkCollisions() {
             ? 25
             : defeatedEnemyType === "splitter"
             ? 40
-            : defeatedEnemyType === "split-child"
+         : defeatedEnemyType === "split-child"
             ? 5
+            : defeatedEnemyType === "zigzag"
+            ? 20
             : 10
-    );
-
+    )
     addMachineExp(
     defeatedEnemyType === "normal"
         ? 10
@@ -13387,8 +13559,10 @@ function checkCollisions() {
         : defeatedEnemyType === "splitter"
         ? 40
         : defeatedEnemyType === "split-child"
-        ? 5
-        : 10
+? 5
+: defeatedEnemyType === "zigzag"
+? 20
+: 10
 );
 
     // SPLITTER → 2体に分裂
