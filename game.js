@@ -9137,12 +9137,1222 @@ function drawPlayer() {
 
     drawMachineEvolution(currentSkin);
 
+    drawMachineEvolution123(currentSkin);
     ctx.restore();
 
 
 
 }
+// ==================================================
+// NEXUS-01～03 専用機体進化
+// 既存機体に追加パーツを重ねる方式
+// NEXUS-04 / NEXUS-05 は変更しない
+// ==================================================
 
+function drawMachineEvolution123(currentSkin) {
+
+    if (
+        currentSkin !== "nexus-01" &&
+        currentSkin !== "nexus-02" &&
+        currentSkin !== "nexus-03"
+    ) {
+        return;
+    }
+
+    const machine =
+        getMachineProgress(currentSkin);
+
+    const level =
+        Math.max(
+            1,
+            Math.min(
+                99,
+                Number(machine.level) || 1
+            )
+        );
+
+    const time =
+        performance.now() * 0.001;
+
+    ctx.save();
+
+    // ==================================================
+    // NEXUS-01
+    // メカニック / 軍用戦闘機
+    // ==================================================
+
+    if (currentSkin === "nexus-01") {
+
+        // ----------------------------------------------
+        // Lv10
+        // エンジンノズル強化
+        // ----------------------------------------------
+
+        if (level >= 10) {
+
+            ctx.fillStyle =
+                "#168fc7";
+
+            ctx.shadowColor =
+                "#00d9ff";
+
+            ctx.shadowBlur = 12;
+
+            // 左エンジン
+            ctx.fillRect(
+                -19,
+                17,
+                7,
+                10
+            );
+
+            // 右エンジン
+            ctx.fillRect(
+                12,
+                17,
+                7,
+                10
+            );
+
+            // 排気
+            ctx.fillStyle =
+                "rgba(80,220,255,0.8)";
+
+            ctx.beginPath();
+
+            ctx.moveTo(-16, 27);
+            ctx.lineTo(-13, 38);
+            ctx.lineTo(-10, 27);
+
+            ctx.closePath();
+
+            ctx.fill();
+
+            ctx.beginPath();
+
+            ctx.moveTo(10, 27);
+            ctx.lineTo(13, 38);
+            ctx.lineTo(16, 27);
+
+            ctx.closePath();
+
+            ctx.fill();
+        }
+
+
+        // ----------------------------------------------
+        // Lv25
+        // 主翼補強フレーム
+        // ----------------------------------------------
+
+        if (level >= 25) {
+
+            ctx.strokeStyle =
+                "#42e8ff";
+
+            ctx.lineWidth = 3;
+
+            ctx.shadowColor =
+                "#00cfff";
+
+            ctx.shadowBlur = 10;
+
+            // 左翼フレーム
+            ctx.beginPath();
+
+            ctx.moveTo(-12, 5);
+            ctx.lineTo(-38, 22);
+            ctx.lineTo(-20, 19);
+
+            ctx.stroke();
+
+            // 右翼フレーム
+            ctx.beginPath();
+
+            ctx.moveTo(12, 5);
+            ctx.lineTo(38, 22);
+            ctx.lineTo(20, 19);
+
+            ctx.stroke();
+        }
+
+
+        // ----------------------------------------------
+        // Lv50
+        // 胴体装甲追加
+        // ----------------------------------------------
+
+        if (level >= 50) {
+
+            ctx.fillStyle =
+                "#166a91";
+
+            ctx.shadowColor =
+                "#00bde8";
+
+            ctx.shadowBlur = 14;
+
+            // 左装甲
+            ctx.beginPath();
+
+            ctx.moveTo(-13, -4);
+            ctx.lineTo(-24, 8);
+            ctx.lineTo(-18, 16);
+            ctx.lineTo(-8, 10);
+
+            ctx.closePath();
+
+            ctx.fill();
+
+            // 右装甲
+            ctx.beginPath();
+
+            ctx.moveTo(13, -4);
+            ctx.lineTo(24, 8);
+            ctx.lineTo(18, 16);
+            ctx.lineTo(8, 10);
+
+            ctx.closePath();
+
+            ctx.fill();
+
+            // 中央装甲ライン
+            ctx.strokeStyle =
+                "#7df4ff";
+
+            ctx.lineWidth = 2;
+
+            ctx.beginPath();
+
+            ctx.moveTo(0, -28);
+            ctx.lineTo(0, 15);
+
+            ctx.stroke();
+        }
+
+
+        // ----------------------------------------------
+        // Lv75
+        // 補助スラスター＋追加翼
+        // ----------------------------------------------
+
+        if (level >= 75) {
+
+            ctx.fillStyle =
+                "#0c587d";
+
+            ctx.shadowColor =
+                "#00d9ff";
+
+            ctx.shadowBlur = 18;
+
+            // 左補助翼
+            ctx.beginPath();
+
+            ctx.moveTo(-18, 3);
+            ctx.lineTo(-48, 15);
+            ctx.lineTo(-39, 25);
+            ctx.lineTo(-19, 18);
+
+            ctx.closePath();
+
+            ctx.fill();
+
+            // 右補助翼
+            ctx.beginPath();
+
+            ctx.moveTo(18, 3);
+            ctx.lineTo(48, 15);
+            ctx.lineTo(39, 25);
+            ctx.lineTo(19, 18);
+
+            ctx.closePath();
+
+            ctx.fill();
+
+            // 補助スラスター
+            ctx.fillStyle =
+                "#38eaff";
+
+            ctx.fillRect(
+                -31,
+                21,
+                7,
+                7
+            );
+
+            ctx.fillRect(
+                24,
+                21,
+                7,
+                7
+            );
+        }
+
+
+        // ----------------------------------------------
+        // Lv99
+        // NEXUS-01 HIGH OUTPUT FORM
+        // 完全メカニック型
+        // ----------------------------------------------
+
+        if (level >= 99) {
+
+            const pulse =
+                0.65 +
+                Math.sin(time * 5) * 0.2;
+
+            // 大型中央装甲
+            ctx.fillStyle =
+                "#0c3f5c";
+
+            ctx.shadowColor =
+                "#00eaff";
+
+            ctx.shadowBlur = 22;
+
+            ctx.beginPath();
+
+            ctx.moveTo(0, -39);
+            ctx.lineTo(-14, -23);
+            ctx.lineTo(-19, 7);
+            ctx.lineTo(-10, 23);
+            ctx.lineTo(0, 17);
+            ctx.lineTo(10, 23);
+            ctx.lineTo(19, 7);
+            ctx.lineTo(14, -23);
+
+            ctx.closePath();
+
+            ctx.fill();
+
+            // 中央高出力コア
+            ctx.beginPath();
+
+            ctx.arc(
+                0,
+                -10,
+                8,
+                0,
+                Math.PI * 2
+            );
+
+            ctx.fillStyle =
+                `rgba(190,250,255,${pulse})`;
+
+            ctx.shadowColor =
+                "#ffffff";
+
+            ctx.shadowBlur = 28;
+
+            ctx.fill();
+
+            // 4基エンジン
+            ctx.fillStyle =
+                "#087cae";
+
+            ctx.fillRect(
+                -25,
+                17,
+                8,
+                13
+            );
+
+            ctx.fillRect(
+                -14,
+                20,
+                7,
+                13
+            );
+
+            ctx.fillRect(
+                7,
+                20,
+                7,
+                13
+            );
+
+            ctx.fillRect(
+                17,
+                17,
+                8,
+                13
+            );
+
+            // エンジン光
+            ctx.fillStyle =
+                "#5cefff";
+
+            ctx.shadowColor =
+                "#00dfff";
+
+            ctx.shadowBlur = 20;
+
+            ctx.fillRect(
+                -23,
+                30,
+                4,
+                10
+            );
+
+            ctx.fillRect(
+                -12,
+                32,
+                4,
+                9
+            );
+
+            ctx.fillRect(
+                8,
+                32,
+                4,
+                9
+            );
+
+            ctx.fillRect(
+                19,
+                30,
+                4,
+                10
+            );
+        }
+    }
+
+
+    // ==================================================
+    // NEXUS-02
+    // SF宇宙船 / 高速戦闘艇
+    // ==================================================
+
+    else if (currentSkin === "nexus-02") {
+
+        // ----------------------------------------------
+        // Lv10
+        // 後部エンジン強化
+        // ----------------------------------------------
+
+        if (level >= 10) {
+
+            ctx.fillStyle =
+                "#087b9a";
+
+            ctx.shadowColor =
+                "#00eaff";
+
+            ctx.shadowBlur = 15;
+
+            ctx.fillRect(
+                -12,
+                19,
+                7,
+                13
+            );
+
+            ctx.fillRect(
+                5,
+                19,
+                7,
+                13
+            );
+
+            // エンジン噴射
+            ctx.fillStyle =
+                "#5cf4ff";
+
+            ctx.beginPath();
+
+            ctx.moveTo(-9, 31);
+            ctx.lineTo(-5, 48);
+            ctx.lineTo(-2, 31);
+
+            ctx.closePath();
+
+            ctx.fill();
+
+            ctx.beginPath();
+
+            ctx.moveTo(2, 31);
+            ctx.lineTo(5, 48);
+            ctx.lineTo(9, 31);
+
+            ctx.closePath();
+
+            ctx.fill();
+        }
+
+
+        // ----------------------------------------------
+        // Lv25
+        // 宇宙船型の左右翼
+        // ----------------------------------------------
+
+        if (level >= 25) {
+
+            ctx.fillStyle =
+                "#0c7f9d";
+
+            ctx.shadowColor =
+                "#00eaff";
+
+            ctx.shadowBlur = 18;
+
+            // 左大型翼
+            ctx.beginPath();
+
+            ctx.moveTo(-8, -2);
+            ctx.lineTo(-43, 13);
+            ctx.lineTo(-55, 27);
+            ctx.lineTo(-20, 18);
+
+            ctx.closePath();
+
+            ctx.fill();
+
+            // 右大型翼
+            ctx.beginPath();
+
+            ctx.moveTo(8, -2);
+            ctx.lineTo(43, 13);
+            ctx.lineTo(55, 27);
+            ctx.lineTo(20, 18);
+
+            ctx.closePath();
+
+            ctx.fill();
+
+            // 翼のライン
+            ctx.strokeStyle =
+                "#55efff";
+
+            ctx.lineWidth = 2;
+
+            ctx.beginPath();
+
+            ctx.moveTo(-12, 5);
+            ctx.lineTo(-48, 22);
+
+            ctx.moveTo(12, 5);
+            ctx.lineTo(48, 22);
+
+            ctx.stroke();
+        }
+
+
+        // ----------------------------------------------
+        // Lv50
+        // 船体大型化
+        // ----------------------------------------------
+
+        if (level >= 50) {
+
+            ctx.fillStyle =
+                "#07546d";
+
+            ctx.shadowColor =
+                "#00dfff";
+
+            ctx.shadowBlur = 20;
+
+            ctx.beginPath();
+
+            ctx.moveTo(0, -45);
+            ctx.lineTo(-15, -20);
+            ctx.lineTo(-20, 20);
+            ctx.lineTo(0, 29);
+            ctx.lineTo(20, 20);
+            ctx.lineTo(15, -20);
+
+            ctx.closePath();
+
+            ctx.fill();
+
+            // 船体中央ライン
+            ctx.strokeStyle =
+                "#8cf7ff";
+
+            ctx.lineWidth = 2;
+
+            ctx.beginPath();
+
+            ctx.moveTo(0, -39);
+            ctx.lineTo(0, 23);
+
+            ctx.stroke();
+        }
+
+
+        // ----------------------------------------------
+        // Lv75
+        // 超高速型
+        // ----------------------------------------------
+
+        if (level >= 75) {
+
+            ctx.fillStyle =
+                "#06455c";
+
+            ctx.shadowColor =
+                "#00ffff";
+
+            ctx.shadowBlur = 25;
+
+            // 超大型左右翼
+            ctx.beginPath();
+
+            ctx.moveTo(-12, -8);
+            ctx.lineTo(-58, 5);
+            ctx.lineTo(-70, 21);
+            ctx.lineTo(-26, 17);
+
+            ctx.closePath();
+
+            ctx.fill();
+
+            ctx.beginPath();
+
+            ctx.moveTo(12, -8);
+            ctx.lineTo(58, 5);
+            ctx.lineTo(70, 21);
+            ctx.lineTo(26, 17);
+
+            ctx.closePath();
+
+            ctx.fill();
+
+            // 追加エンジン
+            ctx.fillStyle =
+                "#13bcd8";
+
+            ctx.fillRect(
+                -27,
+                18,
+                8,
+                10
+            );
+
+            ctx.fillRect(
+                19,
+                18,
+                8,
+                10
+            );
+        }
+
+
+        // ----------------------------------------------
+        // Lv99
+        // NEXUS-02 ULTRA SPEED FORM
+        // 宇宙船として完全に別シルエット
+        // ----------------------------------------------
+
+        if (level >= 99) {
+
+            const pulse =
+                0.7 +
+                Math.sin(time * 8) * 0.25;
+
+            // 船首
+            ctx.fillStyle =
+                "#063b52";
+
+            ctx.shadowColor =
+                "#00f0ff";
+
+            ctx.shadowBlur = 30;
+
+            ctx.beginPath();
+
+            ctx.moveTo(
+                0,
+                -58
+            );
+
+            ctx.lineTo(
+                -16,
+                -20
+            );
+
+            ctx.lineTo(
+                -24,
+                23
+            );
+
+            ctx.lineTo(
+                0,
+                34
+            );
+
+            ctx.lineTo(
+                24,
+                23
+            );
+
+            ctx.lineTo(
+                16,
+                -20
+            );
+
+            ctx.closePath();
+
+            ctx.fill();
+
+            // 長い左右翼
+            ctx.fillStyle =
+                "#0b6f8e";
+
+            ctx.beginPath();
+
+            ctx.moveTo(
+                -12,
+                -4
+            );
+
+            ctx.lineTo(
+                -72,
+                8
+            );
+
+            ctx.lineTo(
+                -92,
+                23
+            );
+
+            ctx.lineTo(
+                -25,
+                17
+            );
+
+            ctx.closePath();
+
+            ctx.fill();
+
+            ctx.beginPath();
+
+            ctx.moveTo(
+                12,
+                -4
+            );
+
+            ctx.lineTo(
+                72,
+                8
+            );
+
+            ctx.lineTo(
+                92,
+                23
+            );
+
+            ctx.lineTo(
+                25,
+                17
+            );
+
+            ctx.closePath();
+
+            ctx.fill();
+
+            // 4基高速エンジン
+            ctx.fillStyle =
+                `rgba(80,245,255,${pulse})`;
+
+            ctx.shadowColor =
+                "#00ffff";
+
+            ctx.shadowBlur = 30;
+
+            ctx.fillRect(
+                -25,
+                24,
+                8,
+                14
+            );
+
+            ctx.fillRect(
+                -10,
+                27,
+                7,
+                16
+            );
+
+            ctx.fillRect(
+                3,
+                27,
+                7,
+                16
+            );
+
+            ctx.fillRect(
+                17,
+                24,
+                8,
+                14
+            );
+
+            // 超高速エンジン噴射
+            ctx.fillStyle =
+                "#b8fbff";
+
+            ctx.beginPath();
+
+            ctx.moveTo(-21, 37);
+            ctx.lineTo(-17, 65);
+            ctx.lineTo(-13, 37);
+
+            ctx.closePath();
+
+            ctx.fill();
+
+            ctx.beginPath();
+
+            ctx.moveTo(13, 37);
+            ctx.lineTo(17, 65);
+            ctx.lineTo(21, 37);
+
+            ctx.closePath();
+
+            ctx.fill();
+
+            // 中央コア
+            ctx.beginPath();
+
+            ctx.arc(
+                0,
+                -20,
+                7,
+                0,
+                Math.PI * 2
+            );
+
+            ctx.fillStyle =
+                "#ffffff";
+
+            ctx.shadowColor =
+                "#8fffff";
+
+            ctx.shadowBlur = 35;
+
+            ctx.fill();
+        }
+    }
+
+
+    // ==================================================
+    // NEXUS-03
+    // 重武装アサルト機
+    // ==================================================
+
+    else if (currentSkin === "nexus-03") {
+
+        // ----------------------------------------------
+        // Lv10
+        // 砲口追加
+        // ----------------------------------------------
+
+        if (level >= 10) {
+
+            ctx.fillStyle =
+                "#673b12";
+
+            ctx.shadowColor =
+                "#ff8c00";
+
+            ctx.shadowBlur = 12;
+
+            ctx.fillRect(
+                -31,
+                8,
+                8,
+                18
+            );
+
+            ctx.fillRect(
+                23,
+                8,
+                8,
+                18
+            );
+
+            ctx.fillStyle =
+                "#ffad32";
+
+            ctx.fillRect(
+                -30,
+                7,
+                6,
+                5
+            );
+
+            ctx.fillRect(
+                24,
+                7,
+                6,
+                5
+            );
+        }
+
+
+        // ----------------------------------------------
+        // Lv25
+        // 左右武装ユニット
+        // ----------------------------------------------
+
+        if (level >= 25) {
+
+            ctx.fillStyle =
+                "#754416";
+
+            ctx.shadowColor =
+                "#ff8c00";
+
+            ctx.shadowBlur = 15;
+
+            // 左武装
+            ctx.beginPath();
+
+            ctx.moveTo(-24, -3);
+            ctx.lineTo(-43, 2);
+            ctx.lineTo(-47, 16);
+            ctx.lineTo(-25, 18);
+
+            ctx.closePath();
+
+            ctx.fill();
+
+            // 右武装
+            ctx.beginPath();
+
+            ctx.moveTo(24, -3);
+            ctx.lineTo(43, 2);
+            ctx.lineTo(47, 16);
+            ctx.lineTo(25, 18);
+
+            ctx.closePath();
+
+            ctx.fill();
+
+            // 武装発光部
+            ctx.fillStyle =
+                "#ffbd4a";
+
+            ctx.fillRect(
+                -42,
+                4,
+                8,
+                4
+            );
+
+            ctx.fillRect(
+                34,
+                4,
+                8,
+                4
+            );
+        }
+
+
+        // ----------------------------------------------
+        // Lv50
+        // 重装甲
+        // ----------------------------------------------
+
+        if (level >= 50) {
+
+            ctx.fillStyle =
+                "#623812";
+
+            ctx.shadowColor =
+                "#ff7900";
+
+            ctx.shadowBlur = 18;
+
+            // 左肩装甲
+            ctx.beginPath();
+
+            ctx.moveTo(-25, -13);
+            ctx.lineTo(-38, -5);
+            ctx.lineTo(-37, 15);
+            ctx.lineTo(-24, 20);
+
+            ctx.closePath();
+
+            ctx.fill();
+
+            // 右肩装甲
+            ctx.beginPath();
+
+            ctx.moveTo(25, -13);
+            ctx.lineTo(38, -5);
+            ctx.lineTo(37, 15);
+            ctx.lineTo(24, 20);
+
+            ctx.closePath();
+
+            ctx.fill();
+
+            // 中央装甲板
+            ctx.fillStyle =
+                "#9b5a19";
+
+            ctx.beginPath();
+
+            ctx.moveTo(
+                0,
+                -31
+            );
+
+            ctx.lineTo(
+                -9,
+                -18
+            );
+
+            ctx.lineTo(
+                -9,
+                12
+            );
+
+            ctx.lineTo(
+                0,
+                20
+            );
+
+            ctx.lineTo(
+                9,
+                12
+            );
+
+            ctx.lineTo(
+                9,
+                -18
+            );
+
+            ctx.closePath();
+
+            ctx.fill();
+        }
+
+
+        // ----------------------------------------------
+        // Lv75
+        // 大型キャノン
+        // ----------------------------------------------
+
+        if (level >= 75) {
+
+            ctx.fillStyle =
+                "#47270d";
+
+            ctx.shadowColor =
+                "#ff7a00";
+
+            ctx.shadowBlur = 20;
+
+            // 左キャノン
+            ctx.fillRect(
+                -46,
+                -10,
+                14,
+                35
+            );
+
+            ctx.fillRect(
+                -50,
+                -18,
+                22,
+                10
+            );
+
+            // 右キャノン
+            ctx.fillRect(
+                32,
+                -10,
+                14,
+                35
+            );
+
+            ctx.fillRect(
+                28,
+                -18,
+                22,
+                10
+            );
+
+            // キャノン先端
+            ctx.fillStyle =
+                "#ffad32";
+
+            ctx.fillRect(
+                -48,
+                -20,
+                18,
+                5
+            );
+
+            ctx.fillRect(
+                30,
+                -20,
+                18,
+                5
+            );
+        }
+
+
+        // ----------------------------------------------
+        // Lv99
+        // NEXUS-03 HEAVY ASSAULT FORM
+        // ----------------------------------------------
+
+        if (level >= 99) {
+
+            const pulse =
+                0.65 +
+                Math.sin(time * 4) * 0.2;
+
+            // 巨大中央装甲
+            ctx.fillStyle =
+                "#40230b";
+
+            ctx.shadowColor =
+                "#ff7900";
+
+            ctx.shadowBlur = 28;
+
+            ctx.beginPath();
+
+            ctx.moveTo(
+                0,
+                -40
+            );
+
+            ctx.lineTo(
+                -18,
+                -25
+            );
+
+            ctx.lineTo(
+                -29,
+                12
+            );
+
+            ctx.lineTo(
+                -15,
+                29
+            );
+
+            ctx.lineTo(
+                0,
+                35
+            );
+
+            ctx.lineTo(
+                15,
+                29
+            );
+
+            ctx.lineTo(
+                29,
+                12
+            );
+
+            ctx.lineTo(
+                18,
+                -25
+            );
+
+            ctx.closePath();
+
+            ctx.fill();
+
+            // 左大型砲塔
+            ctx.fillStyle =
+                "#5b3210";
+
+            ctx.fillRect(
+                -51,
+                -20,
+                18,
+                43
+            );
+
+            ctx.fillRect(
+                -58,
+                -30,
+                30,
+                11
+            );
+
+            // 右大型砲塔
+            ctx.fillRect(
+                33,
+                -20,
+                18,
+                43
+            );
+
+            ctx.fillRect(
+                28,
+                -30,
+                30,
+                11
+            );
+
+            // キャノンコア
+            ctx.fillStyle =
+                `rgba(255,190,70,${pulse})`;
+
+            ctx.shadowColor =
+                "#ffb52e";
+
+            ctx.shadowBlur = 30;
+
+            ctx.beginPath();
+
+            ctx.arc(
+                0,
+                -8,
+                10,
+                0,
+                Math.PI * 2
+            );
+
+            ctx.fill();
+
+            // 中央砲身
+            ctx.fillStyle =
+                "#7b4613";
+
+            ctx.fillRect(
+                -6,
+                -48,
+                12,
+                27
+            );
+
+            // 砲口
+            ctx.fillStyle =
+                "#ffc45c";
+
+            ctx.shadowColor =
+                "#ff7a00";
+
+            ctx.shadowBlur = 30;
+
+            ctx.beginPath();
+
+            ctx.arc(
+                0,
+                -49,
+                7,
+                0,
+                Math.PI * 2
+            );
+
+            ctx.fill();
+        }
+    }
+
+    ctx.restore();
+}
 function showHowToPC() {
 
     if (howtoPcControls) {
