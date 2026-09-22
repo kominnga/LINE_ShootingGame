@@ -12857,8 +12857,14 @@ function defeatBoss() {
     score += bossScore;
 
     addMachineExp(500);
+
+    addSkillPoints(
+    10 * level
+);
 // BOSS撃破コイン
 addCoins(500 * level);
+
+
 
     // ボスを消す
     boss = null;
@@ -13771,10 +13777,31 @@ function checkCollisions() {
         : defeatedEnemyType === "splitter"
         ? 40
         : defeatedEnemyType === "split-child"
+
 ? 5
 : defeatedEnemyType === "zigzag"
 ? 20
 : 10
+);
+
+/* =================================
+   SKILL POINT
+================================= */
+
+addSkillPoints(
+    defeatedEnemyType === "normal"
+        ? 1
+        : defeatedEnemyType === "fast"
+        ? 1
+        : defeatedEnemyType === "big"
+        ? 3
+        : defeatedEnemyType === "shooter"
+        ? 2
+        : defeatedEnemyType === "splitter"
+        ? 2
+        : defeatedEnemyType === "split-child"
+        ? 1
+        : 1
 );
 
     // SPLITTER → 2体に分裂
@@ -16182,6 +16209,1420 @@ function handleMenuScreen() {
     }
 
 }
+
+/* ==================================================
+   NEXUS SKILL GRID
+   第1弾：スキルパネル / 六角形ノード / 選択
+================================================== */
+
+let skillGridVisible = false;
+
+let skillPoints = 0;
+
+let selectedSkillId = null;
+
+let unlockedSkills = JSON.parse(
+    localStorage.getItem("nexus-unlocked-skills") || "{}"
+);
+
+
+/* ==================================================
+   スキル定義
+================================================== */
+
+const nexusSkillTrees = {
+
+    "nexus-01": [
+
+        {
+            id: "n01-core",
+            name: "CORE",
+            description: "NEXUS-01の基本コア。",
+            cost: 0,
+            requiredLevel: 1,
+            x: 0,
+            y: 0,
+            type: "core"
+        },
+
+        {
+            id: "n01-power",
+            name: "POWER",
+            description: "攻撃性能を強化する。",
+            cost: 1,
+            requiredLevel: 1,
+            x: -1,
+            y: -1,
+            type: "offense"
+        },
+
+        {
+            id: "n01-defense",
+            name: "ARMOR",
+            description: "機体の防御性能を強化する。",
+            cost: 1,
+            requiredLevel: 1,
+            x: 1,
+            y: -1,
+            type: "defense"
+        },
+
+        {
+            id: "n01-speed",
+            name: "MOBILITY",
+            description: "移動性能を強化する。",
+            cost: 1,
+            requiredLevel: 10,
+            x: -1,
+            y: 1,
+            type: "mobility"
+        },
+
+        {
+            id: "n01-energy",
+            name: "ENERGY",
+            description: "特殊装備の性能を強化する。",
+            cost: 1,
+            requiredLevel: 10,
+            x: 1,
+            y: 1,
+            type: "energy"
+        }
+
+    ],
+
+
+    "nexus-02": [
+
+        {
+            id: "n02-core",
+            name: "CORE",
+            description: "高速機動コア。",
+            cost: 0,
+            requiredLevel: 1,
+            x: 0,
+            y: 0,
+            type: "core"
+        },
+
+        {
+            id: "n02-speed",
+            name: "BOOST",
+            description: "高速機動性能を強化する。",
+            cost: 1,
+            requiredLevel: 1,
+            x: -1,
+            y: -1,
+            type: "mobility"
+        },
+
+        {
+            id: "n02-evasion",
+            name: "EVADE",
+            description: "回避性能を強化する。",
+            cost: 1,
+            requiredLevel: 10,
+            x: 1,
+            y: -1,
+            type: "mobility"
+        },
+
+        {
+            id: "n02-dash",
+            name: "DASH",
+            description: "高速移動能力を強化する。",
+            cost: 1,
+            requiredLevel: 25,
+            x: -1,
+            y: 1,
+            type: "mobility"
+        },
+
+        {
+            id: "n02-phase",
+            name: "PHASE SHIFT",
+            description: "特殊な高速機動システム。",
+            cost: 2,
+            requiredLevel: 50,
+            x: 1,
+            y: 1,
+            type: "special"
+        }
+
+    ],
+
+
+    "nexus-03": [
+
+        {
+            id: "n03-core",
+            name: "CORE",
+            description: "攻撃特化コア。",
+            cost: 0,
+            requiredLevel: 1,
+            x: 0,
+            y: 0,
+            type: "core"
+        },
+
+        {
+            id: "n03-dual",
+            name: "DUAL FIRE",
+            description: "2発同時射撃システム。",
+            cost: 1,
+            requiredLevel: 1,
+            x: -1,
+            y: -1,
+            type: "offense"
+        },
+
+        {
+            id: "n03-burst",
+            name: "BURST",
+            description: "攻撃密度を強化する。",
+            cost: 1,
+            requiredLevel: 10,
+            x: 1,
+            y: -1,
+            type: "offense"
+        },
+
+        {
+            id: "n03-spread",
+            name: "SPREAD",
+            description: "弾の展開範囲を強化する。",
+            cost: 1,
+            requiredLevel: 25,
+            x: -1,
+            y: 1,
+            type: "offense"
+        },
+
+        {
+            id: "n03-overdrive",
+            name: "OVERDRIVE",
+            description: "攻撃システムを限界領域へ。",
+            cost: 2,
+            requiredLevel: 50,
+            x: 1,
+            y: 1,
+            type: "special"
+        }
+
+    ],
+
+
+    "nexus-04": [
+
+        {
+            id: "n04-core",
+            name: "CORE",
+            description: "ビーム兵器制御コア。",
+            cost: 0,
+            requiredLevel: 1,
+            x: 0,
+            y: 0,
+            type: "core"
+        },
+
+        {
+            id: "n04-beam",
+            name: "BEAM",
+            description: "ビーム出力を強化する。",
+            cost: 1,
+            requiredLevel: 1,
+            x: -1,
+            y: -1,
+            type: "energy"
+        },
+
+        {
+            id: "n04-wide",
+            name: "WIDE BEAM",
+            description: "ビームの幅をさらに拡張する。",
+            cost: 1,
+            requiredLevel: 10,
+            x: 1,
+            y: -1,
+            type: "energy"
+        },
+
+        {
+            id: "n04-power",
+            name: "BEAM POWER",
+            description: "ビーム出力を強化する。",
+            cost: 1,
+            requiredLevel: 25,
+            x: -1,
+            y: 1,
+            type: "energy"
+        },
+
+        {
+            id: "n04-nexus",
+            name: "NEXUS BEAM",
+            description: "最終ビーム制御システム。",
+            cost: 2,
+            requiredLevel: 75,
+            x: 1,
+            y: 1,
+            type: "special"
+        }
+
+    ],
+
+
+    "nexus-05": [
+
+        {
+            id: "n05-core",
+            name: "CORE",
+            description: "重装甲型コア。",
+            cost: 0,
+            requiredLevel: 1,
+            x: 0,
+            y: 0,
+            type: "core"
+        },
+
+        {
+            id: "n05-armor",
+            name: "ARMOR",
+            description: "装甲性能を強化する。",
+            cost: 1,
+            requiredLevel: 1,
+            x: -1,
+            y: -1,
+            type: "defense"
+        },
+
+        {
+            id: "n05-hull",
+            name: "HULL",
+            description: "機体耐久性能を強化する。",
+            cost: 1,
+            requiredLevel: 10,
+            x: 1,
+            y: -1,
+            type: "defense"
+        },
+
+        {
+            id: "n05-void",
+            name: "VOID FIELD",
+            description: "特殊防御フィールド。",
+            cost: 1,
+            requiredLevel: 25,
+            x: -1,
+            y: 1,
+            type: "special"
+        },
+
+        {
+            id: "n05-collapse",
+            name: "VOID COLLAPSE",
+            description: "VOIDシステム最終形態。",
+            cost: 2,
+            requiredLevel: 75,
+            x: 1,
+            y: 1,
+            type: "special"
+        }
+
+    ]
+
+};
+
+
+/* ==================================================
+   保存
+================================================== */
+
+function saveSkillGrid() {
+
+    localStorage.setItem(
+        "nexus-unlocked-skills",
+        JSON.stringify(unlockedSkills)
+    );
+
+}
+
+
+/* ==================================================
+   現在のスキルツリー
+================================================== */
+
+function getCurrentSkillTree() {
+
+    const skinId =
+        getEquippedSkin();
+
+    return (
+        nexusSkillTrees[skinId]
+        || nexusSkillTrees["nexus-01"]
+    );
+
+}
+
+
+/* ==================================================
+   スキル解放済み判定
+================================================== */
+
+function isSkillUnlocked(skillId) {
+
+    return unlockedSkills[skillId] === true;
+
+}
+
+
+/* ==================================================
+   スキルパネル生成
+================================================== */
+
+function createSkillGrid() {
+
+    if (
+        document.getElementById(
+            "nexus-skill-grid"
+        )
+    ) {
+        return;
+    }
+
+
+    const overlay =
+        document.createElement("div");
+
+    overlay.id =
+        "nexus-skill-grid";
+
+
+    overlay.innerHTML = `
+
+        <div class="nexus-skill-panel">
+
+            <div class="nexus-skill-header">
+
+                <div>
+                    <div class="nexus-skill-title">
+                        NEXUS SKILL GRID
+                    </div>
+
+                    <div
+                        id="nexus-skill-machine"
+                        class="nexus-skill-machine">
+                    </div>
+                </div>
+
+                <button
+                    id="nexus-skill-close"
+                    class="nexus-skill-close">
+                    ×
+                </button>
+
+            </div>
+
+
+            <div class="nexus-skill-status">
+
+                <div>
+                    SKILL POINT
+                </div>
+
+                <div
+                    id="nexus-skill-points">
+                    SP 0
+                </div>
+
+            </div>
+
+
+            <div
+                id="nexus-skill-board"
+                class="nexus-skill-board">
+            </div>
+
+
+            <div
+                id="nexus-skill-detail"
+                class="nexus-skill-detail">
+
+                <div class="nexus-skill-detail-name">
+                    SELECT NODE
+                </div>
+
+                <div class="nexus-skill-detail-description">
+                    スキルパネルを選択してください。
+                </div>
+
+                <button
+                    id="nexus-skill-unlock"
+                    class="nexus-skill-unlock"
+                    disabled>
+                    UNLOCK
+                </button>
+
+            </div>
+
+        </div>
+
+    `;
+
+
+    document.body.appendChild(
+        overlay
+    );
+
+
+    const closeButton =
+        document.getElementById(
+            "nexus-skill-close"
+        );
+
+
+    if (closeButton) {
+
+        closeButton.addEventListener(
+            "click",
+            closeSkillGrid
+        );
+
+    }
+
+
+    const unlockButton =
+        document.getElementById(
+            "nexus-skill-unlock"
+        );
+
+
+    if (unlockButton) {
+
+        unlockButton.addEventListener(
+            "click",
+            unlockSelectedSkill
+        );
+
+    }
+
+
+    renderSkillGrid();
+
+}
+
+
+/* ==================================================
+   スキルグリッドを表示
+================================================== */
+
+function openSkillGrid() {
+
+    createSkillGrid();
+
+    skillGridVisible = true;
+
+    const overlay =
+        document.getElementById(
+            "nexus-skill-grid"
+        );
+
+    if (overlay) {
+
+        overlay.classList.add(
+            "nexus-skill-grid-visible"
+        );
+
+    }
+
+    renderSkillGrid();
+
+}
+
+
+/* ==================================================
+   スキルグリッドを閉じる
+================================================== */
+
+function closeSkillGrid() {
+
+    skillGridVisible = false;
+
+    const overlay =
+        document.getElementById(
+            "nexus-skill-grid"
+        );
+
+    if (overlay) {
+
+        overlay.classList.remove(
+            "nexus-skill-grid-visible"
+        );
+
+    }
+
+}
+
+
+/* ==================================================
+   グリッド描画
+================================================== */
+
+function renderSkillGrid() {
+
+    const board =
+        document.getElementById(
+            "nexus-skill-board"
+        );
+
+    if (!board) {
+        return;
+    }
+
+
+    const machine =
+        getMachineProgress(
+            getEquippedSkin()
+        );
+
+
+    const tree =
+        getCurrentSkillTree();
+
+
+    const machineElement =
+        document.getElementById(
+            "nexus-skill-machine"
+        );
+
+
+    if (machineElement) {
+
+        machineElement.textContent =
+            `${getEquippedSkin().toUpperCase()} / LEVEL ${machine.level}`;
+
+    }
+
+
+    const pointsElement =
+        document.getElementById(
+            "nexus-skill-points"
+        );
+
+
+    if (pointsElement) {
+
+        pointsElement.textContent =
+            `SP ${skillPoints}`;
+
+    }
+
+
+    board.innerHTML = "";
+
+
+    tree.forEach(
+        skill => {
+
+            const node =
+                document.createElement(
+                    "button"
+                );
+
+            node.className =
+                "nexus-skill-node";
+
+
+            if (
+                skill.type === "core"
+            ) {
+
+                node.classList.add(
+                    "skill-core"
+                );
+
+            }
+
+
+            if (
+                isSkillUnlocked(
+                    skill.id
+                )
+            ) {
+
+                node.classList.add(
+                    "skill-unlocked"
+                );
+
+            }
+
+
+            if (
+                machine.level <
+                skill.requiredLevel
+            ) {
+
+                node.classList.add(
+                    "skill-locked-level"
+                );
+
+            }
+
+
+            node.style.left =
+                `calc(50% + ${skill.x * 90}px)`;
+
+
+            node.style.top =
+                `calc(50% + ${skill.y * 90}px)`;
+
+
+            node.innerHTML = `
+
+                <span class="skill-node-name">
+                    ${skill.name}
+                </span>
+
+                <span class="skill-node-cost">
+                    ${skill.cost === 0
+                        ? "CORE"
+                        : `${skill.cost} SP`
+                    }
+                </span>
+
+            `;
+
+
+            node.addEventListener(
+                "click",
+                () => {
+
+                    selectSkillNode(
+                        skill
+                    );
+
+                }
+            );
+
+
+            board.appendChild(
+                node
+            );
+
+        }
+    );
+
+
+    const core =
+        tree.find(
+            skill =>
+                skill.type === "core"
+        );
+
+
+    if (
+        core &&
+        !isSkillUnlocked(
+            core.id
+        )
+    ) {
+
+        unlockedSkills[
+            core.id
+        ] = true;
+
+        saveSkillGrid();
+
+    }
+
+}
+
+
+/* ==================================================
+   ノード選択
+================================================== */
+
+function selectSkillNode(skill) {
+
+    selectedSkillId =
+        skill.id;
+
+
+    const nameElement =
+        document.querySelector(
+            ".nexus-skill-detail-name"
+        );
+
+
+    const descriptionElement =
+        document.querySelector(
+            ".nexus-skill-detail-description"
+        );
+
+
+    const unlockButton =
+        document.getElementById(
+            "nexus-skill-unlock"
+        );
+
+
+    if (nameElement) {
+
+        nameElement.textContent =
+            skill.name;
+
+    }
+
+
+    if (descriptionElement) {
+
+        descriptionElement.textContent =
+            `${skill.description} / 必要Lv ${skill.requiredLevel} / ${skill.cost} SP`;
+
+    }
+
+
+    if (!unlockButton) {
+        return;
+    }
+
+
+    if (
+        isSkillUnlocked(
+            skill.id
+        )
+    ) {
+
+        unlockButton.textContent =
+            "✓ UNLOCKED";
+
+        unlockButton.disabled =
+            true;
+
+        return;
+
+    }
+
+
+    if (
+        getMachineProgress(
+            getEquippedSkin()
+        ).level <
+        skill.requiredLevel
+    ) {
+
+        unlockButton.textContent =
+            `LEVEL ${skill.requiredLevel} REQUIRED`;
+
+        unlockButton.disabled =
+            true;
+
+        return;
+
+    }
+
+
+    if (
+        skillPoints <
+        skill.cost
+    ) {
+
+        unlockButton.textContent =
+            `NEED ${skill.cost} SP`;
+
+        unlockButton.disabled =
+            true;
+
+        return;
+
+    }
+
+
+    unlockButton.textContent =
+        `UNLOCK / ${skill.cost} SP`;
+
+    unlockButton.disabled =
+        false;
+
+}
+
+
+/* ==================================================
+   スキル解放
+================================================== */
+
+function unlockSelectedSkill() {
+
+    if (!selectedSkillId) {
+        return;
+    }
+
+
+    const tree =
+        getCurrentSkillTree();
+
+
+    const skill =
+        tree.find(
+            item =>
+                item.id ===
+                selectedSkillId
+        );
+
+
+    if (!skill) {
+        return;
+    }
+
+
+    if (
+        isSkillUnlocked(
+            skill.id
+        )
+    ) {
+        return;
+    }
+
+
+    const machine =
+        getMachineProgress(
+            getEquippedSkin()
+        );
+
+
+    if (
+        machine.level <
+        skill.requiredLevel
+    ) {
+        return;
+    }
+
+
+    if (
+        skillPoints <
+        skill.cost
+    ) {
+        return;
+    }
+
+
+const unlocked =
+    unlockSkillWithNumber(
+        skill.id
+    );
+
+if (!unlocked) {
+    return;
+}
+
+    saveSkillGrid();
+
+
+    renderSkillGrid();
+
+
+    selectSkillNode(
+        skill
+    );
+
+}
+
+
+/* ==================================================
+   ガレージに SKILL GRID ボタン追加
+================================================== */
+
+function addSkillGridButtonToGarage() {
+
+    if (
+        document.getElementById(
+            "nexus-skill-grid-button"
+        )
+    ) {
+        return;
+    }
+
+
+    if (!garageScreen) {
+        return;
+    }
+
+
+    const button =
+        document.createElement(
+            "button"
+        );
+
+
+    button.id =
+        "nexus-skill-grid-button";
+
+
+    button.textContent =
+        "⬡ SKILL GRID";
+
+
+    button.className =
+        "nexus-skill-grid-open-button";
+
+
+    button.addEventListener(
+        "click",
+        openSkillGrid
+    );
+
+
+    garageScreen.appendChild(
+        button
+    );
+
+}
+
+/* ==================================================
+   NEXUS SKILL GRID
+   第2弾：SPシステム / 数字ID / スキル効果
+================================================== */
+
+
+/* ==================================================
+   スキル番号
+================================================== */
+
+const NEXUS_SKILL_NUMBER = {
+
+    /* NEXUS-01 */
+    "n01-core": 101,
+    "n01-power": 102,
+    "n01-defense": 103,
+    "n01-speed": 104,
+    "n01-energy": 105,
+
+    /* NEXUS-02 */
+    "n02-core": 201,
+    "n02-speed": 202,
+    "n02-evasion": 203,
+    "n02-dash": 204,
+    "n02-phase": 205,
+
+    /* NEXUS-03 */
+    "n03-core": 301,
+    "n03-dual": 302,
+    "n03-burst": 303,
+    "n03-spread": 304,
+    "n03-overdrive": 305,
+
+    /* NEXUS-04 */
+    "n04-core": 401,
+    "n04-beam": 402,
+    "n04-wide": 403,
+    "n04-power": 404,
+    "n04-nexus": 405,
+
+    /* NEXUS-05 */
+    "n05-core": 501,
+    "n05-armor": 502,
+    "n05-hull": 503,
+    "n05-void": 504,
+    "n05-collapse": 505
+
+};
+
+
+/* ==================================================
+   数字IDからスキルIDを取得
+================================================== */
+
+function getSkillNumber(skillId) {
+
+    return (
+        NEXUS_SKILL_NUMBER[skillId]
+        || 0
+    );
+
+}
+
+
+/* ==================================================
+   SP保存
+================================================== */
+
+let skillPointsData = Number(
+    localStorage.getItem(
+        "nexus-skill-points"
+    ) || 0
+);
+
+skillPoints =
+    Math.max(
+        0,
+        skillPointsData
+    );
+
+
+function saveSkillPoints() {
+
+    localStorage.setItem(
+        "nexus-skill-points",
+        String(skillPoints)
+    );
+
+}
+
+
+/* ==================================================
+   SP獲得
+================================================== */
+
+function addSkillPoints(amount) {
+
+    amount =
+        Math.floor(
+            Number(amount) || 0
+        );
+
+    if (amount <= 0) {
+        return;
+    }
+
+    skillPoints += amount;
+
+    saveSkillPoints();
+
+    console.log(
+        `◆ +${amount} SKILL POINT`
+    );
+
+    console.log(
+        `◆ CURRENT SP: ${skillPoints}`
+    );
+
+    if (
+        typeof renderSkillGrid === "function"
+    ) {
+
+        renderSkillGrid();
+
+    }
+
+}
+
+
+/* ==================================================
+   スキルが解放されているか
+================================================== */
+
+function hasSkill(skillId) {
+
+    return (
+        unlockedSkills &&
+        unlockedSkills[skillId] === true
+    );
+
+}
+
+
+/* ==================================================
+   数字IDで解放判定
+   → 将来DBと接続するときに使う
+================================================== */
+
+function hasSkillNumber(skillNumber) {
+
+    const skillId =
+        Object.keys(
+            NEXUS_SKILL_NUMBER
+        ).find(
+            id =>
+                NEXUS_SKILL_NUMBER[id]
+                === skillNumber
+        );
+
+    if (!skillId) {
+        return false;
+    }
+
+    return hasSkill(
+        skillId
+    );
+
+}
+
+
+/* ==================================================
+   スキル解放
+   前回の unlockSelectedSkill を拡張
+================================================== */
+
+const originalUnlockSelectedSkill =
+    unlockSelectedSkill;
+
+
+/*
+ * 既存処理を壊さないため、
+ * 新しい処理を別関数として追加。
+ */
+
+function unlockSkillWithNumber(skillId) {
+
+    const tree =
+        getCurrentSkillTree();
+
+    const skill =
+        tree.find(
+            item =>
+                item.id === skillId
+        );
+
+    if (!skill) {
+        return false;
+    }
+
+    if (
+        hasSkill(skillId)
+    ) {
+        return false;
+    }
+
+    const machine =
+        getMachineProgress(
+            getEquippedSkin()
+        );
+
+    if (
+        machine.level <
+        skill.requiredLevel
+    ) {
+
+        console.log(
+            "LEVEL不足"
+        );
+
+        return false;
+
+    }
+
+    if (
+        skillPoints <
+        skill.cost
+    ) {
+
+        console.log(
+            "SP不足"
+        );
+
+        return false;
+
+    }
+
+    skillPoints -=
+        skill.cost;
+
+    unlockedSkills[
+        skillId
+    ] = true;
+
+    saveSkillPoints();
+
+    saveSkillGrid();
+
+    console.log(
+        "◆ SKILL UNLOCKED"
+    );
+
+    console.log(
+        "◆ SKILL ID:",
+        getSkillNumber(skillId)
+    );
+
+    console.log(
+        "◆ SKILL:",
+        skill.name
+    );
+
+    console.log(
+        "◆ REMAINING SP:",
+        skillPoints
+    );
+
+    return true;
+
+}
+
+
+/* ==================================================
+   スキル効果
+================================================== */
+
+function getSkillMultiplier() {
+
+    let multiplier = 1.0;
+
+    const skin =
+        getEquippedSkin();
+
+
+    /* --------------------------------
+       NEXUS-01
+    -------------------------------- */
+
+    if (
+        skin === "nexus-01"
+    ) {
+
+        if (
+            hasSkill("n01-power")
+        ) {
+
+            multiplier += 0.05;
+
+        }
+
+    }
+
+
+    /* --------------------------------
+       NEXUS-02
+    -------------------------------- */
+
+    if (
+        skin === "nexus-02"
+    ) {
+
+        if (
+            hasSkill("n02-speed")
+        ) {
+
+            multiplier += 0.05;
+
+        }
+
+        if (
+            hasSkill("n02-dash")
+        ) {
+
+            multiplier += 0.05;
+
+        }
+
+    }
+
+
+    /* --------------------------------
+       NEXUS-03
+    -------------------------------- */
+
+    if (
+        skin === "nexus-03"
+    ) {
+
+        if (
+            hasSkill("n03-burst")
+        ) {
+
+            multiplier += 0.10;
+
+        }
+
+        if (
+            hasSkill("n03-spread")
+        ) {
+
+            multiplier += 0.05;
+
+        }
+
+    }
+
+
+    /* --------------------------------
+       NEXUS-04
+    -------------------------------- */
+
+    if (
+        skin === "nexus-04"
+    ) {
+
+        if (
+            hasSkill("n04-power")
+        ) {
+
+            multiplier += 0.10;
+
+        }
+
+    }
+
+
+    /* --------------------------------
+       NEXUS-05
+    -------------------------------- */
+
+    if (
+        skin === "nexus-05"
+    ) {
+
+        if (
+            hasSkill("n05-hull")
+        ) {
+
+            multiplier += 0.10;
+
+        }
+
+    }
+
+
+    return multiplier;
+
+}
+
+
+/* ==================================================
+   SP表示更新
+================================================== */
+
+function updateSkillPointDisplay() {
+
+    const element =
+        document.getElementById(
+            "nexus-skill-points"
+        );
+
+    if (!element) {
+        return;
+    }
+
+    element.textContent =
+        `SP ${skillPoints}`;
+
+}
+
+
+/* ==================================================
+   スキル獲得テスト
+================================================== */
+
+/*
+ * コンソールで
+ *
+ * addSkillPoints(10)
+ *
+ * と入力するとSPを10獲得できます。
+ */
+
+console.log(
+    "◆ SKILL SYSTEM READY"
+);
+
+console.log(
+    "◆ 現在のSP:",
+    skillPoints
+);
+/* ==================================================
+   初期化
+================================================== */
+
+
 
 
 initLIFF();
