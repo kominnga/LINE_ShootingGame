@@ -5890,6 +5890,1320 @@ function drawMachineLevelAura(currentSkin) {
     ctx.restore();
 }
 
+/* ==================================================
+   NEXUS MACHINE EVOLUTION
+   機体レベルによる見た目の進化
+   ※円形オーラは使用しない
+================================================== */
+
+function drawMachineEvolution(currentSkin) {
+
+    const machine =
+        getMachineProgress(currentSkin);
+
+    const level =
+        Math.max(
+            1,
+            Math.min(
+                99,
+                Number(machine.level) || 1
+            )
+        );
+
+    // Lv1～9は通常機体
+    if (level < 10) {
+        return;
+    }
+
+    const time =
+        performance.now() * 0.001;
+
+    ctx.save();
+
+    ctx.globalCompositeOperation =
+        "lighter";
+
+
+    /* ==================================================
+       スキン別カラー
+    ================================================== */
+
+    let mainColor = "#39eaff";
+    let glowColor = "#00cfff";
+
+    if (currentSkin === "nexus-02") {
+        mainColor = "#39f6ff";
+        glowColor = "#00d9ff";
+    }
+
+    else if (currentSkin === "nexus-03") {
+        mainColor = "#ffb347";
+        glowColor = "#ff6800";
+    }
+
+    else if (currentSkin === "nexus-04") {
+        mainColor = "#d98cff";
+        glowColor = "#8a5cff";
+    }
+
+    else if (currentSkin === "nexus-05") {
+        mainColor = "#b96cff";
+        glowColor = "#7025ff";
+    }
+
+
+    /* ==================================================
+       Lv10～
+       エンジン出力強化
+    ================================================== */
+
+    if (level >= 10) {
+
+        const power =
+            Math.min(
+                1,
+                (level - 10) / 20
+            );
+
+        const engineLength =
+            25 +
+            power * 18;
+
+        const pulse =
+            Math.sin(time * 8) * 4;
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            -6,
+            19
+        );
+
+        ctx.lineTo(
+            0,
+            19 +
+            engineLength +
+            pulse
+        );
+
+        ctx.lineTo(
+            6,
+            19
+        );
+
+        ctx.closePath();
+
+        ctx.fillStyle =
+            glowColor;
+
+        ctx.shadowColor =
+            mainColor;
+
+        ctx.shadowBlur =
+            18 +
+            power * 15;
+
+        ctx.globalAlpha =
+            0.35 +
+            power * 0.3;
+
+        ctx.fill();
+
+
+        // エンジン中央の高出力ライン
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            0,
+            22
+        );
+
+        ctx.lineTo(
+            0,
+            22 +
+            engineLength * 1.15
+        );
+
+        ctx.strokeStyle =
+            "#ffffff";
+
+        ctx.lineWidth = 2;
+
+        ctx.globalAlpha =
+            0.45 +
+            power * 0.4;
+
+        ctx.stroke();
+    }
+
+
+    /* ==================================================
+       Lv25～
+       翼端エネルギー
+    ================================================== */
+
+    if (level >= 25) {
+
+        const power =
+            Math.min(
+                1,
+                (level - 25) / 25
+            );
+
+        const wave =
+            Math.sin(time * 7) * 3;
+
+
+        // 左翼
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            -18,
+            14
+        );
+
+        ctx.lineTo(
+            -34 -
+            power * 12,
+            22 +
+            wave
+        );
+
+        ctx.lineTo(
+            -47 -
+            power * 15,
+            13 -
+            wave
+        );
+
+        ctx.strokeStyle =
+            mainColor;
+
+        ctx.lineWidth =
+            2 +
+            power * 2;
+
+        ctx.shadowColor =
+            glowColor;
+
+        ctx.shadowBlur =
+            12 +
+            power * 12;
+
+        ctx.globalAlpha =
+            0.45 +
+            power * 0.35;
+
+        ctx.stroke();
+
+
+        // 右翼
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            18,
+            14
+        );
+
+        ctx.lineTo(
+            34 +
+            power * 12,
+            22 +
+            wave
+        );
+
+        ctx.lineTo(
+            47 +
+            power * 15,
+            13 -
+            wave
+        );
+
+        ctx.stroke();
+    }
+
+
+    /* ==================================================
+       Lv50～
+       コア覚醒
+    ================================================== */
+
+    if (level >= 50) {
+
+        const power =
+            Math.min(
+                1,
+                (level - 50) / 25
+            );
+
+        const pulse =
+            1 +
+            Math.sin(time * 10) *
+            0.08;
+
+
+        // コアの縦方向エネルギー
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            0,
+            -24
+        );
+
+        ctx.lineTo(
+            -4 -
+            power * 3,
+            -8
+        );
+
+        ctx.lineTo(
+            0,
+            5 +
+            power * 5
+        );
+
+        ctx.lineTo(
+            4 +
+            power * 3,
+            -8
+        );
+
+        ctx.closePath();
+
+        ctx.fillStyle =
+            "#ffffff";
+
+        ctx.shadowColor =
+            mainColor;
+
+        ctx.shadowBlur =
+            20 +
+            power * 20;
+
+        ctx.globalAlpha =
+            0.25 +
+            power * 0.45;
+
+        ctx.fill();
+
+
+        // コアから上へ伸びるエネルギー
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            0,
+            -18
+        );
+
+        ctx.lineTo(
+            Math.sin(time * 5) *
+            (2 + power * 3),
+            -38 -
+            power * 15
+        );
+
+        ctx.strokeStyle =
+            mainColor;
+
+        ctx.lineWidth =
+            1.5 +
+            power * 2;
+
+        ctx.globalAlpha =
+            0.35 +
+            power * 0.4;
+
+        ctx.stroke();
+    }
+
+
+    /* ==================================================
+       Lv75～
+       OVERDRIVE
+       翼とエンジンが物理的に強化されたように見せる
+    ================================================== */
+
+    if (level >= 75 && level < 99) {
+
+        const power =
+            Math.min(
+                1,
+                (level - 75) / 24
+            );
+
+        const wingLength =
+            35 +
+            power * 18;
+
+        const pulse =
+            Math.sin(time * 6) * 2;
+
+
+        // 左・大型ウイング
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            -12,
+            5
+        );
+
+        ctx.lineTo(
+            -wingLength,
+            24 +
+            pulse
+        );
+
+        ctx.lineTo(
+            -28 -
+            power * 15,
+            9
+        );
+
+        ctx.lineTo(
+            -12,
+            5
+        );
+
+        ctx.closePath();
+
+        ctx.fillStyle =
+            mainColor;
+
+        ctx.globalAlpha =
+            0.18 +
+            power * 0.18;
+
+        ctx.shadowColor =
+            glowColor;
+
+        ctx.shadowBlur = 15;
+
+        ctx.fill();
+
+
+        // 右・大型ウイング
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            12,
+            5
+        );
+
+        ctx.lineTo(
+            wingLength,
+            24 +
+            pulse
+        );
+
+        ctx.lineTo(
+            28 +
+            power * 15,
+            9
+        );
+
+        ctx.lineTo(
+            12,
+            5
+        );
+
+        ctx.closePath();
+
+        ctx.fill();
+
+
+        // エンジン左右ノズル
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            -7,
+            22
+        );
+
+        ctx.lineTo(
+            -13,
+            45 +
+            power * 15
+        );
+
+        ctx.lineTo(
+            -3,
+            29
+        );
+
+        ctx.closePath();
+
+        ctx.fillStyle =
+            glowColor;
+
+        ctx.globalAlpha =
+            0.25 +
+            power * 0.25;
+
+        ctx.fill();
+
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            7,
+            22
+        );
+
+        ctx.lineTo(
+            13,
+            45 +
+            power * 15
+        );
+
+        ctx.lineTo(
+            3,
+            29
+        );
+
+        ctx.closePath();
+
+        ctx.fill();
+    }
+
+
+    /* ==================================================
+       Lv99
+       NEXUS FORM
+       本体そのものを変形させる
+    ================================================== */
+
+    if (level >= 99) {
+
+        drawNexusFinalForm(
+            currentSkin,
+            time
+        );
+    }
+
+
+    ctx.restore();
+}
+
+/* ==================================================
+   NEXUS FORM
+   Lv99専用最終形態
+================================================== */
+
+function drawNexusFinalForm(
+    currentSkin,
+    time
+) {
+
+    ctx.save();
+
+    ctx.globalCompositeOperation =
+        "lighter";
+
+
+    /* ==================================================
+       NEXUS-01
+       STANDARD → HIGH OUTPUT FORM
+    ================================================== */
+
+    if (currentSkin === "nexus-01") {
+
+        // 大型ウイング
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            -10,
+            2
+        );
+
+        ctx.lineTo(
+            -58,
+            20
+        );
+
+        ctx.lineTo(
+            -43,
+            2
+        );
+
+        ctx.lineTo(
+            -25,
+            -6
+        );
+
+        ctx.closePath();
+
+        ctx.fillStyle =
+            "#148dcc";
+
+        ctx.strokeStyle =
+            "#39eaff";
+
+        ctx.lineWidth = 2;
+
+        ctx.shadowColor =
+            "#00cfff";
+
+        ctx.shadowBlur = 20;
+
+        ctx.fill();
+        ctx.stroke();
+
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            10,
+            2
+        );
+
+        ctx.lineTo(
+            58,
+            20
+        );
+
+        ctx.lineTo(
+            43,
+            2
+        );
+
+        ctx.lineTo(
+            25,
+            -6
+        );
+
+        ctx.closePath();
+
+        ctx.fill();
+        ctx.stroke();
+
+
+        // 高出力コア
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            0,
+            -28
+        );
+
+        ctx.lineTo(
+            -9,
+            -8
+        );
+
+        ctx.lineTo(
+            0,
+            5
+        );
+
+        ctx.lineTo(
+            9,
+            -8
+        );
+
+        ctx.closePath();
+
+        ctx.fillStyle =
+            "#ffffff";
+
+        ctx.shadowColor =
+            "#39eaff";
+
+        ctx.shadowBlur = 35;
+
+        ctx.fill();
+
+
+        // 追加エンジン
+
+        drawFinalEngine(
+            -13,
+            20,
+            "#00dfff"
+        );
+
+        drawFinalEngine(
+            13,
+            20,
+            "#00dfff"
+        );
+    }
+
+
+    /* ==================================================
+       NEXUS-02
+       SPEED → ULTRA SPEED FORM
+    ================================================== */
+
+    else if (currentSkin === "nexus-02") {
+
+        // 超大型高速翼
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            -8,
+            3
+        );
+
+        ctx.lineTo(
+            -70,
+            30
+        );
+
+        ctx.lineTo(
+            -48,
+            4
+        );
+
+        ctx.lineTo(
+            -18,
+            -12
+        );
+
+        ctx.closePath();
+
+        ctx.fillStyle =
+            "#0da4c0";
+
+        ctx.strokeStyle =
+            "#39f6ff";
+
+        ctx.lineWidth = 2;
+
+        ctx.shadowColor =
+            "#00ffff";
+
+        ctx.shadowBlur = 25;
+
+        ctx.fill();
+        ctx.stroke();
+
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            8,
+            3
+        );
+
+        ctx.lineTo(
+            70,
+            30
+        );
+
+        ctx.lineTo(
+            48,
+            4
+        );
+
+        ctx.lineTo(
+            18,
+            -12
+        );
+
+        ctx.closePath();
+
+        ctx.fill();
+        ctx.stroke();
+
+
+        // 前方高速ブレード
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            0,
+            -48
+        );
+
+        ctx.lineTo(
+            -7,
+            -18
+        );
+
+        ctx.lineTo(
+            0,
+            -5
+        );
+
+        ctx.lineTo(
+            7,
+            -18
+        );
+
+        ctx.closePath();
+
+        ctx.fillStyle =
+            "#bfffff";
+
+        ctx.shadowBlur = 35;
+
+        ctx.fill();
+
+
+        drawFinalEngine(
+            -9,
+            20,
+            "#00ffff"
+        );
+
+        drawFinalEngine(
+            9,
+            20,
+            "#00ffff"
+        );
+    }
+
+
+    /* ==================================================
+       NEXUS-03
+       ATTACK → ASSAULT FORM
+    ================================================== */
+
+    else if (currentSkin === "nexus-03") {
+
+        // 重装甲ショルダー
+
+        ctx.fillStyle =
+            "#8e5418";
+
+        ctx.strokeStyle =
+            "#ffb347";
+
+        ctx.lineWidth = 2;
+
+        ctx.shadowColor =
+            "#ff6800";
+
+        ctx.shadowBlur = 18;
+
+
+        ctx.fillRect(
+            -44,
+            -2,
+            18,
+            30
+        );
+
+        ctx.strokeRect(
+            -44,
+            -2,
+            18,
+            30
+        );
+
+
+        ctx.fillRect(
+            26,
+            -2,
+            18,
+            30
+        );
+
+        ctx.strokeRect(
+            26,
+            -2,
+            18,
+            30
+        );
+
+
+        // 武装コア
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            0,
+            -38
+        );
+
+        ctx.lineTo(
+            -13,
+            -10
+        );
+
+        ctx.lineTo(
+            0,
+            2
+        );
+
+        ctx.lineTo(
+            13,
+            -10
+        );
+
+        ctx.closePath();
+
+        ctx.fillStyle =
+            "#fff1b0";
+
+        ctx.shadowColor =
+            "#ff9d32";
+
+        ctx.shadowBlur = 35;
+
+        ctx.fill();
+
+
+        // 左右武装
+
+        drawFinalWeapon(
+            -35,
+            22
+        );
+
+        drawFinalWeapon(
+            35,
+            22
+        );
+
+
+        // 重装エンジン
+
+        drawFinalEngine(
+            -12,
+            27,
+            "#ff7a00"
+        );
+
+        drawFinalEngine(
+            12,
+            27,
+            "#ff7a00"
+        );
+    }
+
+
+    /* ==================================================
+       NEXUS-04
+       BEAM → BEAM CORE FORM
+    ================================================== */
+
+    else if (currentSkin === "nexus-04") {
+
+        // 巨大ビームコア
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            0,
+            -50
+        );
+
+        ctx.lineTo(
+            -15,
+            -12
+        );
+
+        ctx.lineTo(
+            0,
+            10
+        );
+
+        ctx.lineTo(
+            15,
+            -12
+        );
+
+        ctx.closePath();
+
+
+        const gradient =
+            ctx.createLinearGradient(
+                -20,
+                0,
+                20,
+                0
+            );
+
+        gradient.addColorStop(
+            0,
+            "#ff4fd8"
+        );
+
+        gradient.addColorStop(
+            0.5,
+            "#ffffff"
+        );
+
+        gradient.addColorStop(
+            1,
+            "#38c8ff"
+        );
+
+
+        ctx.fillStyle =
+            gradient;
+
+        ctx.shadowColor =
+            "#c96cff";
+
+        ctx.shadowBlur = 40;
+
+        ctx.fill();
+
+
+        // ビーム制御翼
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            -14,
+            2
+        );
+
+        ctx.lineTo(
+            -60,
+            26
+        );
+
+        ctx.lineTo(
+            -42,
+            -5
+        );
+
+        ctx.closePath();
+
+        ctx.fillStyle =
+            "#8a5cff";
+
+        ctx.strokeStyle =
+            "#d98cff";
+
+        ctx.lineWidth = 2;
+
+        ctx.fill();
+        ctx.stroke();
+
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            14,
+            2
+        );
+
+        ctx.lineTo(
+            60,
+            26
+        );
+
+        ctx.lineTo(
+            42,
+            -5
+        );
+
+        ctx.closePath();
+
+        ctx.fill();
+        ctx.stroke();
+
+
+        // ビーム出力ライン
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            0,
+            -48
+        );
+
+        ctx.lineTo(
+            0,
+            -70 -
+            Math.sin(time * 8) * 5
+        );
+
+        ctx.strokeStyle =
+            "#ffffff";
+
+        ctx.lineWidth = 3;
+
+        ctx.shadowColor =
+            "#d95cff";
+
+        ctx.shadowBlur = 30;
+
+        ctx.stroke();
+    }
+
+
+    /* ==================================================
+       NEXUS-05
+       VOID → VOID NEXUS FORM
+    ================================================== */
+
+    else if (currentSkin === "nexus-05") {
+
+        // 異形化した大型VOID翼
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            -12,
+            0
+        );
+
+        ctx.lineTo(
+            -62,
+            25
+        );
+
+        ctx.lineTo(
+            -48,
+            -5
+        );
+
+        ctx.lineTo(
+            -28,
+            -20
+        );
+
+        ctx.closePath();
+
+        ctx.fillStyle =
+            "#24113d";
+
+        ctx.strokeStyle =
+            "#b96cff";
+
+        ctx.lineWidth = 2;
+
+        ctx.shadowColor =
+            "#7025ff";
+
+        ctx.shadowBlur = 30;
+
+        ctx.fill();
+        ctx.stroke();
+
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            12,
+            0
+        );
+
+        ctx.lineTo(
+            62,
+            25
+        );
+
+        ctx.lineTo(
+            48,
+            -5
+        );
+
+        ctx.lineTo(
+            28,
+            -20
+        );
+
+        ctx.closePath();
+
+        ctx.fill();
+        ctx.stroke();
+
+
+        // VOIDコア
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            0,
+            -42
+        );
+
+        ctx.lineTo(
+            -11,
+            -12
+        );
+
+        ctx.lineTo(
+            0,
+            7
+        );
+
+        ctx.lineTo(
+            11,
+            -12
+        );
+
+        ctx.closePath();
+
+        ctx.fillStyle =
+            "#d9a3ff";
+
+        ctx.shadowColor =
+            "#a94dff";
+
+        ctx.shadowBlur = 45;
+
+        ctx.fill();
+
+
+        // 紫の異形エネルギー
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            -10,
+            15
+        );
+
+        ctx.lineTo(
+            -20,
+            55 +
+            Math.sin(time * 5) * 8
+        );
+
+        ctx.lineTo(
+            -4,
+            28
+        );
+
+        ctx.closePath();
+
+        ctx.fillStyle =
+            "#8b4dff";
+
+        ctx.globalAlpha = 0.6;
+
+        ctx.fill();
+
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            10,
+            15
+        );
+
+        ctx.lineTo(
+            20,
+            55 +
+            Math.sin(time * 5 + 1) * 8
+        );
+
+        ctx.lineTo(
+            4,
+            28
+        );
+
+        ctx.fill();
+    }
+
+
+    ctx.restore();
+}
+
+
+/* ==================================================
+   Lv99 共通エンジン
+================================================== */
+
+function drawFinalEngine(
+    x,
+    y,
+    color
+) {
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        x - 6,
+        y
+    );
+
+    ctx.lineTo(
+        x,
+        y + 30
+    );
+
+    ctx.lineTo(
+        x + 6,
+        y
+    );
+
+    ctx.closePath();
+
+    ctx.fillStyle =
+        color;
+
+    ctx.shadowColor =
+        color;
+
+    ctx.shadowBlur = 25;
+
+    ctx.globalAlpha = 0.8;
+
+    ctx.fill();
+}
+
+
+/* ==================================================
+   Lv99 共通武装
+================================================== */
+
+function drawFinalWeapon(
+    x,
+    y
+) {
+
+    ctx.fillStyle =
+        "#5f3a12";
+
+    ctx.strokeStyle =
+        "#ffb347";
+
+    ctx.lineWidth = 2;
+
+    ctx.shadowColor =
+        "#ff6800";
+
+    ctx.shadowBlur = 15;
+
+    ctx.fillRect(
+        x - 5,
+        y - 3,
+        10,
+        26
+    );
+
+    ctx.strokeRect(
+        x - 5,
+        y - 3,
+        10,
+        26
+    );
+
+    ctx.beginPath();
+
+    ctx.arc(
+        x,
+        y - 5,
+        5,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fillStyle =
+        "#fff1b0";
+
+    ctx.fill();
+}
+
 
 /* ==================================================
    プレイヤー描画
@@ -5928,7 +7242,9 @@ function drawPlayer() {
         player.y
     );
 
-    drawMachineLevelAura(currentSkin);
+
+    drawLevelTransitionInvincibility();
+    //drawMachineLevelAura(currentSkin);
 
     /* ==================================================
        エンジン炎
