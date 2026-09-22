@@ -53,6 +53,7 @@ let score = 0;
 let hp = 3;
 
 let bombFlashTimer = 0;
+
 // ========================================
 // スキン能力
 // ========================================
@@ -72,6 +73,14 @@ let coins = 0;
 // 今回のプレイで獲得したコイン
 // ゲーム終了時にまとめてD1へ送信する
 let pendingCoins = 0;
+
+// ==================================================
+// 機体EXP
+// ==================================================
+
+let pendingMachineExp = 0;
+
+let machineExpSyncing = false;
 
 // D1から読み込み済みか
 let coinsLoadedFromServer = false;
@@ -400,7 +409,141 @@ function addCoins(amount) {
     );
 
 }
+// ==================================================
+// 機体EXPを追加
+// ==================================================
 
+function addMachineExp(amount) {
+
+    amount = Math.floor(Number(amount) || 0);
+
+    if (amount <= 0) {
+        return;
+    }
+
+    pendingMachineExp += amount;
+
+    console.log(`🚀 +${amount} MACHINE EXP`);
+    console.log(
+        `🚀 今回の獲得予定EXP: +${pendingMachineExp}`
+    );
+}
+
+// ==================================================
+// 機体EXPをD1へ同期
+// ==================================================
+
+async function syncPendingMachineExp() {
+
+    if (machineExpSyncing) {
+        return;
+    }
+
+    if (pendingMachineExp <= 0) {
+        return;
+    }
+
+    if (
+        typeof lineProfile === "undefined" ||
+        !lineProfile ||
+        !lineProfile.userId
+    ) {
+        console.log(
+            "LINEプロフィールがないため機体EXP同期をスキップ"
+        );
+        return;
+    }
+
+    const skinId = getEquippedSkin();
+
+    if (!skinId) {
+        return;
+    }
+
+    const expToSend = pendingMachineExp;
+
+    machineExpSyncing = true;
+
+    try {
+
+        console.log(
+            "🚀 機体EXP D1同期開始:",
+            skinId,
+            expToSend
+        );
+
+        const response = await fetch(
+            RANKING_API + "/machine/exp",
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify({
+                    userId: lineProfile.userId,
+                    skinId: skinId,
+                    exp: expToSend
+                }),
+
+                keepalive: true
+            }
+        );
+
+        console.log(
+            "🚀 MACHINE EXP HTTP:",
+            response.status
+        );
+
+        if (!response.ok) {
+            throw new Error(
+                "HTTP ERROR: " + response.status
+            );
+        }
+
+        const result = await response.json();
+
+        console.log(
+            "🚀 MACHINE EXP RESULT:",
+            result
+        );
+
+        if (!result.success) {
+            throw new Error(
+                result.message ||
+                "機体EXP同期に失敗しました"
+            );
+        }
+
+        // 同期成功した分だけ減らす
+        pendingMachineExp -= expToSend;
+
+        if (pendingMachineExp < 0) {
+            pendingMachineExp = 0;
+        }
+
+        console.log(
+            "✅ 機体EXP D1同期成功"
+        );
+
+        console.log(
+            "🚀 残り未同期EXP:",
+            pendingMachineExp
+        );
+
+    } catch (error) {
+
+        console.error(
+            "❌ 機体EXP D1同期エラー:",
+            error
+        );
+
+    } finally {
+
+        machineExpSyncing = false;
+    }
+}
 
 // ========================================
 // 今回獲得したコインをD1へ送信
@@ -3277,7 +3420,7 @@ function endGame() {
 sendScoreToRanking();
 
 syncPendingCoins();
-
+syncPendingMachineExp();
 }
 
 /* ==================================================
@@ -6744,6 +6887,7 @@ function defeatBoss() {
 
     score += bossScore;
 
+    addMachineExp(500);
 // BOSS撃破コイン
 addCoins(500 * level);
 
@@ -7617,6 +7761,22 @@ function checkCollisions() {
             ? 5
             : 10
     );
+
+    addMachineExp(
+    defeatedEnemyType === "normal"
+        ? 10
+        : defeatedEnemyType === "fast"
+        ? 15
+        : defeatedEnemyType === "big"
+        ? 50
+        : defeatedEnemyType === "shooter"
+        ? 25
+        : defeatedEnemyType === "splitter"
+        ? 40
+        : defeatedEnemyType === "split-child"
+        ? 5
+        : 10
+);
 
     // SPLITTER → 2体に分裂
     if (defeatedEnemyType === "splitter") {
