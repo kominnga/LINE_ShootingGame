@@ -7747,7 +7747,7 @@ function drawPlayer() {
         ctx.fill();
     }
 
-    drawLevelTransitionInvincibility();
+    
 
     drawMachineEvolution(currentSkin);
     ctx.restore();
