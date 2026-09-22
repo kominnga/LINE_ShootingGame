@@ -500,8 +500,18 @@ async function syncPendingMachineExp() {
 // Workerの生レスポンスを取得
 // ========================================
 
-const responseText = await response.text();
 
+
+console.log(
+    "🚀 MACHINE EXP HTTP:",
+    response.status
+);
+
+// ========================================
+// Workerから生レスポンスを取得
+// ========================================
+
+const responseText = await response.text();
 console.log(
     "🚀 MACHINE EXP RAW RESPONSE:",
     responseText
@@ -532,6 +542,10 @@ console.log(
     result
 );
 
+// ========================================
+// HTTPエラー確認
+// ========================================
+
 if (!response.ok) {
 
     throw new Error(
@@ -540,14 +554,9 @@ if (!response.ok) {
 
 }
 
-if (!result.success) {
-
-    throw new Error(
-        result.message ||
-        "機体EXP同期に失敗しました"
-    );
-
-}
+// ========================================
+// Worker処理結果確認
+// ========================================
 
 
 
