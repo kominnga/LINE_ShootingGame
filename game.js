@@ -4263,30 +4263,110 @@ function getMachineLevelBonus() {
 
 }
 
+// ========================================
+// 🚀 MACHINE POWER GROWTH
+// 機体レベルによる総合性能成長
+// ========================================
+
+function getMachinePowerRate() {
+    const machine = getMachineProgress();
+    const level = Math.max(
+        1,
+        Math.min(99, Number(machine.level) || 1)
+    );
+
+    /*
+        Lv1   = 100%
+        Lv10  = 110%
+        Lv25  = 125%
+        Lv50  = 150%
+        Lv75  = 175%
+        Lv99  = 200%
+    */
+
+    if (level >= 99) {
+        return 2.00;
+    }
+
+    if (level >= 75) {
+        return 1.75;
+    }
+
+    if (level >= 50) {
+        return 1.50;
+    }
+
+    if (level >= 25) {
+        return 1.25;
+    }
+
+    if (level >= 10) {
+        return 1.10;
+    }
+
+    // Lv1～9
+    return 1.00;
+}
+
+
+// 攻撃力倍率
+function getMachineAttackRate() {
+    return getMachinePowerRate();
+}
+
+
+// 防御・耐久倍率
+function getMachineDefenseRate() {
+    const rate = getMachinePowerRate();
+
+    // 攻撃倍率より少し控えめ
+    return 1 + (rate - 1) * 0.75;
+}
+
+
+// 移動速度倍率
+function getMachineSpeedRate() {
+    return getMachinePowerRate();
+}
+
+
+// 射撃速度倍率
+function getMachineFireRate() {
+    return getMachinePowerRate();
+}
+
+
+// ビーム性能倍率
+function getMachineBeamRate() {
+    return getMachinePowerRate();
+}
+
 
 function getMaxHP() {
-
-    const skin =
-        getEquippedSkin();
-
-    const machine =
-        getMachineProgress();
+    const skin = getEquippedSkin();
+    const machine = getMachineProgress();
 
     if (skin === "nexus-05") {
-
-        return Math.min(
-            8,
-            5 +
-            Math.floor(
-                (machine.level - 1) / 20
+        const level = Math.max(
+            1,
+            Math.min(
+                99,
+                Number(machine.level) || 1
             )
         );
 
+        if (level >= 99) return 10;
+        if (level >= 75) return 9;
+        if (level >= 50) return 8;
+        if (level >= 25) return 7;
+        if (level >= 10) return 6;
+
+        return 5;
     }
 
+    // 通常機体
     return 3;
 }
-
 // ==================================================
 // 機体成長段階
 // ==================================================
@@ -4408,6 +4488,13 @@ function showMachineLevelUp(
             newLevel
         );
 
+        // 🚀 新しい機体性能倍率
+const newPowerRate = getMachinePowerRate();
+
+console.log(
+    "🚀 MACHINE POWER:",
+    Math.round(newPowerRate * 100) + "%"
+);
     machineLevelUpTimer = 3.0;
 
     screenShake = 12;
@@ -4426,6 +4513,26 @@ function showMachineLevelUp(
         machineLevelUpStage.name
     );
 
+    console.log(
+    "🚀 ATTACK:",
+    Math.round(getMachineAttackRate() * 100) + "%"
+);
+
+console.log(
+    "🚀 SPEED:",
+    Math.round(getMachineSpeedRate() * 100) + "%"
+);
+
+console.log(
+    "🚀 FIRE:",
+    Math.round(getMachineFireRate() * 100) + "%"
+);
+
+console.log(
+    "🚀 BEAM:",
+    Math.round(getMachineBeamRate() * 100) + "%"
+);
+
     // ガレージ表示も更新
     if (
         typeof updateGarage === "function"
@@ -4435,64 +4542,80 @@ function showMachineLevelUp(
 }
 
 function getPlayerSpeed() {
+    const skin = getEquippedSkin();
+    const levelBonus = getMachineLevelBonus();
 
-    const skin =
-        getEquippedSkin();
+    let baseSpeed = 330;
 
-    const levelBonus =
-        getMachineLevelBonus();
-
+    // NEXUS-02 SPEED
     if (skin === "nexus-02") {
-
-        return (
-            330 *
-            1.35 *
-            (1 + levelBonus)
-        );
-
+        baseSpeed *= 1.35;
     }
 
-    return 330;
+    // 機体レベルによる成長
+    return baseSpeed * (1 + levelBonus);
 }
 
 
 function getFireInterval() {
+    const skin = getEquippedSkin();
+    const fireRate = getMachineFireRate();
 
-    const skin =
-        getEquippedSkin();
+    let baseInterval = 0.13;
 
-    const levelBonus =
-        getMachineLevelBonus();
-
+    // NEXUS-03 ATTACK
     if (skin === "nexus-03") {
-
-        return Math.max(
-            0.055,
-            0.11 *
-            (1 - levelBonus)
-        );
-
+        baseInterval = 0.11;
     }
 
-    return 0.13;
+    // レベルが高いほど発射間隔が短くなる
+    return Math.max(
+        0.045,
+        baseInterval / fireRate
+    );
 }
 
 // ビーム幅
 function getBeamWidth() {
-
-    const skin =
-        getEquippedSkin();
-
-    const levelBonus =
-        getMachineLevelBonus();
+    const skin = getEquippedSkin();
+    const level = Math.max(
+        1,
+        Math.min(
+            99,
+            Number(getMachineProgress().level) || 1
+        )
+    );
 
     if (skin === "nexus-04") {
 
-        return (
-            150 +
-            levelBonus * 50
-        );
+        // Lv1 → 150
+        // Lv10 → 165
+        // Lv25 → 187
+        // Lv50 → 225
+        // Lv75 → 262
+        // Lv99 → 300
 
+        if (level >= 99) {
+            return 300;
+        }
+
+        if (level >= 75) {
+            return 262;
+        }
+
+        if (level >= 50) {
+            return 225;
+        }
+
+        if (level >= 25) {
+            return 187;
+        }
+
+        if (level >= 10) {
+            return 165;
+        }
+
+        return 150;
     }
 
     return 90;
