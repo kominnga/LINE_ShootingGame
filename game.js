@@ -535,20 +535,310 @@ function addCoins(amount) {
 // 機体EXPを追加
 // ==================================================
 
+// ==================================================
+// 機体EXPを追加
+// ==================================================
+
 function addMachineExp(amount) {
 
-    amount = Math.floor(Number(amount) || 0);
+    amount =
+        Math.floor(
+            Number(amount) || 0
+        );
 
     if (amount <= 0) {
         return;
     }
 
+    // ========================================
+    // 現在の機体
+    // ========================================
+
+    const skinId =
+        getEquippedSkin();
+
+    if (!skinId) {
+        return;
+    }
+
+    // ========================================
+    // 現在の進行状況
+    // ========================================
+
+    if (
+        !machineProgress[skinId]
+    ) {
+
+        machineProgress[skinId] = {
+            level: 1,
+            exp: 0
+        };
+
+    }
+
+    const machine =
+        machineProgress[skinId];
+
+    const oldLevel =
+        machine.level;
+
+    // ========================================
+    // EXP追加
+    // ========================================
+
+    machine.exp += amount;
+
     pendingMachineExp += amount;
 
-    console.log(`🚀 +${amount} MACHINE EXP`);
+    // ========================================
+    // レベルアップ判定
+    // ========================================
+
+    while (
+        machine.level < 99 &&
+        machine.exp >=
+            machine.level * 500
+    ) {
+
+        machine.exp -=
+            machine.level * 500;
+
+        machine.level++;
+
+    }
+
+    // ========================================
+    // Lv99
+    // ========================================
+
+    if (
+        machine.level >= 99
+    ) {
+
+        machine.level = 99;
+        machine.exp = 0;
+
+    }
+
+    // ========================================
+    // レベルアップ演出
+    // ========================================
+
+    if (
+        machine.level > oldLevel
+    ) {
+
+        showMachineLevelUp(
+            oldLevel,
+            machine.level
+        );
+
+    }
+
+    console.log(
+        `🚀 +${amount} MACHINE EXP`
+    );
+
+    console.log(
+        `🚀 ${skinId} LEVEL:`,
+        machine.level
+    );
+
+    console.log(
+        `🚀 CURRENT EXP:`,
+        machine.exp
+    );
+
     console.log(
         `🚀 今回の獲得予定EXP: +${pendingMachineExp}`
     );
+
+    // ========================================
+    // ガレージ更新
+    // ========================================
+
+    if (
+        typeof updateGarage === "function"
+    ) {
+
+        updateGarage();
+
+    }
+
+}
+
+// ==================================================
+// MACHINE LEVEL UP DRAW
+// ==================================================
+
+function drawMachineLevelUp() {
+
+    if (
+        machineLevelUpTimer <= 0
+    ) {
+        return;
+    }
+
+    const alpha =
+        Math.min(
+            1,
+            machineLevelUpTimer
+        );
+
+    ctx.save();
+
+    // ========================================
+    // 全体フラッシュ
+    // ========================================
+
+    ctx.fillStyle =
+        `rgba(80, 220, 255, ${
+            0.08 * alpha
+        })`;
+
+    ctx.fillRect(
+        0,
+        0,
+        width,
+        height
+    );
+
+    // ========================================
+    // 中央位置
+    // ========================================
+
+    const centerX =
+        width / 2;
+
+    const centerY =
+        height * 0.38;
+
+    // ========================================
+    // エネルギーリング
+    // ========================================
+
+    const ringProgress =
+        1 -
+        Math.min(
+            1,
+            machineLevelUpTimer / 3
+        );
+
+    const ringRadius =
+        40 +
+        ringProgress * 180;
+
+    ctx.beginPath();
+
+    ctx.arc(
+        centerX,
+        centerY,
+        ringRadius,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.strokeStyle =
+        `rgba(80, 230, 255, ${
+            0.65 * alpha
+        })`;
+
+    ctx.lineWidth = 3;
+
+    ctx.shadowBlur = 25;
+
+    ctx.shadowColor =
+        "rgba(80,230,255,0.9)";
+
+    ctx.stroke();
+
+    ctx.shadowBlur = 0;
+
+    // ========================================
+    // LEVEL UP
+    // ========================================
+
+    ctx.textAlign = "center";
+
+    ctx.font =
+        "800 34px Arial";
+
+    ctx.fillStyle =
+        `rgba(255,255,255,${alpha})`;
+
+    ctx.fillText(
+        "LEVEL UP",
+        centerX,
+        centerY - 50
+    );
+
+    // ========================================
+    // LEVEL
+    // ========================================
+
+    ctx.font =
+        "900 54px Arial";
+
+    ctx.fillStyle =
+        `rgba(80,230,255,${alpha})`;
+
+    ctx.fillText(
+        `LV ${machineLevelUpNewLevel}`,
+        centerX,
+        centerY + 10
+    );
+
+    // ========================================
+    // 成長段階
+    // ========================================
+
+    if (
+        machineLevelUpStage
+    ) {
+
+        ctx.font =
+            "700 18px Arial";
+
+        ctx.fillStyle =
+            `rgba(190,245,255,${alpha})`;
+
+        ctx.fillText(
+            machineLevelUpStage.name,
+            centerX,
+            centerY + 48
+        );
+
+    }
+
+    ctx.restore();
+
+}
+
+// ==================================================
+// MACHINE LEVEL UP UPDATE
+// ==================================================
+
+function updateMachineLevelUp(
+    deltaTime
+) {
+
+    if (
+        machineLevelUpTimer <= 0
+    ) {
+        return;
+    }
+
+    machineLevelUpTimer -=
+        deltaTime;
+
+    if (
+        machineLevelUpTimer < 0
+    ) {
+
+        machineLevelUpTimer = 0;
+
+    }
+
 }
 
 // ==================================================
@@ -1270,6 +1560,10 @@ const machine =
         skin.id
     );
 
+    const growthStage =
+    getMachineGrowthStage(
+        machine.level
+    );
 const machineLevel =
     machine.level;
 
@@ -1509,6 +1803,30 @@ console.log(
         }
 
     }
+
+    const growthStageElement =
+    document.getElementById(
+        "machine-growth-stage"
+    );
+
+const growthDescriptionElement =
+    document.getElementById(
+        "machine-growth-description"
+    );
+
+if (growthStageElement) {
+
+    growthStageElement.textContent =
+        growthStage.name;
+
+}
+
+if (growthDescriptionElement) {
+
+    growthDescriptionElement.textContent =
+        growthStage.description;
+
+}
 
 
     // ========================================
@@ -3917,20 +4235,30 @@ function getEquippedSkin() {
 // MACHINE LEVEL BONUS
 // ==================================================
 
+// ==================================================
+// 機体レベルによる成長ボーナス
+// ==================================================
+
 function getMachineLevelBonus() {
 
     const machine =
         getMachineProgress();
 
-    if (
-        machine.level >= 99
-    ) {
-        return 0.49;
-    }
+    const stage =
+        getMachineGrowthStage(
+            machine.level
+        );
 
-    return Math.min(
-        0.49,
-        (machine.level - 1) * 0.005
+    const normalGrowth =
+        Math.min(
+            0.49,
+            (machine.level - 1) *
+            0.005
+        );
+
+    return Math.max(
+        normalGrowth,
+        stage.bonus
     );
 
 }
@@ -3959,6 +4287,152 @@ function getMaxHP() {
     return 3;
 }
 
+// ==================================================
+// 機体成長段階
+// ==================================================
+
+function getMachineGrowthStage(level) {
+
+    level = Math.max(
+        1,
+        Math.min(
+            99,
+            Number(level) || 1
+        )
+    );
+
+    if (level >= 99) {
+
+        return {
+            id: "max",
+            name: "NEXUS FORM",
+            shortName: "MAX",
+            description:
+                "限界性能へ到達した最終形態。",
+            bonus: 0.49
+        };
+
+    }
+
+    if (level >= 75) {
+
+        return {
+            id: "stage-4",
+            name: "OVERDRIVE",
+            shortName: "IV",
+            description:
+                "機体出力を限界領域まで引き上げた強化形態。",
+            bonus: 0.37
+        };
+
+    }
+
+    if (level >= 50) {
+
+        return {
+            id: "stage-3",
+            name: "AWAKEN",
+            shortName: "III",
+            description:
+                "高出力コアが覚醒した強化形態。",
+            bonus: 0.245
+        };
+
+    }
+
+    if (level >= 25) {
+
+        return {
+            id: "stage-2",
+            name: "ASSAULT",
+            shortName: "II",
+            description:
+                "戦闘性能を大幅に強化した形態。",
+            bonus: 0.12
+        };
+
+    }
+
+    if (level >= 10) {
+
+        return {
+            id: "stage-1",
+            name: "BOOST",
+            shortName: "I",
+            description:
+                "機体性能が強化された初期進化形態。",
+            bonus: 0.045
+        };
+
+    }
+
+    return {
+        id: "base",
+        name: "STANDARD",
+        shortName: "BASE",
+        description:
+            "標準状態。これから成長していく。",
+        bonus: 0
+    };
+}
+
+
+// ==================================================
+// LEVEL UP 演出
+// ==================================================
+
+let machineLevelUpTimer = 0;
+let machineLevelUpOldLevel = 1;
+let machineLevelUpNewLevel = 1;
+let machineLevelUpStage = null;
+
+function showMachineLevelUp(
+    oldLevel,
+    newLevel
+) {
+
+    if (
+        newLevel <= oldLevel
+    ) {
+        return;
+    }
+
+    machineLevelUpOldLevel =
+        oldLevel;
+
+    machineLevelUpNewLevel =
+        newLevel;
+
+    machineLevelUpStage =
+        getMachineGrowthStage(
+            newLevel
+        );
+
+    machineLevelUpTimer = 3.0;
+
+    screenShake = 12;
+
+    hitFlash = 0.08;
+
+    console.log(
+        "🚀 MACHINE LEVEL UP:",
+        oldLevel,
+        "→",
+        newLevel
+    );
+
+    console.log(
+        "🚀 GROWTH STAGE:",
+        machineLevelUpStage.name
+    );
+
+    // ガレージ表示も更新
+    if (
+        typeof updateGarage === "function"
+    ) {
+        updateGarage();
+    }
+}
 
 function getPlayerSpeed() {
 
@@ -8878,6 +9352,8 @@ updateLevelTransition(deltaTime);
 
 updateItems(deltaTime);
 
+updateMachineLevelUp(deltaTime);
+
 checkCollisions();
 
 checkBossCollision();
@@ -8894,6 +9370,8 @@ for (const enemy of enemies) {
 drawEnemyBullets();
 
 drawBoss();
+
+drawMachineLevelUp();
 
 drawParticles();
 

@@ -5339,6 +5339,36 @@ button {
         #64eaff;
 
 }
+#machine-growth-stage {
+
+    margin-top: 12px;
+
+    font-size: 15px;
+
+    font-weight: 800;
+
+    letter-spacing: 0.16em;
+
+    color: #64eaff;
+
+    text-shadow:
+        0 0 10px
+        rgba(80, 220, 255, 0.55);
+
+}
+
+#machine-growth-description {
+
+    margin-top: 4px;
+
+    font-size: 11px;
+
+    line-height: 1.6;
+
+    color:
+        rgba(200, 225, 240, 0.72);
+
+}
 
 /* BACK */
 
