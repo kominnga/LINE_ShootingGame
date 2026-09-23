@@ -12858,9 +12858,7 @@ function defeatBoss() {
 
     addMachineExp(500);
 
-    addSkillPoints(
-    10 * level
-);
+
 // BOSS撃破コイン
 addCoins(500 * level);
 
@@ -13784,25 +13782,7 @@ function checkCollisions() {
 : 10
 );
 
-/* =================================
-   SKILL POINT
-================================= */
 
-addSkillPoints(
-    defeatedEnemyType === "normal"
-        ? 1
-        : defeatedEnemyType === "fast"
-        ? 1
-        : defeatedEnemyType === "big"
-        ? 3
-        : defeatedEnemyType === "shooter"
-        ? 2
-        : defeatedEnemyType === "splitter"
-        ? 2
-        : defeatedEnemyType === "split-child"
-        ? 1
-        : 1
-);
 
     // SPLITTER → 2体に分裂
     if (defeatedEnemyType === "splitter") {
