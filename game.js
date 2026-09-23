@@ -1182,7 +1182,7 @@ let lastTime = 0;
 let enemyTimer = 0;
 let difficultyTimer = 0;
 
-let enemyInterval = 900;
+let enemyInterval = 1100;
 let enemySpeed = 150;
 
 let screenShake = 0;
@@ -5279,7 +5279,7 @@ if (type === "normal") {
 
     size = 40;
 
-    speed = 180;
+    speed = 150;
 
     hp = 2;
 
@@ -5296,7 +5296,7 @@ if (type === "fast") {
 
     size = 30;
 
-    speed = 420;
+    speed = 340;
 
     hp = 2;
 
@@ -5313,9 +5313,9 @@ if (type === "big") {
 
     size = 68;
 
-    speed = 95;
+    speed = 80;
 
-    hp = 6;
+    hp = 4;
 
     scoreValue = 650;
 
@@ -5329,28 +5329,24 @@ if (type === "shooter") {
 
     size = 40;
 
-    speed = 120;
+    speed = 100;
 
     hp = 3;
 
     scoreValue = 300;
 
-    shootInterval = 1.2;
+    shootInterval = 1.4;
 
 }
 
 
-    /* =================================
-       SPLITTER
-    ================================= */
-
- if (type === "splitter") {
+if (type === "splitter") {
 
     size = 48;
 
-    speed = 110;
+    speed = 95;
 
-    hp = 4;
+    hp = 2;
 
     scoreValue = 400;
 
@@ -5362,14 +5358,13 @@ if (type === "zigzag") {
 
     size = 38;
 
-    speed = 175;
+    speed = 145;
 
     hp = 2;
 
     scoreValue = 250;
 
 }
-
 const enemyStartX =
     Math.random() *
     (width - size) +
@@ -13239,8 +13234,8 @@ function updateEnemies(deltaTime) {
 
 enemyInterval =
     Math.max(
-        240,
-        enemyInterval - 70
+        350,
+        enemyInterval - 40
     );
 
     }
@@ -13321,7 +13316,7 @@ if (
             // 前方向＝真下
             vx: 0,
 
-            vy: 280,
+            vy: 230,
 radius: 7
 
         });
