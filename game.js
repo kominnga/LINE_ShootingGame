@@ -5067,7 +5067,7 @@ function createEnemy() {
 
         speed = 200;
 
-        hp = 3;
+        hp = 2;
 
         scoreValue = 150;
 
@@ -5082,9 +5082,9 @@ function createEnemy() {
 
         size = 28;
 
-        speed = 470;
+        speed = 360;
 
-        hp = 2;
+        hp = 1;
 
         scoreValue = 220;
 
@@ -5101,7 +5101,7 @@ function createEnemy() {
 
         speed = 110;
 
-        hp = 8;
+        hp = 4;
 
         scoreValue = 700;
 
@@ -5118,7 +5118,7 @@ function createEnemy() {
 
         speed = 130;
 
-        hp = 4;
+        hp = 2;
 
         scoreValue = 350;
 
@@ -5137,7 +5137,7 @@ function createEnemy() {
 
         speed = 120;
 
-        hp = 5;
+        hp = 2;
 
         scoreValue = 450;
 
