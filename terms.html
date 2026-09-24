@@ -12,9 +12,11 @@
         name="description"
         content="NEXUS SHOOTER サービス利用規約">
 
-    <title>
-        NEXUS SHOOTER | Terms of Service
-    </title>
+    <meta
+        name="robots"
+        content="index,follow">
+
+    <title>NEXUS SHOOTER | Terms of Service</title>
 
     <style>
         * {
@@ -45,13 +47,12 @@
                 Arial,
                 sans-serif;
 
-            line-height: 1.8;
+            line-height: 1.85;
         }
 
         .site-header {
             position: sticky;
             top: 0;
-
             z-index: 100;
 
             height: 70px;
@@ -72,7 +73,6 @@
 
         .header-inner {
             width: min(1100px, 92%);
-
             margin: 0 auto;
 
             display: flex;
@@ -83,14 +83,13 @@
         .brand {
             display: flex;
             align-items: center;
+
             gap: 12px;
 
             color: #ffffff;
-
             text-decoration: none;
 
             font-weight: 700;
-
             letter-spacing: 2px;
         }
 
@@ -113,6 +112,10 @@
                     rgba(40, 150, 255, 0.25),
                     rgba(80, 220, 255, 0.05)
                 );
+
+            box-shadow:
+                0 0 18px
+                rgba(40, 170, 255, 0.15);
         }
 
         .header-label {
@@ -125,6 +128,8 @@
             text-decoration: none;
 
             font-size: 13px;
+
+            transition: color 0.2s ease;
         }
 
         .back-link:hover {
@@ -151,7 +156,6 @@
             color: #63c9ff;
 
             font-size: 12px;
-
             font-weight: 700;
 
             letter-spacing: 3px;
@@ -160,14 +164,14 @@
         .hero h1 {
             margin: 0;
 
+            color: #ffffff;
+
             font-size:
                 clamp(34px, 6vw, 58px);
 
             line-height: 1.1;
 
             letter-spacing: 2px;
-
-            color: #ffffff;
         }
 
         .hero-subtitle {
@@ -213,6 +217,8 @@
             color: #ffffff;
 
             font-size: 21px;
+
+            letter-spacing: 0.5px;
         }
 
         .legal-section h2 span {
@@ -279,6 +285,74 @@
             font-size: 14px;
         }
 
+        .danger {
+            margin:
+                24px 0;
+
+            padding:
+                18px 20px;
+
+            border-left:
+                3px solid
+                #ff647c;
+
+            background:
+                rgba(180, 50, 70, 0.08);
+
+            color: #cbd7e3;
+
+            font-size: 14px;
+        }
+
+        .info-table {
+            width: 100%;
+
+            border-collapse: collapse;
+
+            margin-top: 20px;
+
+            border:
+                1px solid
+                rgba(130, 190, 255, 0.13);
+
+            overflow: hidden;
+        }
+
+        .info-table tr {
+            border-bottom:
+                1px solid
+                rgba(130, 190, 255, 0.10);
+        }
+
+        .info-table tr:last-child {
+            border-bottom: none;
+        }
+
+        .info-table th,
+        .info-table td {
+            padding:
+                15px 18px;
+
+            text-align: left;
+
+            font-size: 14px;
+        }
+
+        .info-table th {
+            width: 30%;
+
+            color: #8db5d5;
+
+            font-weight: 600;
+
+            background:
+                rgba(20, 50, 80, 0.25);
+        }
+
+        .info-table td {
+            color: #c8d5e1;
+        }
+
         .site-footer {
             margin-top: 70px;
 
@@ -297,7 +371,9 @@
 
         .footer-links {
             display: flex;
+
             justify-content: center;
+
             flex-wrap: wrap;
 
             gap: 20px;
@@ -309,6 +385,9 @@
             color: #8198ae;
 
             text-decoration: none;
+
+            transition:
+                color 0.2s ease;
         }
 
         .footer-links a:hover {
@@ -325,12 +404,20 @@
                 font-size: 12px;
             }
 
+            .back-link {
+                font-size: 12px;
+            }
+
             .page {
                 padding-top: 45px;
             }
 
             .hero {
                 margin-bottom: 40px;
+            }
+
+            .hero-subtitle {
+                font-size: 15px;
             }
 
             .legal-section {
@@ -340,6 +427,21 @@
             .legal-section p,
             .legal-section li {
                 font-size: 14px;
+            }
+
+            .info-table th,
+            .info-table td {
+                display: block;
+
+                width: 100%;
+            }
+
+            .info-table th {
+                padding-bottom: 5px;
+            }
+
+            .info-table td {
+                padding-top: 5px;
             }
         }
     </style>
@@ -398,11 +500,11 @@
         <div class="meta">
 
             <span>
-                制定日：2026年9月20日
+                制定日：2026年9月24日
             </span>
 
             <span>
-                最終更新日：2026年9月20日
+                最終更新日：2026年9月24日
             </span>
 
         </div>
@@ -412,6 +514,8 @@
 
     <div class="legal-content">
 
+
+        <!-- 01 -->
 
         <section class="legal-section">
 
@@ -428,11 +532,21 @@
             </p>
 
             <p>
-                利用者は、本規約に同意した上で本サービスを利用するものとします。
+                利用者は、本規約および本サービスに掲載する
+                プライバシーポリシーその他の案内を確認した上で、
+                本サービスを利用するものとします。
+            </p>
+
+            <p>
+                本サービスは、Webブラウザから利用する場合のほか、
+                LINEおよびLIFF等の外部サービスを通じて
+                利用できる場合があります。
             </p>
 
         </section>
 
+
+        <!-- 02 -->
 
         <section class="legal-section">
 
@@ -453,7 +567,8 @@
 
                 <li>
                     「ゲームデータ」とは、
-                    スコア、コイン、所持機体、装備情報その他
+                    スコア、コイン、経験値、レベル、
+                    所持機体、装備情報その他
                     本サービス上で生成されるデータをいいます。
                 </li>
 
@@ -463,10 +578,18 @@
                     その他のゲーム内要素をいいます。
                 </li>
 
+                <li>
+                    「LINE連携」とは、LINEまたはLIFF等の
+                    外部サービスを利用して本サービスを利用する
+                    連携機能をいいます。
+                </li>
+
             </ul>
 
         </section>
 
+
+        <!-- 03 -->
 
         <section class="legal-section">
 
@@ -486,40 +609,88 @@
                 利用者の責任と費用において準備するものとします。
             </p>
 
+            <p>
+                LINE等の外部サービスを利用して本サービスを利用する場合、
+                利用者は当該外部サービスの利用規約等にも
+                従うものとします。
+            </p>
+
         </section>
 
+
+        <!-- 04 -->
 
         <section class="legal-section">
 
             <h2>
                 <span>04</span>
-                ゲームデータ
+                LINE・LIFFによる利用
             </h2>
 
             <p>
-                本サービスにおけるスコア、コイン、
-                所持機体その他のゲームデータは、
-                本サービスの運営上必要な範囲で保存・管理されます。
+                本サービスでは、LINEおよびLIFF等を利用して
+                ゲームを起動または利用できる場合があります。
             </p>
 
             <p>
-                システム障害、通信障害、端末の変更、
-                ブラウザデータの削除その他の事情により、
-                ゲームデータが消失または変更される場合があります。
+                LINE連携を利用する場合、
+                本サービスが利用者を識別するために必要な
+                情報がLINEプラットフォームから提供される場合があります。
+            </p>
+
+            <p>
+                LINE連携によって提供される情報の取扱いについては、
+                本サービスのプライバシーポリシーに定めるほか、
+                LINEその他の外部サービスが定める
+                利用規約およびプライバシーポリシーが適用されます。
             </p>
 
             <div class="notice">
-                ゲーム内コインその他のゲームデータは、
-                現実の通貨または現実の財産的価値を有するものではありません。
+                LINEまたはLIFFの仕様変更、障害、提供停止その他の事情により、
+                LINE経由での本サービスの利用ができなくなる場合があります。
             </div>
 
         </section>
 
 
+        <!-- 05 -->
+
         <section class="legal-section">
 
             <h2>
                 <span>05</span>
+                ゲームデータ
+            </h2>
+
+            <p>
+                本サービスにおけるスコア、コイン、経験値、
+                レベル、所持機体、装備情報その他のゲームデータは、
+                本サービスの運営上必要な範囲で保存・管理されます。
+            </p>
+
+            <p>
+                ゲームデータは、本サービス内でのみ利用できる
+                デジタルデータであり、
+                現実の通貨または現実の財産的価値を有するものではありません。
+            </p>
+
+            <p>
+                システム障害、通信障害、端末の変更、
+                ブラウザデータの削除、外部サービスの障害、
+                不正アクセスその他の事情により、
+                ゲームデータが消失、変更または利用できなくなる
+                場合があります。
+            </p>
+
+        </section>
+
+
+        <!-- 06 -->
+
+        <section class="legal-section">
+
+            <h2>
+                <span>06</span>
                 ゲーム内コンテンツ
             </h2>
 
@@ -530,17 +701,55 @@
             </p>
 
             <p>
-                ゲーム内コンテンツについて、
-                利用者は現実の金銭その他の財産的権利を取得するものではありません。
+                利用者は、ゲーム内コンテンツについて、
+                現実の金銭その他の財産的権利を取得するものではありません。
+            </p>
+
+            <p>
+                運営者は、ゲームバランスの調整、
+                不具合の修正、仕様変更その他の理由により、
+                ゲーム内コンテンツの性能、仕様、取得条件等を
+                変更する場合があります。
             </p>
 
         </section>
 
 
+        <!-- 07 -->
+
         <section class="legal-section">
 
             <h2>
-                <span>06</span>
+                <span>07</span>
+                ランキング
+            </h2>
+
+            <p>
+                本サービスでは、スコアその他のゲームデータを利用して
+                ランキング機能を提供する場合があります。
+            </p>
+
+            <p>
+                ランキングに表示される情報は、
+                本サービスの仕様に基づいて表示されます。
+            </p>
+
+            <p>
+                不正な操作、改ざん、異常なデータその他
+                本サービスの公平性を損なうと判断される情報については、
+                運営者の判断によりランキングから除外、
+                修正または削除する場合があります。
+            </p>
+
+        </section>
+
+
+        <!-- 08 -->
+
+        <section class="legal-section">
+
+            <h2>
+                <span>08</span>
                 禁止事項
             </h2>
 
@@ -560,7 +769,12 @@
                 </li>
 
                 <li>
-                    不正なプログラム、スクリプト等を使用する行為
+                    不正なプログラム、スクリプト、Bot、
+                    自動操作ツール等を使用する行為
+                </li>
+
+                <li>
+                    ゲームの動作を意図的に妨害する行為
                 </li>
 
                 <li>
@@ -568,11 +782,8 @@
                 </li>
 
                 <li>
-                    他の利用者の利用を妨害する行為
-                </li>
-
-                <li>
-                    不正アクセスまたはその試み
+                    API、サーバー、データベースその他の
+                    システムに対する不正アクセスまたはその試み
                 </li>
 
                 <li>
@@ -580,62 +791,98 @@
                 </li>
 
                 <li>
-                    運営者または第三者になりすます行為
+                    他の利用者の利用を妨害する行為
                 </li>
 
                 <li>
-                    その他、運営者が不適切と判断する行為
+                    他の利用者または運営者になりすます行為
+                </li>
+
+                <li>
+                    ランキングを不正に操作する行為
+                </li>
+
+                <li>
+                    本サービスを利用して第三者に迷惑、
+                    損害または不利益を与える行為
+                </li>
+
+                <li>
+                    その他、運営者が本サービスの運営上
+                    不適切と判断する行為
                 </li>
 
             </ul>
 
+            <div class="danger">
+                不正なゲームデータの作成、ランキング操作、
+                サーバーへの攻撃その他の行為が確認された場合、
+                運営者は必要に応じてゲームデータの修正、
+                ランキングからの除外、利用制限その他の措置を
+                行うことがあります。
+            </div>
+
         </section>
 
+
+        <!-- 09 -->
 
         <section class="legal-section">
 
             <h2>
-                <span>07</span>
+                <span>09</span>
                 利用停止等
             </h2>
 
             <p>
                 利用者が本規約に違反した場合、
-                または本サービスの運営上必要と判断した場合、
+                または本サービスの安全性、公平性もしくは
+                運営上の必要性を考慮して対応が必要と判断した場合、
                 運営者は当該利用者による本サービスの利用を
                 制限または停止することがあります。
+            </p>
+
+            <p>
+                必要に応じて、ゲームデータ、
+                ランキングデータその他本サービス上の情報を
+                修正または削除する場合があります。
             </p>
 
         </section>
 
 
+        <!-- 10 -->
+
         <section class="legal-section">
 
             <h2>
-                <span>08</span>
+                <span>10</span>
                 知的財産権
             </h2>
 
             <p>
                 本サービスに含まれるプログラム、
-                デザイン、画像、文章、ロゴ、名称その他のコンテンツに関する
-                著作権その他の知的財産権は、
+                デザイン、画像、文章、ロゴ、名称その他の
+                コンテンツに関する著作権その他の知的財産権は、
                 運営者または正当な権利者に帰属します。
             </p>
 
             <p>
                 法令上認められる場合を除き、
                 運営者の許可なくこれらを複製、
-                改変、転載、販売またはその他の方法で利用することを禁止します。
+                改変、転載、販売またはその他の方法で
+                利用することを禁止します。
             </p>
 
         </section>
 
 
+        <!-- 11 -->
+
         <section class="legal-section">
 
             <h2>
-                <span>09</span>
+                <span>11</span>
                 サービスの変更・停止・終了
             </h2>
 
@@ -656,7 +903,12 @@
                 </li>
 
                 <li>
-                    外部サービスの仕様変更または停止が発生した場合
+                    LINE、LIFFその他外部サービスの
+                    仕様変更または停止が発生した場合
+                </li>
+
+                <li>
+                    サーバーその他のインフラに障害が発生した場合
                 </li>
 
                 <li>
@@ -668,10 +920,12 @@
         </section>
 
 
+        <!-- 12 -->
+
         <section class="legal-section">
 
             <h2>
-                <span>10</span>
+                <span>12</span>
                 免責事項
             </h2>
 
@@ -684,17 +938,27 @@
 
             <p>
                 通信障害、端末障害、ブラウザの仕様、
-                外部サービスの障害その他運営者の合理的な管理を超える事情により
-                発生した損害について、運営者は法令上許される範囲で責任を負わないものとします。
+                LINEその他外部サービスの障害、
+                サーバー障害その他運営者の合理的な管理を超える事情により
+                発生した問題について、
+                法令上許される範囲で責任を負わないものとします。
+            </p>
+
+            <p>
+                また、ゲームデータ、ランキング、
+                設定その他のデータについて、
+                常に完全に保存されることを保証するものではありません。
             </p>
 
         </section>
 
 
+        <!-- 13 -->
+
         <section class="legal-section">
 
             <h2>
-                <span>11</span>
+                <span>13</span>
                 損害賠償
             </h2>
 
@@ -707,10 +971,36 @@
         </section>
 
 
+        <!-- 14 -->
+
         <section class="legal-section">
 
             <h2>
-                <span>12</span>
+                <span>14</span>
+                未成年者による利用
+            </h2>
+
+            <p>
+                未成年の利用者が本サービスを利用する場合、
+                必要に応じて保護者等に本規約の内容を
+                確認してもらった上で利用してください。
+            </p>
+
+            <p>
+                LINEその他の外部サービスを利用する場合には、
+                当該サービスの年齢条件および利用規約等も
+                確認してください。
+            </p>
+
+        </section>
+
+
+        <!-- 15 -->
+
+        <section class="legal-section">
+
+            <h2>
+                <span>15</span>
                 規約の変更
             </h2>
 
@@ -719,19 +1009,58 @@
             </p>
 
             <p>
+                法令の改正、本サービスの機能変更、
+                LINEその他外部サービスの仕様変更、
+                セキュリティ上の対応その他の事情により、
+                規約の変更が必要となる場合があります。
+            </p>
+
+            <p>
                 変更後の本規約は、
                 本サービス上に掲載した時点その他適切な方法により
-                定めた時点から適用されます。
+                定めた時点から適用します。
             </p>
 
         </section>
 
 
+        <!-- 16 -->
+
         <section class="legal-section">
 
             <h2>
-                <span>13</span>
-                準拠法・管轄
+                <span>16</span>
+                プライバシーポリシーとの関係
+            </h2>
+
+            <p>
+                本サービスにおける利用者の情報の取扱いについては、
+                別途定める
+                <a
+                    href="./privacy.html"
+                    style="color:#63c9ff;">
+                    プライバシーポリシー
+                </a>
+                に従います。
+            </p>
+
+            <p>
+                本規約とプライバシーポリシーの内容が
+                情報の取扱いについて異なる場合には、
+                情報の取扱いについてはプライバシーポリシーの
+                定めを優先して適用します。
+            </p>
+
+        </section>
+
+
+        <!-- 17 -->
+
+        <section class="legal-section">
+
+            <h2>
+                <span>17</span>
+                準拠法・紛争解決
             </h2>
 
             <p>
@@ -739,17 +1068,20 @@
             </p>
 
             <p>
-                本サービスに関して利用者と運営者との間で紛争が生じた場合、
-                法令に従い、適切な裁判所を管轄裁判所とします。
+                本サービスに関して利用者と運営者との間で
+                紛争が生じた場合には、
+                法令に従い、適切に解決を図るものとします。
             </p>
 
         </section>
 
 
+        <!-- 18 -->
+
         <section class="legal-section">
 
             <h2>
-                <span>14</span>
+                <span>18</span>
                 お問い合わせ
             </h2>
 
@@ -757,6 +1089,52 @@
                 本サービスに関するお問い合わせは、
                 本サービス上で別途案内する方法により受け付けます。
             </p>
+
+        </section>
+
+
+        <!-- 19 -->
+
+        <section class="legal-section">
+
+            <h2>
+                <span>19</span>
+                運営者情報
+            </h2>
+
+            <table class="info-table">
+
+                <tr>
+                    <th>
+                        サービス名称
+                    </th>
+
+                    <td>
+                        NEXUS SHOOTER
+                    </td>
+                </tr>
+
+                <tr>
+                    <th>
+                        運営者
+                    </th>
+
+                    <td>
+                        NEXUS SHOOTER運営
+                    </td>
+                </tr>
+
+                <tr>
+                    <th>
+                        お問い合わせ
+                    </th>
+
+                    <td>
+                        本サービス所定のお問い合わせ方法
+                    </td>
+                </tr>
+
+            </table>
 
         </section>
 
@@ -791,5 +1169,4 @@
 </main>
 
 </body>
-
 </html>
