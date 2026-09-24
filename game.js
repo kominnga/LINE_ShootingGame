@@ -5448,8 +5448,8 @@ function createBoss() {
     */
 
     const bossHP =
-        1200 +
-        (level - 1) * 800;
+        800 +
+        (level - 1) * 500;
 
     boss = {
 
