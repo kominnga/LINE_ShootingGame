@@ -5067,7 +5067,7 @@ function createEnemy() {
 
         speed = 200;
 
-        hp = 2;
+        hp = 1;
 
         scoreValue = 150;
 
@@ -5281,7 +5281,7 @@ if (type === "normal") {
 
     speed = 150;
 
-    hp = 2;
+    hp = 1;
 
     scoreValue = 120;
 
