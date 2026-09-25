@@ -3815,6 +3815,22 @@ button {
     pointer-events: auto;
 }
 
+/* ==================================================
+   GARAGE 左右矢印を中央寄せ
+================================================== */
+
+#garage-preview {
+    gap: 2px;
+}
+
+#skin-prev {
+    margin-right: 12px;
+}
+
+#skin-next {
+    margin-left: 12px;
+}
+
 /* 左右ボタン */
 #skin-prev,
 #skin-next {
@@ -5379,3 +5395,56 @@ button {
 
 /* BACK */
 
+/* ==================================================
+   公式LINEボタン
+================================================== */
+
+#official-line-button {
+    width: 220px;
+    margin-top: 10px;
+
+    padding: 12px 20px;
+
+    border: 1px solid rgba(80, 220, 150, 0.55);
+    border-radius: 10px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(20, 70, 55, 0.95),
+            rgba(15, 45, 40, 0.95)
+        );
+
+    color: #eafff5;
+
+    font-size: 15px;
+    font-weight: bold;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 0 12px rgba(50, 220, 150, 0.12);
+
+    transition:
+        transform 0.15s ease,
+        background 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+#official-line-button:hover {
+    transform: scale(1.04);
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(25, 100, 70, 0.98),
+            rgba(15, 60, 50, 0.98)
+        );
+
+    box-shadow:
+        0 0 20px rgba(50, 220, 150, 0.25);
+}
+
+#official-line-button:active {
+    transform: scale(0.96);
+}

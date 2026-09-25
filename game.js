@@ -4160,7 +4160,10 @@ LEVEL ${level} 到達！
 君はこの記録を超えられるか？
 
 🎮 NEXUS SHOOTER
-${gameUrl}`;
+${gameUrl}
+
+🟩 公式LINEはこちら
+https://lin.ee/ZVp7CeA`;
 
 
     try {
