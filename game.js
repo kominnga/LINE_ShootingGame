@@ -5009,208 +5009,6 @@ function getEnemyDifficultyRate() {
 }
 
 
-function createEnemy() {
-
-    const typeRandom =
-        Math.random();
-
-    let type;
-
-
-    /*
-        敵出現率
-
-        60% → NORMAL
-        15% → FAST
-        10% → BIG
-        10% → SHOOTER
-         5% → SPLITTER
-    */
-
-    if (typeRandom < 0.60) {
-
-        type = "normal";
-
-    } else if (typeRandom < 0.75) {
-
-        type = "fast";
-
-    } else if (typeRandom < 0.85) {
-
-        type = "big";
-
-    } else if (typeRandom < 0.95) {
-
-        type = "shooter";
-
-    } else {
-
-        type = "splitter";
-
-    }
-
-
-    let size;
-    let speed;
-    let hp;
-    let scoreValue;
-    let shootInterval = 0;
-
-
-    /* =================================
-       NORMAL
-    ================================= */
-
-    if (type === "normal") {
-
-        size = 40;
-
-        speed = 200;
-
-        hp = 1;
-
-        scoreValue = 150;
-
-    }
-
-
-    /* =================================
-       FAST
-    ================================= */
-
-    if (type === "fast") {
-
-        size = 28;
-
-        speed = 360;
-
-        hp = 1;
-
-        scoreValue = 220;
-
-    }
-
-
-    /* =================================
-       BIG
-    ================================= */
-
-    if (type === "big") {
-
-        size = 65;
-
-        speed = 110;
-
-        hp = 4;
-
-        scoreValue = 700;
-
-    }
-
-
-    /* =================================
-       SHOOTER
-    ================================= */
-
-    if (type === "shooter") {
-
-        size = 38;
-
-        speed = 130;
-
-        hp = 2;
-
-        scoreValue = 350;
-
-        shootInterval = 0.9;
-
-    }
-
-
-    /* =================================
-       SPLITTER
-    ================================= */
-
-    if (type === "splitter") {
-
-        size = 46;
-
-        speed = 120;
-
-        hp = 2;
-
-        scoreValue = 450;
-
-    }
-
-
-    /*
-        レベルによる強化
-    */
-
-    const difficultyRate =
-        getEnemyDifficultyRate();
-
-
-    speed *=
-        difficultyRate;
-
-
-    /*
-        敵を生成
-    */
-
-    const enemy = {
-
-        x:
-            Math.random() *
-            (width - size) +
-            size / 2,
-
-        y:
-            -size,
-
-        width:
-            size,
-
-        height:
-            size,
-
-        speed:
-            speed,
-
-        rotation:
-            Math.random() *
-            Math.PI *
-            2,
-
-        rotationSpeed:
-            (Math.random() - 0.5) * 4,
-
-        hp:
-            hp,
-
-        maxHp:
-            hp,
-
-        type:
-            type,
-
-        score:
-            scoreValue,
-
-        shootTimer:
-            0,
-
-        shootInterval:
-            shootInterval
-
-    };
-
-
-    enemies.push(enemy);
-
-}
 
 function createEnemy() {
 
@@ -5298,7 +5096,7 @@ if (type === "fast") {
 
     speed = 340;
 
-    hp = 2;
+    hp = 1;
 
     scoreValue = 200;
 
@@ -5331,7 +5129,7 @@ if (type === "shooter") {
 
     speed = 100;
 
-    hp = 3;
+    hp = 2;
 
     scoreValue = 300;
 
@@ -5344,7 +5142,7 @@ if (type === "splitter") {
 
     size = 48;
 
-    speed = 95;
+    speed = 75;
 
     hp = 2;
 
@@ -5360,7 +5158,7 @@ if (type === "zigzag") {
 
     speed = 145;
 
-    hp = 2;
+    hp = 1;
 
     scoreValue = 250;
 
