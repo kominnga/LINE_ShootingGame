@@ -13602,8 +13602,9 @@ function checkCollisions() {
                 rotationSpeed:
                     (Math.random() - 0.5) * 6,
 
-                hp: 2,
-                maxHp: 2,
+                hp: 1,
+                maxHp: 1,
+            
 
                 type: "split-child",
 
