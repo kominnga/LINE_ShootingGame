@@ -5614,3 +5614,34 @@ button {
 #garage-preview #skin-next:active {
     transform: translate(103px, -50%) scale(0.90);
 }
+
+/* ==================================================
+   GARAGE 矢印位置 修正版
+   EQUIPPEDボタンと重ならないようにする
+================================================== */
+
+#garage-preview #skin-prev {
+    transform: translate(-175px, -50%);
+}
+
+#garage-preview #skin-next {
+    transform: translate(128px, -50%);
+}
+
+/* ホバー */
+#garage-preview #skin-prev:hover {
+    transform: translate(-175px, -50%) scale(1.06);
+}
+
+#garage-preview #skin-next:hover {
+    transform: translate(128px, -50%) scale(1.06);
+}
+
+/* クリック */
+#garage-preview #skin-prev:active {
+    transform: translate(-175px, -50%) scale(0.90);
+}
+
+#garage-preview #skin-next:active {
+    transform: translate(128px, -50%) scale(0.90);
+}
