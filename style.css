@@ -5506,3 +5506,111 @@ button {
 #garage-preview .skin-arrow:active {
     transform: translateY(-50%) scale(0.90);
 }
+
+/* ==================================================
+   GARAGE 矢印
+   EQUIPPEDボタンの左右に配置
+================================================== */
+
+#garage-preview {
+    position: relative;
+}
+
+/* 左矢印 */
+#garage-preview #skin-prev {
+    position: absolute;
+
+    top: calc(100% + 43px);
+    left: calc(50% - 125px);
+
+    width: 42px;
+    height: 42px;
+
+    z-index: 100;
+
+    transform: translateY(-50%);
+}
+
+/* 右矢印 */
+#garage-preview #skin-next {
+    position: absolute;
+
+    top: calc(100% + 43px);
+    right: calc(50% - 125px);
+
+    width: 42px;
+    height: 42px;
+
+    z-index: 100;
+
+    transform: translateY(-50%);
+}
+
+/* ホバー */
+#garage-preview #skin-prev:hover,
+#garage-preview #skin-next:hover {
+    transform: translateY(-50%) scale(1.06);
+}
+
+/* 押したとき */
+#garage-preview #skin-prev:active,
+#garage-preview #skin-next:active {
+    transform: translateY(-50%) scale(0.90);
+}
+
+/* ==================================================
+   GARAGE
+   矢印を「装備する」ボタンの左右へ移動
+================================================== */
+
+#garage-preview {
+    position: relative;
+}
+
+/* 左矢印 */
+#garage-preview #skin-prev {
+    position: absolute;
+
+    left: 50%;
+    top: calc(100% + 43px);
+
+    transform: translate(-145px, -50%);
+
+    width: 42px;
+    height: 42px;
+
+    z-index: 100;
+}
+
+/* 右矢印 */
+#garage-preview #skin-next {
+    position: absolute;
+
+    left: 50%;
+    top: calc(100% + 43px);
+
+    transform: translate(103px, -50%);
+
+    width: 42px;
+    height: 42px;
+
+    z-index: 100;
+}
+
+/* ホバー */
+#garage-preview #skin-prev:hover {
+    transform: translate(-145px, -50%) scale(1.06);
+}
+
+#garage-preview #skin-next:hover {
+    transform: translate(103px, -50%) scale(1.06);
+}
+
+/* 押したとき */
+#garage-preview #skin-prev:active {
+    transform: translate(-145px, -50%) scale(0.90);
+}
+
+#garage-preview #skin-next:active {
+    transform: translate(103px, -50%) scale(0.90);
+}
