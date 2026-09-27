@@ -5448,3 +5448,61 @@ button {
 #official-line-button:active {
     transform: scale(0.96);
 }
+
+/* ==================================================
+   GARAGE 矢印位置調整
+   左右の端から中央へ寄せる
+================================================== */
+
+#garage-preview {
+    position: relative;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 100%;
+    margin: 10px 0 20px;
+}
+
+/* 機体表示は必ず中央 */
+#skin-display {
+    position: relative;
+    z-index: 10;
+
+    margin: 0 auto;
+}
+
+/* 矢印を絶対配置に変更 */
+#garage-preview .skin-arrow {
+    position: absolute;
+
+    top: 50%;
+
+    width: 42px;
+    height: 42px;
+
+    transform: translateY(-50%);
+
+    z-index: 100;
+}
+
+/* 左矢印 */
+#garage-preview #skin-prev {
+    left: 25px;
+}
+
+/* 右矢印 */
+#garage-preview #skin-next {
+    right: 25px;
+}
+
+/* ホバー */
+#garage-preview .skin-arrow:hover {
+    transform: translateY(-50%) scale(1.06);
+}
+
+/* 押したとき */
+#garage-preview .skin-arrow:active {
+    transform: translateY(-50%) scale(0.90);
+}
